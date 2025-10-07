@@ -9,7 +9,7 @@ import { Download, Star } from "lucide-react";
 // Responsive items per page
 function getItemsPerPage() {
 	if (typeof window === "undefined") return 1;
-	if (window.innerWidth >= 1280) return 6; // xl
+	if (window.innerWidth >= 1280) return 10; // xl
 	if (window.innerWidth >= 1024) return 4; // lg
 	if (window.innerWidth >= 768) return 3; // md
 	if (window.innerWidth >= 640) return 2; // sm
@@ -115,7 +115,7 @@ export default function FeaturedWorkflowsSlider() {
 								{/* Image/illustration placeholder */}
 								<div className="w-full h-36 hover:scale-102 hover:cursor-pointer duration-300  bg-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
 									{w.image ? (
-										<img src={w.image} alt={w.title} className="object-cover w-full h-full rounded-xl" />
+										<img src={w.image[0] as string} alt={w.title} className="object-cover w-full h-full rounded-xl" />
 									) : (
 										<div className="icon-placeholder w-24 h-24 bg-gray-200 rounded-xl" />
 									)}
