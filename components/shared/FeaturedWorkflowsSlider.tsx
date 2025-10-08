@@ -127,7 +127,7 @@ export default function FeaturedWorkflowsSlider() {
 										<Download className="w-4 h-4 text-gray-500" fill="currentColor" />
 										<span className="text-xs text-gray-500">{w.downloads ?? "1.2k"} downloads</span>
 									</div>
-									<span className="text-sm font-semibold text-[#007BFF]">{w.price ?? "Free"}</span>
+									<span className="text-sm font-semibold text-[#007BFF]">{w.price===0 ? "Free" : `$${w.price}`}</span>
 								</div>
 								<Link href={`/workflows/${w.id}`} className="mt-auto">
 									<Button

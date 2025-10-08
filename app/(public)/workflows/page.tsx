@@ -21,7 +21,7 @@ export default function WorkflowsPage() {
 
   // --- 1️⃣ Lọc và sắp xếp workflows ---
   const filteredWorkflows = useMemo(() => {
-	let filtered = workflows.filter((workflow) => {
+	const filtered = workflows.filter((workflow) => {
 	  // --- Search filter ---
 	  if (
 		filters.search &&
