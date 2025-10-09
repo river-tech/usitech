@@ -1,9 +1,22 @@
+"use client";
 import Link from "next/link";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { loginDemo } from "../../../lib/auth";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const router = useRouter();
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		console.log("Login");
+		loginDemo();
+		router.push("/");
+	};
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4 py-10">
 			<div className="flex flex-col items-center w-full">
@@ -22,7 +35,7 @@ export default function LoginPage() {
 				<p className="text-[#64748B] text-center mb-7">Sign in to your UsITech account</p>
 				<Card className="w-full max-w-md rounded-2xl border border-gray-200 shadow-sm bg-[#FFFFFF]">
 					<CardContent className="pt-8 pb-6 px-6">
-						<form className="space-y-5" aria-label="Login form">
+						<form onSubmit={handleSubmit} className="space-y-5" aria-label="Login form">
 							<div>
 								<label htmlFor="email" className="block text-sm font-medium text-[#334155] mb-1">Email Address</label>
 								<div className="relative">
@@ -65,7 +78,7 @@ export default function LoginPage() {
 								</label>
 								<Link href="#" className="text-[#007BFF] text-sm hover:underline">Forgot password?</Link>
 							</div>
-							<Button className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5">
+							<Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5">
 								Login 
 							</Button>
 

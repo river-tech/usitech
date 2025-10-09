@@ -9,7 +9,7 @@ import { Download, Star } from "lucide-react";
 // Responsive items per page
 function getItemsPerPage() {
 	if (typeof window === "undefined") return 1;
-	if (window.innerWidth >= 1280) return 10; // xl
+	if (window.innerWidth >= 1280) return 9; // xl
 	if (window.innerWidth >= 1024) return 4; // lg
 	if (window.innerWidth >= 768) return 3; // md
 	if (window.innerWidth >= 640) return 2; // sm

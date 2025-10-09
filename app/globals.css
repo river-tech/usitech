@@ -38,5 +38,5 @@ body {
 }
 
 .animate-gradient-move {
-  animation: gradientMove 3s ease infinite;
+  animation: gradientMove 2s ease infinite;
 }

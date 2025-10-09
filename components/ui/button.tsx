@@ -9,7 +9,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const base =
-	"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+	"inline-flex text-gray-900 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
 const variantClass: Record<ButtonVariant, string> = {
 	default:
@@ -17,9 +17,9 @@ const variantClass: Record<ButtonVariant, string> = {
 	secondary:
 		"bg-gray-100 text-gray-900 hover:bg-gray-200 transition-all duration-200 ease-in-out hover:shadow-md ",
 	ghost:
-		"bg-transparent hover:bg-gray-100 transition-all duration-200 ease-in-out hover:shadow-sm ",
+		"bg-transparent text-gray-900 hover:bg-gray-100 transition-all duration-200 ease-in-out hover:shadow-sm ",
 	outline:
-		"border border-gray-300 bg-white text-gray-900 hover:bg-white hover:border-[#007BFF] transition-all duration-500 ease-in-out hover:shadow-md hover:cursor-pointer",
+		"border border-gray-300  text-black bg-white hover:bg-white hover:border-[#007BFF] transition-all duration-500 ease-in-out hover:shadow-md hover:cursor-pointer",
 	destructive:
 		"bg-red-600 text-white hover:bg-red-700  transition-all duration-200 ease-in-out hover:shadow-lg hover:cursor-pointer",
 };
@@ -36,7 +36,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		return (
 			<button
 				ref={ref}
-				className={`${base} ${variantClass[variant]} ${sizeClass[size]} ${className} cursor-pointer`}
+				className={`${base} ${variantClass[variant]} ${sizeClass[size]} ${className} cursor-pointer text-gray-900`}
 				{...props}
 			/>
 		);

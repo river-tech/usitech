@@ -3,8 +3,10 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { ArrowRight, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CTASection() {
+  const router = useRouter();
   return (
     <section className="py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
@@ -24,6 +26,7 @@ export default function CTASection() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
+              onClick={() => router.push("/workflows")}
               className="bg-white text-[#002B6B] hover:bg-gray-100 font-semibold rounded-xl px-8 py-3 transition-all duration-200 flex items-center gap-2"
               size="lg"
             >
@@ -32,7 +35,8 @@ export default function CTASection() {
             </Button>
             
             <Button 
-              className="border-2 border-white text-white hover:bg-white hover:text-[#002B6B] font-semibold rounded-xl px-8 py-3 transition-all duration-200 flex items-center gap-2"
+            onClick={() => router.push("/contact")} 
+              className="bg-white/10 text-white hover:bg-white/20 font-semibold rounded-xl px-8 py-3 transition-all duration-200 flex items-center gap-2"
               variant="outline"
               size="lg"
             >

@@ -3,45 +3,27 @@ import { TeamMember, Stat, Feature } from './types';
 export const teamMembers: TeamMember[] = [
   {
     id: '1',
-    name: 'Sarah Johnson',
-    role: 'CEO & Founder',
-    bio: '10+ years in automation and business process optimization.',
-    avatarUrl: '/team/sarah.jpg'
+    name: 'Nguyễn Hà',
+    role: 'Product Designer',
+    bio: 'Designs user experiences and a consistent interface system for the workflow platform.',
   },
   {
     id: '2',
-    name: 'Michael Chen',
-    role: 'Lead Developer',
-    bio: 'Full-stack developer specializing in workflow automation.',
-    avatarUrl: '/team/michael.jpg'
+    name: 'Hoài Đức',
+    role: 'Lead Engineer',
+    bio: 'Owns system architecture and engineering quality, optimizing performance and reliability.',
   },
   {
     id: '3',
-    name: 'Emily Rodriguez',
-    role: 'UX Designer',
-    bio: 'Creating intuitive user experiences for complex automation tools.',
-    avatarUrl: '/team/emily.jpg'
+    name: 'Thành Tài',
+    role: 'Automation Specialist',
+    bio: 'Builds and optimizes automation workflows with deep integrations across the n8n ecosystem.',
   },
   {
     id: '4',
-    name: 'David Kim',
-    role: 'Product Manager',
-    bio: 'Driving product strategy and user engagement initiatives.',
-    avatarUrl: '/team/david.jpg'
-  },
-  {
-    id: '5',
-    name: 'Lisa Thompson',
+    name: 'Phương Tuấn',
     role: 'Customer Success',
-    bio: 'Ensuring our customers achieve maximum value from automation.',
-    avatarUrl: '/team/lisa.jpg'
-  },
-  {
-    id: '6',
-    name: 'Alex Morgan',
-    role: 'Technical Lead',
-    bio: 'Architecting scalable automation solutions for enterprise clients.',
-    avatarUrl: '/team/alex.jpg'
+    bio: 'Partners with customers to implement and scale automation solutions successfully.',
   }
 ];
 

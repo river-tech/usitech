@@ -3,10 +3,11 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { AboutHeroProps } from "../../lib/about/types";
+import { useRouter } from "next/navigation";
 
 export default function AboutHero({ videoUrl, posterUrl }: AboutHeroProps) {
   const videoSource = videoUrl || process.env.NEXT_PUBLIC_ABOUT_VIDEO_URL;
-  
+  const router = useRouter();
   return (
     <section className="py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
@@ -71,11 +72,8 @@ export default function AboutHero({ videoUrl, posterUrl }: AboutHeroProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-gradient-to-r from-[#002B6B] to-[#007BFF] hover:brightness-110 text-white font-semibold rounded-xl shadow-md transition-all duration-200 px-8 py-3">
+              <Button onClick={() => router.push("/workflows")} className="bg-gradient-to-r from-[#002B6B] to-[#007BFF] hover:brightness-110 text-white font-semibold rounded-xl shadow-md transition-all duration-200 px-8 py-3">
                 Explore Workflows
-              </Button>
-              <Button className="border-[#007BFF] text-[#002B6B] hover:bg-[#EAF2FF] border-2 font-semibold rounded-xl transition-all duration-200 px-8 py-3">
-                Learn More
               </Button>
             </div>
           </motion.div>

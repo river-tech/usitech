@@ -41,8 +41,8 @@ export default function MissionSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Card className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <CardContent className="p-8">
-                <h3 className="text-xl font-semibold text-[#0F172A] mb-6">
+              <CardContent className="p-8 ">
+                <h3 className="text-xl font-semibold py-6 text-[#0F172A]">
                   What We Stand For
                 </h3>
                 <div className="space-y-4">

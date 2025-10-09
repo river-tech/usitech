@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Heart, Shield, Clock, Users, Star } from "lucide-react";
 import { workflows } from "../../lib/data";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 // Sidebar Card
 export default  function SidebarCard({ workflow }: any) {
@@ -11,10 +13,11 @@ export default  function SidebarCard({ workflow }: any) {
     const originalPrice = isFree ? 0 : 69;
     const currentPrice = isFree ? 0 : 49;
     const savings = Math.max(originalPrice - currentPrice, 0);
-    
+    const router = useRouter();
+    const [isWishList, setIsWishList] = useState(false)
     return (
         <div className="sticky top-6 space-y-6">
-            {/* Pricing / Actions */}
+            {/* Pricing / Actions */} 
             <Card>
                 <CardContent className="pt-6">
                     <div className="text-center">
@@ -31,12 +34,19 @@ export default  function SidebarCard({ workflow }: any) {
                         )}
                         {isFree && <div className="text-3xl font-bold text-gray-900 mb-2">Free</div>}
                     </div>
-                    <Button className="w-full bg-gradient-to-r from-[#007BFF] to-[#06B6D4] hover:from-[#0066cc] hover:to-[#0597b5] text-white font-semibold py-3 rounded-xl mt-2">
+                    <Button onClick={() => router.push(`/dashboard/checkout/${workflow.id}`)} className="w-full bg-gradient-to-r from-[#007BFF] to-[#06B6D4] hover:from-[#0066cc] hover:to-[#0597b5] text-white font-semibold py-3 rounded-xl mt-2">
                         {isFree ? "Get This free" : "Buy Now"}
                     </Button>
-                    <Button  className="w-full mt-2 bg-gradient-to-r from-[#FF6B35] to-[#F7931E] hover:from-[#FF7A4A] hover:to-[#F9A847]">
-                        <Heart className="w-4 h-4 mr-2" />
-                        Add to wishlist
+                    <Button
+                        onClick={() => setIsWishList((prev) => !prev)}
+                        className={`w-full mt-2 bg-gradient-to-r 
+                            ${isWishList 
+                                ? "from-pink-500 to-red-400 hover:from-pink-600 hover:to-red-500 text-white" 
+                                : "from-[#FF6B35] to-[#F7931E] hover:from-[#FF7A4A] hover:to-[#F9A847] text-white"
+                            }`}
+                    >
+                        <Heart className={`w-4 h-4 mr-2 ${isWishList ? "fill-current text-red-500" : ""}`} />
+                        {isWishList ? "Added to wishlist" : "Add to wishlist"}
                     </Button>
                     <hr className="my-4 border-t border-gray-200" />
                     <div className="mt-4 space-y-2 text-sm text-gray-600">

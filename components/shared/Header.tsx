@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { isAuthenticated, logout } from "../../lib/auth";
 const nav = [
   { href: "/workflows", label: "Workflows" },
   { href: "/search", label: "Search" },
@@ -14,10 +16,16 @@ const nav = [
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
+  const [authed, setAuthed] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  React.useEffect(() => {
+    setAuthed(isAuthenticated());
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white shadow-sm">
@@ -64,19 +72,37 @@ export default function Header() {
           })}
         </nav>
 
-        {/* ---------- AUTH LINKS ---------- */}
+        {/* ---------- AUTH / AVATAR ---------- */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] hover:scale-102 transition-all duration-200 hover:cursor-pointer hover:brightness-110">
-            Login
-          </Link>
-          <Link href="/auth/register">
-            <Button
-              size="sm"
-              className="rounded-xl hover:scale-102 transition-all duration-200 hover:cursor-pointer bg-gradient-to-r from-[#002B6B] to-[#007BFF] px-5 text-sm font-semibold text-white shadow-sm hover:brightness-110 hover:shadow-md"
-            >
-              Register
-            </Button>
-          </Link>
+          {authed ? (
+            <div className="flex items-center gap-3">
+              <button
+                aria-label="Open dashboard"
+                onClick={() => router.push("/dashboard")}
+                className="w-9 h-9 rounded-full cursor-pointer bg-gradient-to-br from-[#002B6B] to-[#007BFF] hover:brightness-110 shadow-sm"
+              />
+              <button
+                onClick={() => { logout(); setAuthed(false); router.push("/"); }}
+                className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] hover:scale-102 transition-all duration-200 hover:cursor-pointer hover:brightness-110">
+                Login
+              </Link>
+              <Link href="/auth/register">
+                <Button
+                  size="sm"
+                  className="rounded-xl hover:scale-102 transition-all duration-200 hover:cursor-pointer bg-gradient-to-r from-[#002B6B] to-[#007BFF] px-5 text-sm font-semibold text-white shadow-sm hover:brightness-110 hover:shadow-md"
+                >
+                  Register
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
 
       </div>

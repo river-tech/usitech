@@ -51,15 +51,15 @@ export default function WhyChooseUs() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
               >
-                <Card className="h-full rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-300">
+                <Card className="h-full hover:scale-105 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-500 group hover:bg-gradient-to-br hover:from-[#002B6B] hover:to-[#007BFF]">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#002B6B] to-[#007BFF] rounded-xl flex items-center justify-center mb-4">
-                      <IconComponent className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#002B6B] to-[#007BFF] rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:bg-white/20">
+                      <IconComponent className="w-6 h-6 text-white transition-colors duration-300" />
                     </div>
-                    <h3 className="text-xl font-semibold text-[#0F172A] mb-3">
+                    <h3 className="text-xl font-semibold text-[#0F172A] mb-3 transition-colors duration-300 group-hover:text-white">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-gray-600 leading-relaxed transition-colors duration-300 group-hover:text-white">
                       {feature.description}
                     </p>
                   </CardContent>
