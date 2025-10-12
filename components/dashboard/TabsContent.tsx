@@ -2,12 +2,13 @@
 
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Eye, BadgeCheck, ArrowRight } from "lucide-react";
+import { Download, Eye, BadgeCheck, ArrowRight, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { type Tab } from "./TabsHeader";
 import Link from "next/link";
 import { ActivityItem } from "./RecentActivity";
 import { useRouter } from "next/navigation";
+import { NotificationType } from "../../lib/types";
 export type PurchaseItem = {
   id: string;
   name: string;
@@ -48,6 +49,7 @@ export type NotificationItem = {
   body?: string;
   time: string; // e.g. 2 hours ago
   highlight?: boolean;
+  type?: NotificationType;
 };
 
 interface TabsContentProps {
@@ -229,24 +231,59 @@ export default function TabsContent({
               </div>
             </div>
             <div className="space-y-3">
-              {notifications.slice(0, 3).map((n) => (
-                <div
-                  key={n.id}
-                  className={`rounded-2xl border ${
-                    n.highlight
-                      ? "bg-[#EAF4FF] border-[#cfe5ff]"
-                      : "bg-white border-gray-200"
-                  } p-4 md:p-5`}
-                >
-                  <div className="font-semibold text-[#0F172A] mb-1">
-                    {n.title}
+              {notifications.slice(0, 3).map((n) => {
+                const getNotificationStyles = (type?: NotificationType, highlight?: boolean) => {
+                  if (highlight) {
+                    return "bg-[#EAF4FF] border-[#cfe5ff]";
+                  }
+                  
+                  switch (type) {
+                    case NotificationType.SUCCESS:
+                      return "bg-green-50 border-green-200";
+                    case NotificationType.WARNING:
+                      return "bg-yellow-50 border-yellow-200";
+                    case NotificationType.ERROR:
+                      return "bg-red-50 border-red-200";
+                    default:
+                      return "bg-white border-gray-200";
+                  }
+                };
+
+                const getIcon = (type?: NotificationType) => {
+                  switch (type) {
+                    case NotificationType.SUCCESS:
+                      return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+                    case NotificationType.WARNING:
+                      return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+                    case NotificationType.ERROR:
+                      return <XCircle className="w-4 h-4 text-red-600" />;
+                    default:
+                      return <CheckCircle2 className="w-4 h-4 text-blue-600" />;
+                  }
+                };
+
+                return (
+                  <div
+                    key={n.id}
+                    className={`rounded-2xl border ${getNotificationStyles(n.type, n.highlight)} p-4 md:p-5`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex-shrink-0">
+                        {getIcon(n.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-[#0F172A] mb-1">
+                          {n.title}
+                        </div>
+                        {n.body && (
+                          <div className="text-gray-700 text-sm mb-2">{n.body}</div>
+                        )}
+                        <div className="text-xs text-gray-500">{n.time}</div>
+                      </div>
+                    </div>
                   </div>
-                  {n.body && (
-                    <div className="text-gray-700 text-sm mb-2">{n.body}</div>
-                  )}
-                  <div className="text-xs text-gray-500">{n.time}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         )}

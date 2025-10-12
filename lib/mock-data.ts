@@ -1,4 +1,4 @@
-import { PurchaseStatus } from "./types";
+import { PurchaseStatus, NotificationType, Notification } from "./types";
 
 export type MockUserPurchase = {
   id: string;
@@ -60,36 +60,73 @@ export type MockNotification = {
   message: string;
   timeAgo: string;
   unread?: boolean;
+  type?: NotificationType;
 };
 
 export const mockNotifications: MockNotification[] = [
   {
     id: "1",
     title: "Workflow Update Available",
-    message: "The Email Marketing Automation workflow v2.1 is now live.",
+    message: "The Email Marketing Automation workflow v2.1 is now live with new features and improvements.",
     timeAgo: "2 hours ago",
     unread: true,
+    type: NotificationType.SUCCESS,
   },
   {
     id: "2",
     title: "Purchase Confirmed",
-    message: "Your purchase of CRM Data Sync has been completed successfully.",
+    message: "Your purchase of CRM Data Sync has been completed successfully. You can now access it in your dashboard.",
     timeAgo: "1 day ago",
     unread: false,
+    type: NotificationType.SUCCESS,
   },
   {
     id: "3",
     title: "New Feature Release",
-    message: "Try out the new AI-powered Workflow Generator now!",
+    message: "Try out the new AI-powered Workflow Generator now! Create custom workflows in minutes.",
     timeAgo: "3 days ago",
     unread: true,
+    type: NotificationType.SUCCESS,
   },
   {
     id: "4",
-    title: "System Maintenance",
-    message: "Scheduled downtime on Oct 10, 2:00 AM UTC.",
+    title: "System Maintenance Warning",
+    message: "Scheduled maintenance will occur on Oct 10, 2:00 AM UTC. Some features may be temporarily unavailable.",
     timeAgo: "5 days ago",
     unread: false,
+    type: NotificationType.WARNING,
+  },
+  {
+    id: "5",
+    title: "Payment Failed",
+    message: "Your payment for the Marketing Automation workflow failed. Please update your payment method.",
+    timeAgo: "1 week ago",
+    unread: true,
+    type: NotificationType.ERROR,
+  },
+  {
+    id: "6",
+    title: "Account Security Alert",
+    message: "We detected unusual activity on your account. Please verify your identity to secure your account.",
+    timeAgo: "2 weeks ago",
+    unread: false,
+    type: NotificationType.WARNING,
+  },
+  {
+    id: "7",
+    title: "Workflow Execution Error",
+    message: "Your CRM Data Sync workflow encountered an error. Please check your configuration and try again.",
+    timeAgo: "3 weeks ago",
+    unread: true,
+    type: NotificationType.ERROR,
+  },
+  {
+    id: "8",
+    title: "Welcome to USITech!",
+    message: "Thank you for joining USITech! Explore our workflow marketplace to boost your productivity.",
+    timeAgo: "1 month ago",
+    unread: false,
+    type: NotificationType.SUCCESS,
   },
 ];
 

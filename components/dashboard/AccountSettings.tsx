@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
-import { User, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { User, Mail, CheckCircle, AlertCircle, Camera, Upload, X } from "lucide-react";
 
 export default function AccountSettings() {
   const [formData, setFormData] = useState({
     firstName: "John",
     lastName: "Doe",
     email: "john.doe@example.com",
+    avatar: "", // New avatar field
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +47,52 @@ export default function AccountSettings() {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (showError) setShowError(false);
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setShowError(true);
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setShowError(true);
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    
+    try {
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setFormData(prev => ({ ...prev, avatar: previewUrl }));
+      
+      // Simulate upload process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      setShowError(true);
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleRemoveAvatar = () => {
+    if (formData.avatar) {
+      URL.revokeObjectURL(formData.avatar);
+      setFormData(prev => ({ ...prev, avatar: "" }));
+    }
+  };
+
+  const getInitials = () => {
+    return `${formData.firstName.charAt(0)}${formData.lastName.charAt(0)}`.toUpperCase();
   };
 
   return (
@@ -84,6 +134,73 @@ export default function AccountSettings() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Avatar Upload Section */}
+            <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="relative">
+                <Avatar className="w-20 h-20 border-4 border-white shadow-lg">
+                  <AvatarImage src={formData.avatar} alt="Profile" />
+                  <AvatarFallback className="bg-gradient-to-br from-[#007BFF] to-[#06B6D4] text-white text-xl font-semibold">
+                    {getInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                {formData.avatar && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveAvatar}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Profile Picture</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Upload a new profile picture. JPG, PNG or GIF. Max 5MB.
+                </p>
+                
+                <div className="flex gap-3">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                  />
+                  
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                    className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg px-4 py-2 flex items-center gap-2"
+                  >
+                    {isUploadingAvatar ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" />
+                        Choose File
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                    className="bg-[#007BFF] text-white hover:bg-[#0056CC] rounded-lg px-4 py-2 flex items-center gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Take Photo
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">

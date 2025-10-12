@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, RefreshCw, CheckCircle2 } from "lucide-react";
+import { Bell, RefreshCw, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { NotificationType } from "../../lib/types";
 
 interface NotificationItem {
   id: string;
   title: string;
   time: string;
-  type?: "update" | "success" | "general";
+  type?: NotificationType;
 }
 
 interface NotificationsCardProps {
@@ -15,12 +16,14 @@ interface NotificationsCardProps {
 }
 
 export default function NotificationsCard({ items }: NotificationsCardProps) {
-  const iconFor = (type?: string) => {
+  const iconFor = (type?: NotificationType) => {
     switch (type) {
-      case "update":
-        return <RefreshCw className="w-4 h-4 text-[#007BFF]" />;
-      case "success":
+      case NotificationType.SUCCESS:
         return <CheckCircle2 className="w-4 h-4 text-green-600" />;
+      case NotificationType.WARNING:
+        return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+      case NotificationType.ERROR:
+        return <XCircle className="w-4 h-4 text-red-600" />;
       default:
         return <Bell className="w-4 h-4 text-gray-600" />;
     }
