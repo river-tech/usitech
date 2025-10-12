@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { type Tab } from "./TabsHeader";
 import Link from "next/link";
 import { ActivityItem } from "./RecentActivity";
-
+import { useRouter } from "next/navigation";
 export type PurchaseItem = {
   id: string;
   name: string;
@@ -67,6 +67,7 @@ export default function TabsContent({
   notifications,
 }: TabsContentProps) {
     console.log(activeTab);
+    const router = useRouter();
   return (
     <div className="mt-6">
       <AnimatePresence mode="wait">
@@ -86,7 +87,7 @@ export default function TabsContent({
                 </h3>
                 <Link
                   href="/dashboard/overview"
-                  className="text-sm text-[#007BFF] hover:underline"
+                  className="text-sm text-[#007BFF] hover:underline cursor-pointer"
                 >
                   View All
                 </Link>
@@ -146,7 +147,7 @@ export default function TabsContent({
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-[#0F172A]">My Workflows</h2>
-              <Link href="/dashboard/my-workflows" className="text-sm text-[#007BFF] hover:underline">View all</Link>
+              <Link href="/dashboard/my-workflows" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View all</Link>
             </div>
             <div className="space-y-3">
               {purchases.slice(0, 3).map((p) => (
@@ -174,13 +175,14 @@ export default function TabsContent({
                       </p>
                       <div className="mt-2 flex items-center gap-4">
                         <Button
+                          
                           variant="outline"
                           className="rounded-xl border-[#00A3FF] text-[#007BFF] hover:bg-[#EAF2FF] flex items-center gap-2 px-3 py-1.5 h-9 text-sm"
                         >
                           <Download className="w-4 h-4" />
                           Download
                         </Button>
-                        <button className="text-sm text-gray-700 hover:text-[#007BFF] inline-flex items-center gap-1.5">
+                        <button onClick={() => router.push(`/dashboard/my-workflows/${p.id}`)}   className="text-sm text-gray-700 hover:text-[#007BFF] inline-flex items-center gap-1.5 cursor-pointer">
                           <Eye className="w-4 h-4" />
                           View Details
                         </button>
@@ -222,8 +224,8 @@ export default function TabsContent({
               <h2 className="text-xl font-semibold text-[#0F172A]">Notifications</h2>
               
               <div className="flex items-center gap-4">
-                <Link href="/dashboard/notifications" className="text-sm text-[#007BFF] hover:underline">View all</Link>
-                <button className="text-sm text-gray-600 hover:text-[#007BFF]">Mark all as read</button>
+                <Link href="/dashboard/notifications" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View all</Link>
+                <button className="text-sm text-gray-600 hover:text-[#007BFF] cursor-pointer">Mark all as read</button>
               </div>
             </div>
             <div className="space-y-3">
@@ -261,7 +263,7 @@ export default function TabsContent({
            
             <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
             <div className=" w-full flex justify-end">
-                    <Link href="/dashboard/settings" className="text-sm text-[#007BFF] hover:underline">View all</Link>
+                    <Link href="/dashboard/settings" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View all</Link>
                 </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -298,15 +300,15 @@ export default function TabsContent({
                   Notification Preferences
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" defaultChecked /> Email notifications
                     for new workflows
                   </label>
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" defaultChecked /> Updates on
                     purchased workflows
                   </label>
-                  <label className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" /> Marketing emails
                   </label>
                 </div>

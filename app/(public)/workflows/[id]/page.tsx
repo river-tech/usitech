@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import HeroSection from "../../../../components/shared/Herosection";
 import WorkflowTabs from "../../../../components/shared/WorkflowTabs";
 import SidebarCard from "../../../../components/shared/SidebarWorkflow";
+import CommentsSection from "../../../../components/workflow/CommentsSection";
 
 
 
@@ -37,6 +38,11 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
                     <div className="lg:col-span-2">
                         <HeroSection workflow={workflow} />	
                         <WorkflowTabs workflow={workflow} />
+                        
+                        {/* Comments Section */}
+                        <div className="mt-8">
+                            <CommentsSection workflowId={id} />
+                        </div>
                     </div>
                     <div className="lg:col-span-1 space-y-6">
                         <SidebarCard workflow={workflow} />

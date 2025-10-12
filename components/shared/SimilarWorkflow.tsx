@@ -16,8 +16,8 @@ export function SimilarWorkflows({ currentWorkflow }: any) {
 			<h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Workflows</h2>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 				{similar.map((workflow: any) => (
-					<Link key={workflow.id} href={`/workflows/${workflow.id}`}>
-						<Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+					<Link key={workflow.id} href={`/workflows/${workflow.id}`} className="cursor-pointer">
+						<Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
 							<div className="aspect-video bg-gradient-to-br from-[#007BFF] to-[#06b6d4] rounded-t-lg flex items-center justify-center">
 								<Image
 									src={workflow.image || "/placeholder-workflow.png"}

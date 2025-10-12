@@ -27,7 +27,7 @@ export default function AuthorCard() {
                     <span className="flex items-center gap-2"><Star className="w-4 h-4 text-yellow-400 fill-current" /> 4.9 rating</span>
                     <span className="flex items-center gap-2"><Users className="w-4 h-4" /> 50K+ downloads</span>
                 </div>
-                <Link href="/workflows?author=usitech" className="inline-block mt-5 w-full">
+                <Link href="/workflows?author=usitech" className="inline-block mt-5 w-full cursor-pointer">
                     <Button variant="outline" className="w-full ">View Author’s Workflows</Button>
                 </Link>
             </CardContent>

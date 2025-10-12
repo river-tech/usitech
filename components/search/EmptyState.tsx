@@ -36,7 +36,7 @@ export default function EmptyState({ query, selectedTags }: EmptyStateProps) {
         {hasFilters ? (
           <div className="space-y-4">
             <p className="text-gray-600">
-              We couldn't find any workflows matching your search criteria.
+              We couldn&apos;t find any workflows matching your search criteria.
             </p>
             
             <div className="space-y-2">

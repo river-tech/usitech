@@ -53,12 +53,12 @@ export default function WorkflowCard({ workflow }: any) {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {workflow.benefits?.slice(0, 3).map((benefit: string, i: number) => (
+          {workflow.features?.slice(0, 3).map((feature: string, i: number) => (
             <span
               key={i}
               className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full font-medium"
             >
-              {benefit}
+              {feature}
             </span>
           ))}
         </div>

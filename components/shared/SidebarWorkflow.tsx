@@ -98,20 +98,28 @@ export default  function SidebarCard({ workflow }: any) {
                             .slice(0, 3)
                             .map((w: any) => (
                                 <Link key={w.id} href={`/workflows/${w.id}`} className="block">
-                                    <div className="flex items-center justify-between rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors p-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="relative w-20 h-14 rounded-lg overflow-hidden border border-gray-200 bg-white">
-                                                <Image src={(Array.isArray(w.image) ? w.image[0] : w.image) || "/placeholder-workflow.png"} alt={w.title} fill className="object-cover" />
-                                            </div>
-                                            <div>
-                                                <p className="text-base font-semibold text-gray-900">{w.title}</p>
-                                                <div className="mt-1 flex items-center gap-1 text-sm text-gray-700">
-                                                    <Star className="w-4 h-4 text-yellow-400 fill-current" /> {w.rating}
+                                    <div className="flex items-center rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors p-4">
+                                        {/* Image */}
+                                        <div className="relative w-[72px] h-[56px] rounded-lg overflow-hidden border border-gray-200 bg-white flex-shrink-0">
+                                            <Image
+                                                src={(Array.isArray(w.image) ? w.image[0] : w.image) || "/placeholder-workflow.png"}
+                                                alt={w.title}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        {/* Texts and price */}
+                                        <div className="flex flex-1 items-center justify-between ml-4 min-w-0">
+                                            <div className="min-w-0">
+                                                <p className="text-base font-semibold text-gray-900 leading-snug truncate">{w.title}</p>
+                                                <div className="mt-2 flex items-center gap-1 text-sm text-gray-700">
+                                                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                                    <span>{w.rating}</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="text-right text-gray-900 font-bold">
-                                            {w.price === 0 || w.price === "Free" ? "Free" : `$${w.price}`}
+                                            <div className="ml-4 text-gray-900 font-bold text-right flex-shrink-0" style={{ minWidth: 54 }}>
+                                                {w.price === 0 || w.price === "Free" ? "Free" : `$${w.price}`}
+                                            </div>
                                         </div>
                                     </div>
                                 </Link>

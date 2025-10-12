@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { workflows } from "../../../lib/data";
 import { Search, ChevronRight, Home } from "lucide-react";
@@ -9,9 +10,12 @@ import SortDropdown from "../../../components/shared/Dropdown";
 import { EFilter } from "@/app/modal/EFilter";
 
 export default function WorkflowsPage() {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  
   const [filters, setFilters] = useState({
     search: "",
-    categories: [] as string[],
+    categories: categoryFromUrl ? [categoryFromUrl] : [] as string[],
     priceRange: [] as EFilter[],
     minRating: 0,
   });
@@ -94,6 +98,17 @@ export default function WorkflowsPage() {
   
 	return filtered;
   }, [filters, sortBy]);
+  // Update filters when URL changes
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setFilters(prev => ({
+        ...prev,
+        categories: [categoryFromUrl]
+      }));
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     console.log(filters);
   }, [filters]);
@@ -143,6 +158,34 @@ export default function WorkflowsPage() {
 
           {/* Main */}
           <div className="flex-1">
+            {/* Active Filters */}
+            {filters.categories.length > 0 && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-medium text-blue-800">Active filters:</span>
+                  {filters.categories.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                    >
+                      {category}
+                      <button
+                        onClick={() => {
+                          setFilters(prev => ({
+                            ...prev,
+                            categories: prev.categories.filter(c => c !== category)
+                          }));
+                        }}
+                        className="ml-1 text-blue-600 hover:text-blue-800"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Sort bar */}
             <div className="flex items-center justify-between mb-8">
               <p className="text-sm text-gray-700">

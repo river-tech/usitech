@@ -42,7 +42,7 @@ export default function SearchBar({ defaultValue = "", onSearch }: SearchBarProp
           <button
             type="button"
             onClick={handleClear}
-            className="absolute inset-y-0 h-full right-12 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+            className="absolute inset-y-0 h-full right-12 flex items-center pr-3 text-gray-400 hover:text-gray-600 cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>

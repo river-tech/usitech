@@ -30,7 +30,7 @@ export default function NotificationsCard({ items }: NotificationsCardProps) {
     <div className="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm h-full">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[#0F172A]">Recent Notifications</h3>
-        <Link href="/dashboard/notifications" className="text-sm text-[#007BFF] hover:underline">View all</Link>
+        <Link href="/dashboard/notifications" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View all</Link>
       </div>
       <div className="space-y-3 text-sm">
         {items.map((n) => (

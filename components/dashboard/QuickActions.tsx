@@ -24,7 +24,7 @@ export default function QuickActions() {
       {actions.map((a) => {
         const Icon = a.icon;
         return (
-          <Link key={a.id} href={a.href} className="group bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-md transition-all duration-300">
+          <Link key={a.id} href={a.href} className="group bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#002B6B] to-[#007BFF] flex items-center justify-center text-white">
                 <Icon className="w-5 h-5" />

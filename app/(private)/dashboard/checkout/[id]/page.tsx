@@ -12,7 +12,7 @@ export default async function CheckoutPage({ params }: PageProps) {
   return (
     <div className="max-w-6xl mx-auto py-10 px-4 grid md:grid-cols-3 gap-6">
       <div className="md:col-span-2">
-        <CheckoutForm orderId={item.id} total={`$${(item.price * 1.1).toFixed(2)}`} />
+        <CheckoutForm orderId={item.id} total={`$${item.price}`} />
       </div>
       <OrderSummary item={item} />
     </div>

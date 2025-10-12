@@ -29,7 +29,7 @@ export default function TagPills({ selectedTags, onTagToggle }: TagPillsProps) {
               whileTap={{ scale: 0.95 }}
               onClick={() => onTagToggle(tag.name)}
               className={`
-                px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
+                px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer
                 ${isSelected 
                   ? 'bg-[#E6F0FF] text-[#002B6B] border-2 border-[#BBD4FF] shadow-sm' 
                   : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 hover:border-gray-300'

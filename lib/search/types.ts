@@ -5,7 +5,7 @@ export interface Workflow {
   rating: number;
   description: string;
   tags: string[];
-  benefits: string[];
+  features: string[];
   downloads: number;
   price: number;
   image: string[];

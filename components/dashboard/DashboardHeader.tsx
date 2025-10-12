@@ -21,8 +21,8 @@ export default function DashboardHeader({ userName }: DashboardHeaderProps) {
       </h1>
       <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-gray-600 text-sm">Here’s a quick overview of your account and recent activity.</p>
-        <Link href="/workflows">
-          <Button className="bg-gradient-to-r from-[#002B6B] to-[#007BFF] hover:brightness-110 text-white font-semibold rounded-xl shadow-md px-5 py-2 h-10">Browse Workflows</Button>
+        <Link href="/workflows" className="cursor-pointer">
+          <Button className="bg-gradient-to-r from-[#002B6B] to-[#007BFF] hover:brightness-110 text-white font-semibold rounded-xl shadow-md px-5 py-2 h-10 cursor-pointer">Browse Workflows</Button>
         </Link>
       </div>
     </motion.div>

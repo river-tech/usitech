@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Star, StarHalf, StarOff } from "lucide-react";
+import { Star, StarHalf, StarOff, Heart } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 function HeroSection({ workflow }: any) {
@@ -128,6 +128,14 @@ function HeroSection({ workflow }: any) {
                   ({workflow.downloads})
                 </span>
               </div>
+            </div>
+            
+            {/* Wishlist Count */}
+            <div className="flex items-center gap-2 mt-2">
+              <Heart className="w-4 h-4 text-red-500 fill-current" />
+              <span className="text-sm text-gray-600 font-medium">
+                {workflow.wishlistCount || 0} people wishlisted this workflow
+              </span>
             </div>
           </div>
         </div>

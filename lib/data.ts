@@ -7,8 +7,9 @@ export const workflows = [
 		downloads: 1247, 
 		rating: 4.8, 
 		price: 0, 
+		wishlistCount: 156,
 		image: ["/background1.png","/cus1.png","/cus2.png"],
-		benefits: ["+40% conversion rate", "2hrs saved daily", "Zero manual errors"],
+		features: ["+40% conversion rate", "2hrs saved daily", "Zero manual errors"],
 		timeToSetup: "3 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 		
@@ -22,8 +23,9 @@ export const workflows = [
 		downloads: 2156, 
 		rating: 4.9, 
 		price: 29, 
+		wishlistCount: 342,
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["+25% recovery rate", "5hrs saved weekly", "Auto-personalized"],
+		features: ["+25% recovery rate", "5hrs saved weekly", "Auto-personalized"],
 		timeToSetup: "2 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},
@@ -35,8 +37,9 @@ export const workflows = [
 		downloads: 892, 
 		rating: 4.7, 
 		price: 49, 
+		wishlistCount: 89,
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["60% faster payments", "3hrs saved weekly", "Reduced late fees"],
+		features: ["60% faster payments", "3hrs saved weekly", "Reduced late fees"],
 		timeToSetup: "4 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},
@@ -47,9 +50,10 @@ export const workflows = [
 		category: "Support", 
 		downloads: 743, 
 		rating: 4.8, 
-		price: 0, 
+		price: 0,
+		wishlistCount: 67, 
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["50% faster response", "4hrs saved daily", "Better customer satisfaction"],
+		features: ["50% faster response", "4hrs saved daily", "Better customer satisfaction"],
 		timeToSetup: "5 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},
@@ -62,7 +66,7 @@ export const workflows = [
 		rating: 4.9, 
 		price: 75, 
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["30 days to launch", "5hrs saved weekly", "Automated marketing"],
+		features: ["30 days to launch", "5hrs saved weekly", "Automated marketing"],
 		timeToSetup: "6 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},	
@@ -75,7 +79,7 @@ export const workflows = [
 		rating: 4.6, 
 		price: 0, 
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["Real-time insights", "3hrs saved weekly", "Improved NPS"],
+		features: ["Real-time insights", "3hrs saved weekly", "Improved NPS"],
 		timeToSetup: "4 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},	
@@ -88,7 +92,7 @@ export const workflows = [
 		rating: 4.5, 
 		price: 120, 
 		image: ["/background1.png","/background2.png","/background3.png"],
-		benefits: ["70% faster approvals", "2hrs saved daily", "Audit-ready"],
+		features: ["70% faster approvals", "2hrs saved daily", "Audit-ready"],
 		timeToSetup: "7 minutes",
 		video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 	},
@@ -101,7 +105,7 @@ export const workflows = [
 		rating: 4.7, 
 		price: 0, 
 		image: "/background1.png",
-		benefits: ["Faster onboarding", "Checklist automation", "Improved retention"],
+		features: ["Faster onboarding", "Checklist automation", "Improved retention"],
 		timeToSetup: "8 minutes"
 	},
 	{
@@ -113,7 +117,7 @@ export const workflows = [
 		rating: 4.8, 
 		price: 55, 
 		image: "/background1.png",
-		benefits: ["Automated reporting", "No manual work", "Data-driven decisions"],
+		features: ["Automated reporting", "No manual work", "Data-driven decisions"],
 		timeToSetup: "3 minutes"
 	},
 	{
@@ -125,7 +129,7 @@ export const workflows = [
 		rating: 4.6, 
 		price: 0, 
 		image: "/background1.png",
-		benefits: ["Faster VIP response", "Personalized service", "Boost loyalty"],
+		features: ["Faster VIP response", "Personalized service", "Boost loyalty"],
 		timeToSetup: "2 minutes"
 	}
 ];

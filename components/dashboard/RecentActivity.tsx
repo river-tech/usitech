@@ -20,7 +20,7 @@ export default function RecentActivity({ items }: RecentActivityProps) {
     <div className="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[#0F172A]">Recent Activity</h3>
-        <Link href="/dashboard/purchases" className="text-sm text-[#007BFF] hover:underline">View All</Link>
+        <Link href="/dashboard/purchases" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View All</Link>
       </div>
 
       <div className="overflow-x-auto">

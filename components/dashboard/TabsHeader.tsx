@@ -60,7 +60,7 @@ export default function TabsHeader({ activeTab, setActiveTab }: TabsHeaderProps)
                             aria-controls={`panel-${t.id}`}
                             onKeyDown={(e) => handleKeyDown(e, i)}
                             onClick={() => setActiveTab(t.id)}
-                            className={`relative px-3 md:px-4 py-3 rounded-t-lg text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#007BFF] focus-visible:ring-offset-2 ${
+                            className={`relative px-3 md:px-4 py-3 rounded-t-lg text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#007BFF] focus-visible:ring-offset-2 cursor-pointer ${
                                 selected
                                     ? "text-[#002B6B]"
                                     : "text-gray-600 hover:text-[#007BFF]"

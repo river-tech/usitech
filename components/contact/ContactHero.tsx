@@ -20,7 +20,7 @@ export default function ContactHero() {
                     transition={{ duration: 0.4, delay: 0.1 }}
                     className="mt-3 text-gray-600 max-w-2xl mx-auto"
                 >
-                    Have questions about our workflows? Need support? We're here to help!
+                    Have questions about our workflows? Need support? We&apos;re here to help!
                 </motion.p>
             </div>
         </section>

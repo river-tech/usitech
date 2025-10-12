@@ -36,7 +36,7 @@ export function TabsTrigger({ children, value, active, onSelect }: any) {
 	return (
 		<button
 			onClick={onSelect}
-			className={`rounded-md px-4 py-2 text-sm font-medium border ${
+			className={`rounded-md px-4 py-2 text-sm font-medium border cursor-pointer ${
 				active ? "bg-black text-white border-black" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
 			}`}
 		>

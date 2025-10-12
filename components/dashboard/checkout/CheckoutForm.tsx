@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -8,7 +8,24 @@ import { Label } from "../../ui/label";
 
 export default function CheckoutForm({ total, orderId }: { total: string; orderId: string }) {
   const [method, setMethod] = useState("qr");
+  const [bankAccount, setBankAccount] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [transferCode, setTransferCode] = useState("");
   const router = useRouter();
+
+  // Tạo mã chuyển khoản với ID workflow và mã random
+  useEffect(() => {
+    const code = generateTransferCode(orderId);
+    setTransferCode(code);
+  }, [orderId]);
+
+  const generateTransferCode = (workflowId: string) => {
+    // Tạo mã random 6 chữ số
+    const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Kết hợp workflow ID và mã random
+    return `${workflowId}-${randomCode}`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +61,41 @@ export default function CheckoutForm({ total, orderId }: { total: string; orderI
         </div>
       </div>
 
+      <div className="space-y-4">
+        <h3 className="font-medium text-[#0F172A]">Bank Account Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label>Bank Name *</Label>
+            <Input 
+              placeholder="Vietcombank, Techcombank, BIDV..." 
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
+              required 
+            />
+          </div>
+          <div>
+            <Label>Account Number *</Label>
+            <Input 
+              placeholder="1234567890" 
+              value={bankAccount}
+              onChange={(e) => setBankAccount(e.target.value)}
+              required 
+            />
+          </div>
+        </div>
+        {transferCode && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800 font-medium mb-2">Your Transfer Code:</p>
+            <div className="bg-white border border-blue-300 rounded px-3 py-2 font-mono text-lg font-bold text-blue-900">
+              {transferCode}
+            </div>
+            <p className="text-xs text-blue-600 mt-2">
+              Use this code in the transfer content when making payment
+            </p>
+          </div>
+        )}
+      </div>
+
       <div className="space-y-2">
         <h3 className="font-medium text-[#0F172A]">Payment Method</h3>
         <div className="flex items-center gap-4">
@@ -64,8 +116,18 @@ export default function CheckoutForm({ total, orderId }: { total: string; orderI
               <p><strong>Số tài khoản:</strong> 1234567890</p>
               <p><strong>Chủ tài khoản:</strong> NGUYEN VAN A</p>
               <p><strong>Số tiền:</strong> {total}</p>
-              <p><strong>Nội dung:</strong> Thanh toan don hang {orderId}</p>
+              <p><strong>Nội dung:</strong> {transferCode || `${bankName} ${bankAccount}`}</p>
             </div>
+            {transferCode && (
+              <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                <p className="text-sm text-yellow-800 font-medium">
+                  ⚠️ Quan trọng: Sử dụng mã chuyển khoản này trong nội dung chuyển tiền
+                </p>
+                <p className="text-xs text-yellow-700 mt-1">
+                  Mã: <span className="font-mono font-bold">{transferCode}</span>
+                </p>
+              </div>
+            )}
             <div className="mt-4 flex justify-center">
               <div className="w-48 h-48 bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center">
                 <p className="text-gray-500 text-center text-sm">QR Code<br/>sẽ hiển thị ở đây</p>

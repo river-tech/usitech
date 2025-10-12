@@ -26,7 +26,7 @@ export default function NotificationHeader({
         <div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1 text-[#007BFF] text-sm font-medium hover:underline transition mb-2"
+            className="inline-flex items-center gap-1 text-[#007BFF] text-sm font-medium hover:underline transition mb-2 cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,7 @@ export default function NotificationHeader({
               <button
                 key={tab}
                 onClick={() => setFilter(tab)}
-                className={`px-3 py-1 text-sm rounded-md ${
+                className={`px-3 py-1 text-sm rounded-md cursor-pointer ${
                   filter === tab
                     ? "bg-white text-[#007BFF] font-medium shadow-sm"
                     : "text-gray-600 hover:text-[#0057D8]"

@@ -31,7 +31,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white shadow-sm">
       <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
         {/* ---------- LOGO (you will insert your logo here) ---------- */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 cursor-pointer">
           {/* <span className="h-9 w-9 rounded-lg bg-gradient-to-br from-[#002B6B] to-[#007BFF] flex items-center justify-center">
             <span className="text-white font-bold text-xl select-none" style={{ fontFamily: "Inter, sans-serif" }}>U</span>
           </span> */}
@@ -55,7 +55,7 @@ export default function Header() {
                 key={n.href}
                 href={n.href}
                 className={`
-                  text-sm font-medium px-1 relative transition-colors duration-200 ease-in-out
+                  text-sm font-medium px-1 relative transition-colors duration-200 ease-in-out cursor-pointer
                   ${isActive ? "text-[#002B6B]" : "text-gray-700 hover:text-[#007BFF]"}
                   after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-[#007BFF] after:rounded-full
                   after:transition-transform after:duration-300 after:ease-in-out
@@ -83,20 +83,20 @@ export default function Header() {
               />
               <button
                 onClick={() => { logout(); setAuthed(false); router.push("/"); }}
-                className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50"
+                className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"
               >
                 Logout
               </button>
             </div>
           ) : (
             <>
-              <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] hover:scale-102 transition-all duration-200 hover:cursor-pointer hover:brightness-110">
+              <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] hover:scale-102 transition-all duration-200 cursor-pointer hover:brightness-110">
                 Login
               </Link>
-              <Link href="/auth/register">
+              <Link href="/auth/register" className="cursor-pointer">
                 <Button
                   size="sm"
-                  className="rounded-xl hover:scale-102 transition-all duration-200 hover:cursor-pointer bg-gradient-to-r from-[#002B6B] to-[#007BFF] px-5 text-sm font-semibold text-white shadow-sm hover:brightness-110 hover:shadow-md"
+                  className="rounded-xl hover:scale-102 transition-all duration-200 cursor-pointer bg-gradient-to-r from-[#002B6B] to-[#007BFF] px-5 text-sm font-semibold text-white shadow-sm hover:brightness-110 hover:shadow-md"
                 >
                   Register
                 </Button>
@@ -115,16 +115,16 @@ export default function Header() {
               <Link
                 key={n.href}
                 href={n.href}
-                className="text-sm font-medium text-gray-700 hover:text-[#002B6B]"
+                className="text-sm font-medium text-gray-700 hover:text-[#002B6B] cursor-pointer"
               >
                 {n.label}
               </Link>
             ))}
-            <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B]">
+            <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] cursor-pointer">
               Login
             </Link>
-            <Link href="/auth/register">
-              <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110">
+            <Link href="/auth/register" className="cursor-pointer">
+              <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110 cursor-pointer">
                 Register
               </Button>
             </Link>
