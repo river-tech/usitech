@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Bell, RefreshCw, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
-import { NotificationType } from "../../lib/types";
+import { NotificationType } from "../../lib/models";
 
 interface NotificationItem {
   id: string;

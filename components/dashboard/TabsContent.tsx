@@ -8,7 +8,7 @@ import { type Tab } from "./TabsHeader";
 import Link from "next/link";
 import { ActivityItem } from "./RecentActivity";
 import { useRouter } from "next/navigation";
-import { NotificationType } from "../../lib/types";
+import { NotificationType } from "../../lib/models";
 export type PurchaseItem = {
   id: string;
   name: string;

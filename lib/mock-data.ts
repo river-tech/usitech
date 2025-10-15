@@ -1,4 +1,5 @@
-import { PurchaseStatus, NotificationType, Notification } from "./types";
+import { PurchaseStatus, NotificationType } from "./types";
+import { Notification } from "./models";
 
 export type MockUserPurchase = {
   id: string;

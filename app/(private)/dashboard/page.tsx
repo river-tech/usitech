@@ -6,7 +6,7 @@ import TabsHeader, { Tab } from "../../../components/dashboard/TabsHeader";
 import TabsContent from "../../../components/dashboard/TabsContent";
 import { useState } from "react";
 import AccountSummary from "../../../components/dashboard/AccountSummary";
-import { NotificationType } from "../../../lib/types";
+import { NotificationType } from "../../../lib/models";
 
 export default function DashboardPage() {
    

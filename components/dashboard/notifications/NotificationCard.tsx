@@ -1,6 +1,6 @@
 import * as React from "react";
 import { X, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
-import { NotificationType } from "../../../lib/types";
+import { NotificationType } from "../../../lib/models";
 
 export type SimpleNotification = {
   id: string | number;

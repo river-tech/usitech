@@ -1,3 +1,4 @@
+// Legacy types - use models from lib/models instead
 export enum PurchaseStatus {
   Active = "Active",
   Pending = "Pending",
@@ -10,14 +11,17 @@ export enum NotificationType {
   ERROR = "ERROR",
 }
 
-export interface Notification {
-  id: string;
-  user_id: string;
-  title: string;
-  message: string;
-  type: NotificationType;
-  is_unread: boolean;
-  created_at: string;
-}
+// Re-export from models for backward compatibility
+export { 
+  PurchaseStatus as NewPurchaseStatus,
+  NotificationType as NewNotificationType,
+  User,
+  Notification,
+  Workflow,
+  Category,
+  Comment,
+  Purchase,
+  Invoice
+} from "./models";
 
 
