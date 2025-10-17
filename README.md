@@ -1,5 +1,61 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+---
+
+## UsITech Marketplace — Setup & Dependencies
+
+The project uses Next.js 15 (App Router), TypeScript, TailwindCSS 4, Framer Motion and Prisma. Below is the exact list of packages used so teammates can install the same stack.
+
+### Node & Package Manager
+- Node.js ≥ 20.x
+- npm ≥ 10.x (or pnpm/yarn if preferred)
+
+### Production Dependencies
+```
+npm i \
+  next@15.5.4 \
+  react@19.1.0 react-dom@19.1.0 \
+  @prisma/client@^6.17.1 prisma@^6.17.1 \
+  framer-motion@12.23.22 \
+  lucide-react@^0.544.0 \
+  class-variance-authority@^0.7.1 \
+  clsx@^2.1.1 \
+  tailwind-merge@^3.3.1 \
+  @radix-ui/react-label@^2.1.7 @radix-ui/react-switch@^1.2.6 \
+  zod@^4.1.12
+```
+
+### Dev Dependencies
+```
+npm i -D \
+  typescript@^5 \
+  eslint@^9 eslint-config-next@15.5.4 @eslint/eslintrc@^3 \
+  tailwindcss@^4 @tailwindcss/postcss@^4 \
+  @types/node@^20 @types/react@^19 @types/react-dom@^19
+```
+
+### One‑liner install
+```
+npm ci || npm install
+```
+
+### Prisma setup
+```
+npx prisma init --datasource-provider postgresql
+# add DATABASE_URL in .env
+npx prisma generate
+```
+
+### Tailwind v4 setup
+Tailwind v4 is already configured via `@tailwindcss/postcss`. No `tailwind.config.js` is required by default.
+
+### Recommended VSCode extensions
+- ESLint
+- Prisma
+- Tailwind CSS IntelliSense
+
+---
+
 ## Getting Started
 
 First, run the development server:

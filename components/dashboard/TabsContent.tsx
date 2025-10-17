@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ActivityItem } from "./RecentActivity";
 import { useRouter } from "next/navigation";
 import { NotificationType } from "../../lib/models";
+import LikedWorkflowList from "./my-workflows/LikedWorkflowList";
 export type PurchaseItem = {
   id: string;
   name: string;
@@ -25,21 +26,21 @@ const recent: ActivityItem[] = [
     name: "CRM Data Sync",
     date: "2025-10-02",
     price: "$79",
-    status: "Active",
+    status: "Paid",
   },
   {
     id: "2",
     name: "Social Media Automation",
     date: "2025-09-28",
     price: "$35",
-    status: "Active",
+    status: "Pending",
   },
   {
     id: "3",
     name: "Lead Generation Bot",
     date: "2025-09-20",
     price: "$55",
-    status: "Expired",
+    status: "Rejected",
   },
 ];
 
@@ -122,9 +123,11 @@ export default function TabsContent({
                         <td className="py-3">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              it.status === "Active"
+                              it.status === "Paid"
                                 ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-700"
+                                : it.status === "Pending"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
                             }`}
                           >
                             {it.status}
@@ -176,18 +179,23 @@ export default function TabsContent({
                         Purchased on {p.date}
                       </p>
                       <div className="mt-2 flex items-center gap-4">
-                        <Button
+                        {/* <Button
                           
                           variant="outline"
                           className="rounded-xl border-[#00A3FF] text-[#007BFF] hover:bg-[#EAF2FF] flex items-center gap-2 px-3 py-1.5 h-9 text-sm"
                         >
                           <Download className="w-4 h-4" />
                           Download
-                        </Button>
-                        <button onClick={() => router.push(`/dashboard/my-workflows/${p.id}`)}   className="text-sm text-gray-700 hover:text-[#007BFF] inline-flex items-center gap-1.5 cursor-pointer">
+                        </Button> */}
+                        <Button
+                          onClick={() => router.push(`/dashboard/my-workflows/${p.id}`)}
+                          variant="ghost"
+                          size="sm"
+                          className="flex items-center gap-2 text-[#007BFF] hover:text-[#0057D8] border-none bg-transparent p-0 shadow-none hover:bg-sky-50 transition-colors rounded-lg"
+                        >
                           <Eye className="w-4 h-4" />
-                          View Details
-                        </button>
+                          <span className="font-medium">View Details</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -210,6 +218,24 @@ export default function TabsContent({
                 </div>
               ))}
             </div>
+            {/** Liked workflows moved to its own tab */}
+          </motion.div>
+        )}
+
+        {activeTab === "liked" && (
+          <motion.div
+            key="liked"
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            variants={fade}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-[#0F172A]">Workflows You Liked</h2>
+              <Link href="/dashboard/liked-workflows" className="text-sm text-[#007BFF] hover:underline cursor-pointer">View all</Link>
+            </div>
+            <LikedWorkflowList />
           </motion.div>
         )}
 

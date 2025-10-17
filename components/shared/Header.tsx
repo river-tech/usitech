@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated, logout } from "../../lib/auth";
 const nav = [
   { href: "/workflows", label: "Workflows" },
-  { href: "/search", label: "Search" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

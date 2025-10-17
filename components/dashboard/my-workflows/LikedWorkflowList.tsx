@@ -12,7 +12,6 @@ export default function LikedWorkflowList({ items }: { items?: LikedWorkflow[] }
 
   return (
     <section className="mt-10">
-      <SectionHeader title="Workflows You Liked" />
       <div className="grid gap-4 md:grid-cols-2">
         {data.map((wf) => (
           <LikedWorkflowCard key={wf.id} workflow={wf} />

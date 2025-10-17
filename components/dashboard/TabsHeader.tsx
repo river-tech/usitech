@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { LayoutGrid, Folder, Bell, Settings } from "lucide-react";
+import { LayoutGrid, Folder, Bell, Settings, Heart } from "lucide-react";
 
-export type Tab = "overviews" | "workflows" | "notifications" | "settings";
+export type Tab = "overviews" | "workflows" | "liked" | "notifications" | "settings";
 
 export interface TabsHeaderProps {
     activeTab: Tab;
@@ -14,6 +14,7 @@ export interface TabsHeaderProps {
 const TABS: { id: Tab; label: string; icon: React.ComponentType<React.SVGProps<SVGSVGElement>> }[] = [
     { id: "overviews", label: "Overview", icon: LayoutGrid },
     { id: "workflows", label: "My Workflows", icon: Folder },
+    { id: "liked", label: "Liked Workflows", icon: Heart },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "settings", label: "Settings", icon: Settings },
 ];

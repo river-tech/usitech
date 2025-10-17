@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function PurchasedWorkflowList({ items }: { items?: SimpleWorkflow[] }) {
   const data: SimpleWorkflow[] = items ?? [
-    { id: 1, title: "CRM Data Sync", category: "CRM", price: 79, date: "2025-10-02", status: "Active" },
-    { id: 2, title: "Social Media Automation", category: "Marketing", price: 35, date: "2025-09-28", status: "Active" },
+    { id: 1, title: "Email Marketing Automation", category: "Marketing", price: 49, date: "2024-01-15", status: "Active" },
+    { id: 2, title: "CRM Data Sync", category: "CRM", price: 79, date: "2025-10-02", status: "Active" },
     { id: 3, title: "Lead Generation Bot", category: "AI", price: 55, date: "2025-09-20", status: "Expired" },
   ];
 

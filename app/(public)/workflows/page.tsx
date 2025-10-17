@@ -3,8 +3,9 @@ import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { workflows } from "../../../lib/data";
-import { Search, ChevronRight, Home } from "lucide-react";
-import FilterSidebar from "../../../components/shared/FilterSidebar";
+import { Search, Star } from "lucide-react";
+import SearchBar from "../../../components/search/SearchBar";
+import TagPills from "../../../components/search/TagPills";
 import WorkflowCard from "../../../components/shared/WorkflowCard";
 import SortDropdown from "../../../components/shared/Dropdown";
 import { EFilter } from "@/app/modal/EFilter";
@@ -146,18 +147,97 @@ export default function WorkflowsPage() {
         </div>
       </div>
 
-      {/* Breadcrumb */}
-      
-
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <FilterSidebar filters={filters} setFilters={setFilters} />
-		  
+        {/* Unified search controls */}
+        <div className="space-y-6">
+          <SearchBar
+            defaultValue={filters.search}
+            onSearch={(q) => setFilters((prev) => ({ ...prev, search: q }))}
+          />
+          <TagPills
+            selectedTags={filters.categories}
+            onTagToggle={(tag) =>
+              setFilters((prev) => ({
+                ...prev,
+                categories: prev.categories.includes(tag)
+                  ? prev.categories.filter((t) => t !== tag)
+                  : [...prev.categories, tag],
+              }))
+            }
+          />
 
-          {/* Main */}
-          <div className="flex-1">
+          {/* Price & Rating filters */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Price filter */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm font-medium text-gray-700">Price:</span>
+              {[
+                { key: EFilter.FREE, label: "Free" },
+                { key: EFilter.UNDER_50, label: "Under $50" },
+                { key: EFilter._50_100, label: "$50 – $100" },
+                { key: EFilter.OVER_100, label: "Over $100" },
+              ].map((r) => {
+                const active = filters.priceRange.includes(r.key);
+                return (
+                  <button
+                    key={r.label}
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        priceRange: active
+                          ? prev.priceRange.filter((v) => v !== r.key)
+                          : [...prev.priceRange, r.key],
+                      }))
+                    }
+                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors cursor-pointer ${
+                      active
+                        ? "bg-[#E6F0FF] text-[#002B6B] border-[#BBD4FF]"
+                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                );
+              })}
+              {filters.priceRange.length > 0 && (
+                <button
+                  onClick={() => setFilters((prev) => ({ ...prev, priceRange: [] }))}
+                  className="text-xs text-gray-500 underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {/* Rating filter */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-700">Min Rating:</span>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setFilters((prev) => ({ ...prev, minRating: prev.minRating === n ? 0 : n }))}
+                    className="cursor-pointer"
+                    aria-label={`Minimum ${n} star`}
+                  >
+                    <Star className={`w-5 h-5 ${filters.minRating >= n ? "text-yellow-500" : "text-gray-300"}`} fill={filters.minRating >= n ? "#F59E0B" : "none"} />
+                  </button>
+                ))}
+              </div>
+              {filters.minRating > 0 && (
+                <button
+                  onClick={() => setFilters((prev) => ({ ...prev, minRating: 0 }))}
+                  className="text-xs text-gray-500 underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Results */}
+          <div>
             {/* Active Filters */}
             {filters.categories.length > 0 && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">

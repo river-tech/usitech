@@ -8,7 +8,7 @@ export interface ActivityItem {
   name: string;
   date: string;
   price: string;
-  status: "Active" | "Expired";
+  status: "Paid" | "Pending" | "Rejected";
 }
 
 interface RecentActivityProps {
@@ -40,7 +40,15 @@ export default function RecentActivity({ items }: RecentActivityProps) {
                 <td className="py-3 text-gray-600">{it.date}</td>
                 <td className="py-3 text-gray-600">{it.price}</td>
                 <td className="py-3">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${it.status === "Active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      it.status === "Paid"
+                        ? "bg-green-100 text-green-700"
+                        : it.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
                     {it.status}
                   </span>
                 </td>
