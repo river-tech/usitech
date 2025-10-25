@@ -9,8 +9,14 @@ import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Lock, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import AuthApi from "../../lib/api/Auth";
 
-export default function ResetPasswordForm() {
+interface ResetPasswordFormProps {
+  email: string;
+  otp: string;
+}
+
+export default function ResetPasswordForm({ email, otp }: ResetPasswordFormProps) {
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -21,6 +27,7 @@ export default function ResetPasswordForm() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
+  const auth = AuthApi();
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -48,14 +55,20 @@ export default function ResetPasswordForm() {
 
     setIsLoading(true);
     
-    // Mock API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowSuccess(true);
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 2000);
-    }, 1000);
+    try {
+      // Call API to reset password
+      const result = await auth.setNewPassword(email,  otp , formData.password); // Using dummy OTP
+      if (result.success) {
+        setShowSuccess(true);
+          router.push("/auth/login");
+      } else {
+        setErrors({ general: result.error || "Failed to reset password" });
+      }
+    } catch (error) {
+      setErrors({ general: "Network error, please try again" });
+    }
+    
+    setIsLoading(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -106,10 +119,18 @@ export default function ResetPasswordForm() {
             <Lock className="w-6 h-6 text-[#007BFF]" />
           </div>
           <h1 className="text-2xl font-semibold text-[#002B6B]">Reset Password</h1>
-          <p className="text-gray-600 mt-2">Enter your new password below.</p>
+          <p className="text-gray-600 mt-2">Enter your new password for <strong>{email}</strong></p>
         </CardHeader>
 
         <CardContent>
+          {errors.general && (
+            <Alert className="mb-4 border-red-200 bg-red-50">
+              <AlertDescription className="text-red-800">
+                {errors.general}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="password" className="text-sm font-medium text-gray-700">

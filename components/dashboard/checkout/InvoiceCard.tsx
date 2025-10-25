@@ -35,8 +35,8 @@ export default function InvoiceCard({ id }: { id: string }) {
         </div>
         <div className="text-right">
           <p className="text-sm text-gray-600">Ngày xuất: {issuedAt}</p>
-          <p className="text-sm text-gray-600">Trạng thái: <span className={`font-medium ${purchase.status === PurchaseStatus.Pending ? "text-yellow-600" : "text-green-600"}`}>
-            {purchase.status === PurchaseStatus.Pending ? "Chờ thanh toán" : "Đã thanh toán"}
+          <p className="text-sm text-gray-600">Trạng thái: <span className={`font-medium ${purchase.status === PurchaseStatus.PENDING ? "text-yellow-600" : "text-green-600"}`}>
+            {purchase.status === PurchaseStatus.PENDING ? "Chờ thanh toán" : "Đã thanh toán"}
           </span></p>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function InvoiceCard({ id }: { id: string }) {
         <div className="mt-2 text-sm text-gray-600">
           <p>Phương thức thanh toán: Chuyển khoản ngân hàng</p>
           <p>Trạng thái: <span className={`font-medium ${purchase.status === PurchaseStatus.Pending ? "text-yellow-600" : "text-green-600"}`}>
-            {purchase.status === PurchaseStatus.Pending ? "Chờ thanh toán" : "Đã thanh toán"}
+            {purchase.status === PurchaseStatus.PENDING ? "Chờ thanh toán" : "Đã thanh toán"}
           </span></p>
         </div>
       </div>

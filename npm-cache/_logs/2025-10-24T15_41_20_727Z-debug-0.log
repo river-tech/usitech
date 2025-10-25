@@ -1,0 +1,569 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.5.1
+2 info using node@v24.6.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/admin/Documents/USITech/usitech/.npmrc
+5 silly config load:file:/Users/admin/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm install next-cloudinary
+8 verbose argv "install" "next-cloudinary"
+9 verbose logfile logs-max:10 dir:/Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-10-24T15_41_20_727Z-
+10 verbose logfile /Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-10-24T15_41_20_727Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly logfile done cleaning log files
+14 silly idealTree buildDeps
+15 silly fetch manifest next-cloudinary@*
+16 silly packumentCache full:https://registry.npmjs.org/next-cloudinary cache-miss
+17 http fetch GET 200 https://registry.npmjs.org/next-cloudinary 857ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/next-cloudinary set size:undefined disposed:false
+19 silly fetch manifest next@15.5.4
+20 silly packumentCache full:https://registry.npmjs.org/next cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/next 491ms (cache updated)
+22 silly packumentCache full:https://registry.npmjs.org/next set size:undefined disposed:false
+23 silly fetch manifest @opentelemetry/api@^1.1.0
+24 silly packumentCache full:https://registry.npmjs.org/@opentelemetry%2fapi cache-miss
+25 http fetch GET 200 https://registry.npmjs.org/@opentelemetry%2fapi 136ms (cache miss)
+26 silly packumentCache full:https://registry.npmjs.org/@opentelemetry%2fapi set size:undefined disposed:false
+27 silly fetch manifest @playwright/test@^1.51.1
+28 silly packumentCache full:https://registry.npmjs.org/@playwright%2ftest cache-miss
+29 http fetch GET 200 https://registry.npmjs.org/@playwright%2ftest 194ms (cache miss)
+30 silly packumentCache full:https://registry.npmjs.org/@playwright%2ftest set size:undefined disposed:false
+31 silly fetch manifest babel-plugin-react-compiler@*
+32 silly packumentCache full:https://registry.npmjs.org/babel-plugin-react-compiler cache-miss
+33 http fetch GET 200 https://registry.npmjs.org/babel-plugin-react-compiler 70ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/babel-plugin-react-compiler set size:undefined disposed:false
+35 silly fetch manifest react@19.1.0
+36 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+37 http fetch GET 200 https://registry.npmjs.org/react 199ms (cache updated)
+38 silly packumentCache full:https://registry.npmjs.org/react set size:undefined disposed:false
+39 silly fetch manifest react-dom@19.1.0
+40 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+41 http fetch GET 200 https://registry.npmjs.org/react-dom 186ms (cache updated)
+42 silly packumentCache full:https://registry.npmjs.org/react-dom set size:undefined disposed:false
+43 silly fetch manifest sass@^1.3.0
+44 silly packumentCache full:https://registry.npmjs.org/sass cache-miss
+45 http fetch GET 200 https://registry.npmjs.org/sass 102ms (cache miss)
+46 silly packumentCache full:https://registry.npmjs.org/sass set size:undefined disposed:false
+47 silly placeDep ROOT next-cloudinary@6.16.2 OK for: usitech@0.1.0 want: *
+48 silly fetch manifest @cloudinary-util/types@1.5.10
+49 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2ftypes cache-miss
+50 silly fetch manifest @cloudinary-util/url-loader@5.10.4
+51 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2furl-loader cache-miss
+52 silly fetch manifest @cloudinary-util/util@4.0.0
+53 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2futil cache-miss
+54 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util%2futil 1448ms (cache miss)
+55 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2futil set size:undefined disposed:false
+56 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util%2ftypes 1732ms (cache miss)
+57 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2ftypes set size:undefined disposed:false
+58 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util%2furl-loader 1838ms (cache miss)
+59 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2furl-loader set size:undefined disposed:false
+60 silly placeDep ROOT @cloudinary-util/types@1.5.10 OK for: next-cloudinary@6.16.2 want: 1.5.10
+61 silly placeDep ROOT @cloudinary-util/url-loader@5.10.4 OK for: next-cloudinary@6.16.2 want: 5.10.4
+62 silly placeDep ROOT @cloudinary-util/util@4.0.0 OK for: next-cloudinary@6.16.2 want: 4.0.0
+63 silly fetch manifest zod@^3.22.4
+64 silly packumentCache full:https://registry.npmjs.org/zod cache-miss
+65 silly fetch manifest @cloudinary/url-gen@1.15.0
+66 silly packumentCache full:https://registry.npmjs.org/@cloudinary%2furl-gen cache-miss
+67 silly fetch manifest @cloudinary-util/util@3.3.2
+68 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2futil cache-miss
+69 http cache https://registry.npmjs.org/@cloudinary-util%2futil 11ms (cache hit)
+70 silly packumentCache full:https://registry.npmjs.org/@cloudinary-util%2futil set size:83165 disposed:false
+71 http fetch GET 200 https://registry.npmjs.org/zod 115ms (cache updated)
+72 silly packumentCache full:https://registry.npmjs.org/zod set size:undefined disposed:false
+73 http fetch GET 200 https://registry.npmjs.org/@cloudinary%2furl-gen 1327ms (cache miss)
+74 silly packumentCache full:https://registry.npmjs.org/@cloudinary%2furl-gen set size:undefined disposed:false
+75 silly placeDep node_modules/@cloudinary-util/url-loader @cloudinary-util/util@3.3.2 OK for: @cloudinary-util/url-loader@5.10.4 want: 3.3.2
+76 silly placeDep ROOT @cloudinary/url-gen@1.15.0 OK for: @cloudinary-util/url-loader@5.10.4 want: 1.15.0
+77 silly placeDep node_modules/@cloudinary-util/url-loader zod@3.25.76 OK for: @cloudinary-util/url-loader@5.10.4 want: ^3.22.4
+78 silly fetch manifest @cloudinary/transformation-builder-sdk@^1.10.0
+79 silly packumentCache full:https://registry.npmjs.org/@cloudinary%2ftransformation-builder-sdk cache-miss
+80 http fetch GET 200 https://registry.npmjs.org/@cloudinary%2ftransformation-builder-sdk 1408ms (cache miss)
+81 silly packumentCache full:https://registry.npmjs.org/@cloudinary%2ftransformation-builder-sdk set size:undefined disposed:false
+82 silly placeDep ROOT @cloudinary/transformation-builder-sdk@1.21.2 OK for: @cloudinary/url-gen@1.15.0 want: ^1.10.0
+83 silly reify moves {}
+84 silly audit bulk request {
+84 silly audit   '@alloc/quick-lru': [ '5.2.0' ],
+84 silly audit   '@emnapi/core': [ '1.5.0' ],
+84 silly audit   '@emnapi/runtime': [ '1.5.0' ],
+84 silly audit   '@emnapi/wasi-threads': [ '1.1.0' ],
+84 silly audit   '@eslint-community/eslint-utils': [ '4.9.0' ],
+84 silly audit   'eslint-visitor-keys': [ '3.4.3', '4.2.1' ],
+84 silly audit   '@eslint-community/regexpp': [ '4.12.1' ],
+84 silly audit   '@eslint/config-array': [ '0.21.0' ],
+84 silly audit   '@eslint/config-helpers': [ '0.4.0' ],
+84 silly audit   '@eslint/core': [ '0.16.0' ],
+84 silly audit   '@eslint/eslintrc': [ '3.3.1' ],
+84 silly audit   '@eslint/js': [ '9.37.0' ],
+84 silly audit   '@eslint/object-schema': [ '2.1.6' ],
+84 silly audit   '@eslint/plugin-kit': [ '0.4.0' ],
+84 silly audit   '@humanfs/core': [ '0.19.1' ],
+84 silly audit   '@humanfs/node': [ '0.16.7' ],
+84 silly audit   '@humanwhocodes/module-importer': [ '1.0.1' ],
+84 silly audit   '@humanwhocodes/retry': [ '0.4.3' ],
+84 silly audit   '@img/colour': [ '1.0.0' ],
+84 silly audit   '@img/sharp-darwin-arm64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-darwin-x64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-libvips-darwin-arm64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-darwin-x64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linux-arm': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linux-arm64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linux-ppc64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linux-s390x': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linux-x64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linuxmusl-arm64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-libvips-linuxmusl-x64': [ '1.2.3' ],
+84 silly audit   '@img/sharp-linux-arm': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linux-arm64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linux-ppc64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linux-s390x': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linux-x64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linuxmusl-arm64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-linuxmusl-x64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-wasm32': [ '0.34.4' ],
+84 silly audit   '@img/sharp-win32-arm64': [ '0.34.4' ],
+84 silly audit   '@img/sharp-win32-ia32': [ '0.34.4' ],
+84 silly audit   '@img/sharp-win32-x64': [ '0.34.4' ],
+84 silly audit   '@isaacs/fs-minipass': [ '4.0.1' ],
+84 silly audit   '@jridgewell/gen-mapping': [ '0.3.13' ],
+84 silly audit   '@jridgewell/remapping': [ '2.3.5' ],
+84 silly audit   '@jridgewell/resolve-uri': [ '3.1.2' ],
+84 silly audit   '@jridgewell/sourcemap-codec': [ '1.5.5' ],
+84 silly audit   '@jridgewell/trace-mapping': [ '0.3.31' ],
+84 silly audit   '@napi-rs/wasm-runtime': [ '0.2.12' ],
+84 silly audit   '@next/env': [ '15.5.4' ],
+84 silly audit   '@next/eslint-plugin-next': [ '15.5.4' ],
+84 silly audit   '@next/swc-darwin-arm64': [ '15.5.4' ],
+84 silly audit   '@next/swc-darwin-x64': [ '15.5.4' ],
+84 silly audit   '@next/swc-linux-arm64-gnu': [ '15.5.4' ],
+84 silly audit   '@next/swc-linux-arm64-musl': [ '15.5.4' ],
+84 silly audit   '@next/swc-linux-x64-gnu': [ '15.5.4' ],
+84 silly audit   '@next/swc-linux-x64-musl': [ '15.5.4' ],
+84 silly audit   '@next/swc-win32-arm64-msvc': [ '15.5.4' ],
+84 silly audit   '@next/swc-win32-x64-msvc': [ '15.5.4' ],
+84 silly audit   '@nodelib/fs.scandir': [ '2.1.5' ],
+84 silly audit   '@nodelib/fs.stat': [ '2.0.5' ],
+84 silly audit   '@nodelib/fs.walk': [ '1.2.8' ],
+84 silly audit   '@nolyfill/is-core-module': [ '1.0.39' ],
+84 silly audit   '@prisma/client': [ '6.17.1' ],
+84 silly audit   '@prisma/config': [ '6.17.1' ],
+84 silly audit   '@prisma/debug': [ '6.17.1' ],
+84 silly audit   '@prisma/engines': [ '6.17.1' ],
+84 silly audit   '@prisma/engines-version': [ '6.17.1-1.272a37d34178c2894197e17273bf937f25acdeac' ],
+84 silly audit   '@prisma/fetch-engine': [ '6.17.1' ],
+84 silly audit   '@prisma/get-platform': [ '6.17.1' ],
+84 silly audit   '@radix-ui/primitive': [ '1.1.3' ],
+84 silly audit   '@radix-ui/react-compose-refs': [ '1.1.2' ],
+84 silly audit   '@radix-ui/react-context': [ '1.1.2' ],
+84 silly audit   '@radix-ui/react-label': [ '2.1.7' ],
+84 silly audit   '@radix-ui/react-primitive': [ '2.1.3' ],
+84 silly audit   '@radix-ui/react-slot': [ '1.2.3' ],
+84 silly audit   '@radix-ui/react-switch': [ '1.2.6' ],
+84 silly audit   '@radix-ui/react-use-controllable-state': [ '1.2.2' ],
+84 silly audit   '@radix-ui/react-use-effect-event': [ '0.0.2' ],
+84 silly audit   '@radix-ui/react-use-layout-effect': [ '1.1.1' ],
+84 silly audit   '@radix-ui/react-use-previous': [ '1.1.1' ],
+84 silly audit   '@radix-ui/react-use-size': [ '1.1.1' ],
+84 silly audit   '@rtsao/scc': [ '1.1.0' ],
+84 silly audit   '@rushstack/eslint-patch': [ '1.13.0' ],
+84 silly audit   '@standard-schema/spec': [ '1.0.0' ],
+84 silly audit   '@swc/helpers': [ '0.5.15' ],
+84 silly audit   '@tailwindcss/node': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-android-arm64': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-darwin-arm64': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-darwin-x64': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-freebsd-x64': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-linux-arm-gnueabihf': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-linux-arm64-gnu': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-linux-arm64-musl': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-linux-x64-gnu': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-linux-x64-musl': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-wasm32-wasi': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-win32-arm64-msvc': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/oxide-win32-x64-msvc': [ '4.1.14' ],
+84 silly audit   '@tailwindcss/postcss': [ '4.1.14' ],
+84 silly audit   '@tybys/wasm-util': [ '0.10.1' ],
+84 silly audit   '@types/estree': [ '1.0.8' ],
+84 silly audit   '@types/js-cookie': [ '3.0.6' ],
+84 silly audit   '@types/json-schema': [ '7.0.15' ],
+84 silly audit   '@types/json5': [ '0.0.29' ],
+84 silly audit   '@types/node': [ '20.19.19' ],
+84 silly audit   '@types/react': [ '19.2.0' ],
+84 silly audit   '@types/react-dom': [ '19.2.0' ],
+84 silly audit   '@typescript-eslint/eslint-plugin': [ '8.45.0' ],
+84 silly audit   ignore: [ '7.0.5', '5.3.2' ],
+84 silly audit   '@typescript-eslint/parser': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/project-service': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/scope-manager': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/tsconfig-utils': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/type-utils': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/types': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/typescript-estree': [ '8.45.0' ],
+84 silly audit   'brace-expansion': [ '2.0.2', '1.1.12' ],
+84 silly audit   'fast-glob': [ '3.3.3', '3.3.1' ],
+84 silly audit   'glob-parent': [ '5.1.2', '6.0.2' ],
+84 silly audit   minimatch: [ '9.0.5', '3.1.2' ],
+84 silly audit   '@typescript-eslint/utils': [ '8.45.0' ],
+84 silly audit   '@typescript-eslint/visitor-keys': [ '8.45.0' ],
+84 silly audit   '@unrs/resolver-binding-android-arm-eabi': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-android-arm64': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-darwin-arm64': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-darwin-x64': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-freebsd-x64': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-arm-gnueabihf': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-arm-musleabihf': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-arm64-gnu': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-arm64-musl': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-ppc64-gnu': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-riscv64-gnu': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-riscv64-musl': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-s390x-gnu': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-x64-gnu': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-linux-x64-musl': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-wasm32-wasi': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-win32-arm64-msvc': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-win32-ia32-msvc': [ '1.11.1' ],
+84 silly audit   '@unrs/resolver-binding-win32-x64-msvc': [ '1.11.1' ],
+84 silly audit   acorn: [ '8.15.0' ],
+84 silly audit   'acorn-jsx': [ '5.3.2' ],
+84 silly audit   ajv: [ '6.12.6' ],
+84 silly audit   'ansi-styles': [ '4.3.0' ],
+84 silly audit   argparse: [ '2.0.1' ],
+84 silly audit   'aria-query': [ '5.3.2' ],
+84 silly audit   'array-buffer-byte-length': [ '1.0.2' ],
+84 silly audit   'array-includes': [ '3.1.9' ],
+84 silly audit   'array.prototype.findlast': [ '1.2.5' ],
+84 silly audit   'array.prototype.findlastindex': [ '1.2.6' ],
+84 silly audit   'array.prototype.flat': [ '1.3.3' ],
+84 silly audit   'array.prototype.flatmap': [ '1.3.3' ],
+84 silly audit   'array.prototype.tosorted': [ '1.1.4' ],
+84 silly audit   'arraybuffer.prototype.slice': [ '1.0.4' ],
+84 silly audit   'ast-types-flow': [ '0.0.8' ],
+84 silly audit   'async-function': [ '1.0.0' ],
+84 silly audit   'available-typed-arrays': [ '1.0.7' ],
+84 silly audit   'axe-core': [ '4.10.3' ],
+84 silly audit   'axobject-query': [ '4.1.0' ],
+84 silly audit   'balanced-match': [ '1.0.2' ],
+84 silly audit   braces: [ '3.0.3' ],
+84 silly audit   c12: [ '3.1.0' ],
+84 silly audit   'call-bind': [ '1.0.8' ],
+84 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+84 silly audit   'call-bound': [ '1.0.4' ],
+84 silly audit   callsites: [ '3.1.0' ],
+84 silly audit   'caniuse-lite': [ '1.0.30001747' ],
+84 silly audit   chalk: [ '4.1.2' ],
+84 silly audit   chokidar: [ '4.0.3' ],
+84 silly audit   chownr: [ '3.0.0' ],
+84 silly audit   citty: [ '0.1.6' ],
+84 silly audit   'class-variance-authority': [ '0.7.1' ],
+84 silly audit   'client-only': [ '0.0.1' ],
+84 silly audit   clsx: [ '2.1.1' ],
+84 silly audit   'color-convert': [ '2.0.1' ],
+84 silly audit   'color-name': [ '1.1.4' ],
+84 silly audit   'concat-map': [ '0.0.1' ],
+84 silly audit   confbox: [ '0.2.2' ],
+84 silly audit   consola: [ '3.4.2' ],
+84 silly audit   'cross-spawn': [ '7.0.6' ],
+84 silly audit   csstype: [ '3.1.3' ],
+84 silly audit   'damerau-levenshtein': [ '1.0.8' ],
+84 silly audit   'data-view-buffer': [ '1.0.2' ],
+84 silly audit   'data-view-byte-length': [ '1.0.2' ],
+84 silly audit   'data-view-byte-offset': [ '1.0.1' ],
+84 silly audit   debug: [ '4.4.3', '3.2.7' ],
+84 silly audit   'deep-is': [ '0.1.4' ],
+84 silly audit   'deepmerge-ts': [ '7.1.5' ],
+84 silly audit   'define-data-property': [ '1.1.4' ],
+84 silly audit   'define-properties': [ '1.2.1' ],
+84 silly audit   defu: [ '6.1.4' ],
+84 silly audit   destr: [ '2.0.5' ],
+84 silly audit   'detect-libc': [ '2.1.1' ],
+84 silly audit   doctrine: [ '2.1.0' ],
+84 silly audit   dotenv: [ '16.6.1' ],
+84 silly audit   'dunder-proto': [ '1.0.1' ],
+84 silly audit   effect: [ '3.16.12' ],
+84 silly audit   'emoji-regex': [ '9.2.2' ],
+84 silly audit   empathic: [ '2.0.0' ],
+84 silly audit   'enhanced-resolve': [ '5.18.3' ],
+84 silly audit   'es-abstract': [ '1.24.0' ],
+84 silly audit   'es-define-property': [ '1.0.1' ],
+84 silly audit   'es-errors': [ '1.3.0' ],
+84 silly audit   'es-iterator-helpers': [ '1.2.1' ],
+84 silly audit   'es-object-atoms': [ '1.1.1' ],
+84 silly audit   'es-set-tostringtag': [ '2.1.0' ],
+84 silly audit   'es-shim-unscopables': [ '1.1.0' ],
+84 silly audit   'es-to-primitive': [ '1.3.0' ],
+84 silly audit   'escape-string-regexp': [ '4.0.0' ],
+84 silly audit   eslint: [ '9.37.0' ],
+84 silly audit   'eslint-config-next': [ '15.5.4' ],
+84 silly audit   'eslint-import-resolver-node': [ '0.3.9' ],
+84 silly audit   'eslint-import-resolver-typescript': [ '3.10.1' ],
+84 silly audit   'eslint-module-utils': [ '2.12.1' ],
+84 silly audit   'eslint-plugin-import': [ '2.32.0' ],
+84 silly audit   semver: [ '6.3.1', '7.7.2' ],
+84 silly audit   'eslint-plugin-jsx-a11y': [ '6.10.2' ],
+84 silly audit   'eslint-plugin-react': [ '7.37.5' ],
+84 silly audit   'eslint-plugin-react-hooks': [ '5.2.0' ],
+84 silly audit   resolve: [ '2.0.0-next.5', '1.22.10' ],
+84 silly audit   'eslint-scope': [ '8.4.0' ],
+84 silly audit   espree: [ '10.4.0' ],
+84 silly audit   esquery: [ '1.6.0' ],
+84 silly audit   esrecurse: [ '4.3.0' ],
+84 silly audit   estraverse: [ '5.3.0' ],
+84 silly audit   esutils: [ '2.0.3' ],
+84 silly audit   exsolve: [ '1.0.7' ],
+84 silly audit   'fast-check': [ '3.23.2' ],
+84 silly audit   'fast-deep-equal': [ '3.1.3' ],
+84 silly audit   'fast-json-stable-stringify': [ '2.1.0' ],
+84 silly audit   'fast-levenshtein': [ '2.0.6' ],
+84 silly audit   fastq: [ '1.19.1' ],
+84 silly audit   fdir: [ '6.5.0' ],
+84 silly audit   'file-entry-cache': [ '8.0.0' ],
+84 silly audit   'fill-range': [ '7.1.1' ],
+84 silly audit   'find-up': [ '5.0.0' ],
+84 silly audit   'flat-cache': [ '4.0.1' ],
+84 silly audit   flatted: [ '3.3.3' ],
+84 silly audit   'for-each': [ '0.3.5' ],
+84 silly audit   'framer-motion': [ '12.23.22' ],
+84 silly audit   'function-bind': [ '1.1.2' ],
+84 silly audit   'function.prototype.name': [ '1.1.8' ],
+84 silly audit   'functions-have-names': [ '1.2.3' ],
+84 silly audit   'generator-function': [ '2.0.1' ],
+84 silly audit   'get-intrinsic': [ '1.3.0' ],
+84 silly audit   'get-proto': [ '1.0.1' ],
+84 silly audit   'get-symbol-description': [ '1.1.0' ],
+84 silly audit   'get-tsconfig': [ '4.10.1' ],
+84 silly audit   giget: [ '2.0.0' ],
+84 silly audit   globals: [ '14.0.0' ],
+84 silly audit   globalthis: [ '1.0.4' ],
+84 silly audit   gopd: [ '1.2.0' ],
+84 silly audit   'graceful-fs': [ '4.2.11' ],
+84 silly audit   graphemer: [ '1.4.0' ],
+84 silly audit   'has-bigints': [ '1.1.0' ],
+84 silly audit   'has-flag': [ '4.0.0' ],
+84 silly audit   'has-property-descriptors': [ '1.0.2' ],
+84 silly audit   'has-proto': [ '1.2.0' ],
+84 silly audit   'has-symbols': [ '1.1.0' ],
+84 silly audit   'has-tostringtag': [ '1.0.2' ],
+84 silly audit   hasown: [ '2.0.2' ],
+84 silly audit   'import-fresh': [ '3.3.1' ],
+84 silly audit   imurmurhash: [ '0.1.4' ],
+84 silly audit   'internal-slot': [ '1.1.0' ],
+84 silly audit   'is-array-buffer': [ '3.0.5' ],
+84 silly audit   'is-async-function': [ '2.1.1' ],
+84 silly audit   'is-bigint': [ '1.1.0' ],
+84 silly audit   'is-boolean-object': [ '1.2.2' ],
+84 silly audit   'is-bun-module': [ '2.0.0' ],
+84 silly audit   'is-callable': [ '1.2.7' ],
+84 silly audit   'is-core-module': [ '2.16.1' ],
+84 silly audit   'is-data-view': [ '1.0.2' ],
+84 silly audit   'is-date-object': [ '1.1.0' ],
+84 silly audit   'is-extglob': [ '2.1.1' ],
+84 silly audit   'is-finalizationregistry': [ '1.1.1' ],
+84 silly audit   'is-generator-function': [ '1.1.2' ],
+84 silly audit   'is-glob': [ '4.0.3' ],
+84 silly audit   'is-map': [ '2.0.3' ],
+84 silly audit   'is-negative-zero': [ '2.0.3' ],
+84 silly audit   'is-number': [ '7.0.0' ],
+84 silly audit   'is-number-object': [ '1.1.1' ],
+84 silly audit   'is-regex': [ '1.2.1' ],
+84 silly audit   'is-set': [ '2.0.3' ],
+84 silly audit   'is-shared-array-buffer': [ '1.0.4' ],
+84 silly audit   'is-string': [ '1.1.1' ],
+84 silly audit   'is-symbol': [ '1.1.1' ],
+84 silly audit   'is-typed-array': [ '1.1.15' ],
+84 silly audit   'is-weakmap': [ '2.0.2' ],
+84 silly audit   'is-weakref': [ '1.1.1' ],
+84 silly audit   'is-weakset': [ '2.0.4' ],
+84 silly audit   isarray: [ '2.0.5' ],
+84 silly audit   isexe: [ '2.0.0' ],
+84 silly audit   'iterator.prototype': [ '1.1.5' ],
+84 silly audit   jiti: [ '2.6.1' ],
+84 silly audit   'js-cookie': [ '3.0.5' ],
+84 silly audit   'js-tokens': [ '4.0.0' ],
+84 silly audit   'js-yaml': [ '4.1.0' ],
+84 silly audit   'json-buffer': [ '3.0.1' ],
+84 silly audit   'json-schema-traverse': [ '0.4.1' ],
+84 silly audit   'json-stable-stringify-without-jsonify': [ '1.0.1' ],
+84 silly audit   json5: [ '1.0.2' ],
+84 silly audit   'jsx-ast-utils': [ '3.3.5' ],
+84 silly audit   keyv: [ '4.5.4' ],
+84 silly audit   'language-subtag-registry': [ '0.3.23' ],
+84 silly audit   'language-tags': [ '1.0.9' ],
+84 silly audit   levn: [ '0.4.1' ],
+84 silly audit   lightningcss: [ '1.30.1' ],
+84 silly audit   'lightningcss-darwin-arm64': [ '1.30.1' ],
+84 silly audit   'lightningcss-darwin-x64': [ '1.30.1' ],
+84 silly audit   'lightningcss-freebsd-x64': [ '1.30.1' ],
+84 silly audit   'lightningcss-linux-arm-gnueabihf': [ '1.30.1' ],
+84 silly audit   'lightningcss-linux-arm64-gnu': [ '1.30.1' ],
+84 silly audit   'lightningcss-linux-arm64-musl': [ '1.30.1' ],
+84 silly audit   'lightningcss-linux-x64-gnu': [ '1.30.1' ],
+84 silly audit   'lightningcss-linux-x64-musl': [ '1.30.1' ],
+84 silly audit   'lightningcss-win32-arm64-msvc': [ '1.30.1' ],
+84 silly audit   'lightningcss-win32-x64-msvc': [ '1.30.1' ],
+84 silly audit   'locate-path': [ '6.0.0' ],
+84 silly audit   'lodash.merge': [ '4.6.2' ],
+84 silly audit   'loose-envify': [ '1.4.0' ],
+84 silly audit   'lucide-react': [ '0.544.0' ],
+84 silly audit   'magic-string': [ '0.30.19' ],
+84 silly audit   'math-intrinsics': [ '1.1.0' ],
+84 silly audit   merge2: [ '1.4.1' ],
+84 silly audit   micromatch: [ '4.0.8' ],
+84 silly audit   picomatch: [ '2.3.1', '4.0.3' ],
+84 silly audit   minimist: [ '1.2.8' ],
+84 silly audit   minipass: [ '7.1.2' ],
+84 silly audit   minizlib: [ '3.1.0' ],
+84 silly audit   'motion-dom': [ '12.23.21' ],
+84 silly audit   'motion-utils': [ '12.23.6' ],
+84 silly audit   ms: [ '2.1.3' ],
+84 silly audit   nanoid: [ '3.3.11' ],
+84 silly audit   'napi-postinstall': [ '0.3.4' ],
+84 silly audit   'natural-compare': [ '1.4.0' ],
+84 silly audit   next: [ '15.5.4' ],
+84 silly audit   postcss: [ '8.4.31', '8.5.6' ],
+84 silly audit   'node-fetch-native': [ '1.6.7' ],
+84 silly audit   nypm: [ '0.6.2' ],
+84 silly audit   'object-assign': [ '4.1.1' ],
+84 silly audit   'object-inspect': [ '1.13.4' ],
+84 silly audit   'object-keys': [ '1.1.1' ],
+84 silly audit   'object.assign': [ '4.1.7' ],
+84 silly audit   'object.entries': [ '1.1.9' ],
+84 silly audit   'object.fromentries': [ '2.0.8' ],
+84 silly audit   'object.groupby': [ '1.0.3' ],
+84 silly audit   'object.values': [ '1.2.1' ],
+84 silly audit   ohash: [ '2.0.11' ],
+84 silly audit   optionator: [ '0.9.4' ],
+84 silly audit   'own-keys': [ '1.0.1' ],
+84 silly audit   'p-limit': [ '3.1.0' ],
+84 silly audit   'p-locate': [ '5.0.0' ],
+84 silly audit   'parent-module': [ '1.0.1' ],
+84 silly audit   'path-exists': [ '4.0.0' ],
+84 silly audit   'path-key': [ '3.1.1' ],
+84 silly audit   'path-parse': [ '1.0.7' ],
+84 silly audit   pathe: [ '2.0.3' ],
+84 silly audit   'perfect-debounce': [ '1.0.0' ],
+84 silly audit   picocolors: [ '1.1.1' ],
+84 silly audit   'pkg-types': [ '2.3.0' ],
+84 silly audit   'possible-typed-array-names': [ '1.1.0' ],
+84 silly audit   'prelude-ls': [ '1.2.1' ],
+84 silly audit   prisma: [ '6.17.1' ],
+84 silly audit   'prop-types': [ '15.8.1' ],
+84 silly audit   punycode: [ '2.3.1' ],
+84 silly audit   'pure-rand': [ '6.1.0' ],
+84 silly audit   'queue-microtask': [ '1.2.3' ],
+84 silly audit   rc9: [ '2.1.2' ],
+84 silly audit   react: [ '19.1.0' ],
+84 silly audit   'react-dom': [ '19.1.0' ],
+84 silly audit   'react-is': [ '16.13.1' ],
+84 silly audit   readdirp: [ '4.1.2' ],
+84 silly audit   'reflect.getprototypeof': [ '1.0.10' ],
+84 silly audit   'regexp.prototype.flags': [ '1.5.4' ],
+84 silly audit   'resolve-from': [ '4.0.0' ],
+84 silly audit   'resolve-pkg-maps': [ '1.0.0' ],
+84 silly audit   reusify: [ '1.1.0' ],
+84 silly audit   'run-parallel': [ '1.2.0' ],
+84 silly audit   'safe-array-concat': [ '1.1.3' ],
+84 silly audit   'safe-push-apply': [ '1.0.0' ],
+84 silly audit   'safe-regex-test': [ '1.1.0' ],
+84 silly audit   scheduler: [ '0.26.0' ],
+84 silly audit   'set-function-length': [ '1.2.2' ],
+84 silly audit   'set-function-name': [ '2.0.2' ],
+84 silly audit   'set-proto': [ '1.0.0' ],
+84 silly audit   sharp: [ '0.34.4' ],
+84 silly audit   'shebang-command': [ '2.0.0' ],
+84 silly audit   'shebang-regex': [ '3.0.0' ],
+84 silly audit   'side-channel': [ '1.1.0' ],
+84 silly audit   'side-channel-list': [ '1.0.0' ],
+84 silly audit   'side-channel-map': [ '1.0.1' ],
+84 silly audit   'side-channel-weakmap': [ '1.0.2' ],
+84 silly audit   'source-map-js': [ '1.2.1' ],
+84 silly audit   'stable-hash': [ '0.0.5' ],
+84 silly audit   'stop-iteration-iterator': [ '1.1.0' ],
+84 silly audit   'string.prototype.includes': [ '2.0.1' ],
+84 silly audit   'string.prototype.matchall': [ '4.0.12' ],
+84 silly audit   'string.prototype.repeat': [ '1.0.0' ],
+84 silly audit   'string.prototype.trim': [ '1.2.10' ],
+84 silly audit   'string.prototype.trimend': [ '1.0.9' ],
+84 silly audit   'string.prototype.trimstart': [ '1.0.8' ],
+84 silly audit   'strip-bom': [ '3.0.0' ],
+84 silly audit   'strip-json-comments': [ '3.1.1' ],
+84 silly audit   'styled-jsx': [ '5.1.6' ],
+84 silly audit   'supports-color': [ '7.2.0' ],
+84 silly audit   'supports-preserve-symlinks-flag': [ '1.0.0' ],
+84 silly audit   'tailwind-merge': [ '3.3.1' ],
+84 silly audit   tailwindcss: [ '4.1.14' ],
+84 silly audit   tapable: [ '2.3.0' ],
+84 silly audit   tar: [ '7.5.1' ],
+84 silly audit   tinyexec: [ '1.0.1' ],
+84 silly audit   tinyglobby: [ '0.2.15' ],
+84 silly audit   'to-regex-range': [ '5.0.1' ],
+84 silly audit   'ts-api-utils': [ '2.1.0' ],
+84 silly audit   'tsconfig-paths': [ '3.15.0' ],
+84 silly audit   tslib: [ '2.8.1' ],
+84 silly audit   'type-check': [ '0.4.0' ],
+84 silly audit   'typed-array-buffer': [ '1.0.3' ],
+84 silly audit   'typed-array-byte-length': [ '1.0.3' ],
+84 silly audit   'typed-array-byte-offset': [ '1.0.4' ],
+84 silly audit   'typed-array-length': [ '1.0.7' ],
+84 silly audit   typescript: [ '5.9.3' ],
+84 silly audit   'unbox-primitive': [ '1.1.0' ],
+84 silly audit   'undici-types': [ '6.21.0' ],
+84 silly audit   'unrs-resolver': [ '1.11.1' ],
+84 silly audit   'uri-js': [ '4.4.1' ],
+84 silly audit   which: [ '2.0.2' ],
+84 silly audit   'which-boxed-primitive': [ '1.1.1' ],
+84 silly audit   'which-builtin-type': [ '1.2.1' ],
+84 silly audit   'which-collection': [ '1.0.2' ],
+84 silly audit   'which-typed-array': [ '1.1.19' ],
+84 silly audit   'word-wrap': [ '1.2.5' ],
+84 silly audit   yallist: [ '5.0.0' ],
+84 silly audit   'yocto-queue': [ '0.1.0' ],
+84 silly audit   zod: [ '4.1.12', '3.25.76' ],
+84 silly audit   'next-cloudinary': [ '6.16.2' ],
+84 silly audit   '@cloudinary-util/types': [ '1.5.10' ],
+84 silly audit   '@cloudinary-util/url-loader': [ '5.10.4' ],
+84 silly audit   '@cloudinary-util/util': [ '4.0.0', '3.3.2' ],
+84 silly audit   '@cloudinary/url-gen': [ '1.15.0' ],
+84 silly audit   '@cloudinary/transformation-builder-sdk': [ '1.21.2' ]
+84 silly audit }
+85 http cache @cloudinary/transformation-builder-sdk@https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.21.2.tgz 0ms (cache hit)
+86 http cache @cloudinary-util/util@https://registry.npmjs.org/@cloudinary-util/util/-/util-4.0.0.tgz 0ms (cache hit)
+87 http cache @cloudinary-util/types@https://registry.npmjs.org/@cloudinary-util/types/-/types-1.5.10.tgz 0ms (cache hit)
+88 http cache @cloudinary/url-gen@https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.15.0.tgz 0ms (cache hit)
+89 silly tarball no local data for @cloudinary/transformation-builder-sdk@https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.21.2.tgz. Extracting by manifest.
+90 http cache @cloudinary-util/url-loader@https://registry.npmjs.org/@cloudinary-util/url-loader/-/url-loader-5.10.4.tgz 0ms (cache hit)
+91 http cache @cloudinary-util/util@https://registry.npmjs.org/@cloudinary-util/util/-/util-3.3.2.tgz 0ms (cache hit)
+92 silly tarball no local data for @cloudinary-util/util@https://registry.npmjs.org/@cloudinary-util/util/-/util-4.0.0.tgz. Extracting by manifest.
+93 http cache zod@https://registry.npmjs.org/zod/-/zod-3.25.76.tgz 0ms (cache hit)
+94 silly tarball no local data for @cloudinary-util/types@https://registry.npmjs.org/@cloudinary-util/types/-/types-1.5.10.tgz. Extracting by manifest.
+95 silly tarball no local data for @cloudinary/url-gen@https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.15.0.tgz. Extracting by manifest.
+96 silly tarball no local data for @cloudinary-util/url-loader@https://registry.npmjs.org/@cloudinary-util/url-loader/-/url-loader-5.10.4.tgz. Extracting by manifest.
+97 silly tarball no local data for @cloudinary-util/util@https://registry.npmjs.org/@cloudinary-util/util/-/util-3.3.2.tgz. Extracting by manifest.
+98 silly tarball no local data for zod@https://registry.npmjs.org/zod/-/zod-3.25.76.tgz. Extracting by manifest.
+99 http cache next-cloudinary@https://registry.npmjs.org/next-cloudinary/-/next-cloudinary-6.16.2.tgz 0ms (cache hit)
+100 silly tarball no local data for next-cloudinary@https://registry.npmjs.org/next-cloudinary/-/next-cloudinary-6.16.2.tgz. Extracting by manifest.
+101 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 256ms
+102 silly audit report {}
+103 http fetch GET 200 https://registry.npmjs.org/next-cloudinary/-/next-cloudinary-6.16.2.tgz 256ms (cache miss)
+104 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util/util/-/util-3.3.2.tgz 436ms (cache miss)
+105 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util/util/-/util-4.0.0.tgz 640ms (cache miss)
+106 http fetch GET 200 https://registry.npmjs.org/zod/-/zod-3.25.76.tgz 745ms (cache miss)
+107 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util/types/-/types-1.5.10.tgz 790ms (cache miss)
+108 http fetch GET 200 https://registry.npmjs.org/@cloudinary-util/url-loader/-/url-loader-5.10.4.tgz 859ms (cache miss)
+109 http fetch GET 200 https://registry.npmjs.org/@cloudinary/transformation-builder-sdk/-/transformation-builder-sdk-1.21.2.tgz 1276ms (cache miss)
+110 http fetch GET 200 https://registry.npmjs.org/@cloudinary/url-gen/-/url-gen-1.15.0.tgz 1329ms (cache miss)
+111 silly ADD node_modules/@cloudinary/transformation-builder-sdk
+112 silly ADD node_modules/@cloudinary/url-gen
+113 silly ADD node_modules/@cloudinary-util/util
+114 silly ADD node_modules/@cloudinary-util/url-loader
+115 silly ADD node_modules/@cloudinary-util/url-loader/node_modules/zod
+116 silly ADD node_modules/@cloudinary-util/url-loader/node_modules/@cloudinary-util/util
+117 silly ADD node_modules/@cloudinary-util/types
+118 silly ADD node_modules/next-cloudinary
+119 verbose cwd /Users/admin/Documents/USITech/usitech
+120 verbose os Darwin 24.3.0
+121 verbose node v24.6.0
+122 verbose npm  v11.5.1
+123 verbose exit 0
+124 info ok

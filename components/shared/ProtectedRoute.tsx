@@ -1,18 +1,18 @@
 "use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { isAuthenticated } from "../../lib/auth";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
+import AuthApi from "../../lib/api/Auth";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const [authed, setAuthed] = React.useState(false);
     const [checking, setChecking] = React.useState(true);
-
+    const auth = AuthApi();
     React.useEffect(() => {
-        setAuthed(isAuthenticated());
+        setAuthed(auth.getAuthToken() ? true : false);
         setChecking(false);
     }, []);
 

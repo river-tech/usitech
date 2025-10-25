@@ -12,11 +12,15 @@ export interface Workflow {
   downloads_count: number;
   time_to_setup: number;
   video_demo: string;
-  flow: Record<string, any>; // JSONB type
+  flow: Record<string, any>;
   rating_avg: number;
   created_at: string;
   updated_at: string;
+  categories: string[];
+  image_urls: string[];
 }
+
+
 
 export interface CreateWorkflowRequest {
   title: string;
@@ -39,18 +43,18 @@ export interface UpdateWorkflowRequest {
   flow?: Record<string, any>;
 }
 
-export interface WorkflowWithDetails extends Workflow {
-  categories: Category[];
-  assets: WorkflowAsset[];
-  comments_count: number;
-  is_favorited?: boolean;
-}
+// export interface WorkflowWithDetails extends Workflow {
+//   categories: Category[];
+//   assets: WorkflowAsset[];
+//   comments_count: number;
+//   is_favorited?: boolean;
+// }
 
 export interface Category {
   id: string;
   name: string;
-  image_url: string;
-  created_at: string;
+  icon_url: string;
+  workflows_count: number;
 }
 
 export interface CreateCategoryRequest {

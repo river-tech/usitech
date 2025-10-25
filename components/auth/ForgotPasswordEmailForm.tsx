@@ -8,30 +8,34 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Mail, CheckCircle } from "lucide-react";
-
+import AuthApi from "../../lib/api/Auth";
 interface ForgotPasswordEmailFormProps {
   setStep: (step: number) => void;
+  setEmail: (email: string) => void;
 }
 
-export default function ForgotPasswordEmailForm({ setStep }: ForgotPasswordEmailFormProps) {
-  const [email, setEmail] = useState("");
+export default function ForgotPasswordEmailForm({ setStep, setEmail }: ForgotPasswordEmailFormProps) {
+  const [emailInput, setEmailInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const auth = AuthApi();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!emailInput) return;
 
     setIsLoading(true);
     
     // Mock API call
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await auth.resendOtp(emailInput);
+    if (result.success) {
+      setEmail(emailInput); // Pass email to parent
       setShowSuccess(true);
-      setTimeout(() => {
-        setStep(2);
-      }, 2000);
-    }, 1000);
+      setStep(2); // Skip step 2, go directly to step 3
+    } else {
+      setError(result.error || "Failed to send OTP");
+    }
   };
 
   return (
@@ -67,8 +71,8 @@ export default function ForgotPasswordEmailForm({ setStep }: ForgotPasswordEmail
                   id="email"
                   type="email"
                   placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
                   required
                   className="mt-1 rounded-xl border-gray-300 focus:ring-2 focus:ring-[#007BFF] focus:border-transparent"
                 />
@@ -76,7 +80,7 @@ export default function ForgotPasswordEmailForm({ setStep }: ForgotPasswordEmail
 
               <Button
                 type="submit"
-                disabled={isLoading || !email}
+                disabled={isLoading || !emailInput}
                 className="w-full bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white rounded-xl hover:brightness-110 transition-all duration-200"
               >
                 {isLoading ? "Sending..." : "Send OTP"}

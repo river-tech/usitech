@@ -2,13 +2,15 @@
 
 import { motion } from "framer-motion";
 import { popularTags } from "../../lib/search/mockData";
+import { Category } from "../../lib/models/workflow";
 
 interface TagPillsProps {
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
+  categories: Category[];
 }
 
-export default function TagPills({ selectedTags, onTagToggle }: TagPillsProps) {
+export default function TagPills({ selectedTags, onTagToggle, categories }: TagPillsProps) {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">

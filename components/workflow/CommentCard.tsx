@@ -70,7 +70,7 @@ export default function CommentCard({
         setLikes(prev => isLiked ? prev - 1 : prev + 1);
       }
     } catch (error) {
-      console.error("Error liking comment:", error);
+      console.log("Error liking comment:", error);
     } finally {
       setIsLiking(false);
     }

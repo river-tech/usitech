@@ -1,7 +1,9 @@
 "use client";
-
 import { motion } from "framer-motion";
-import { ShoppingCart, DollarSign, Workflow, Bookmark } from "lucide-react";
+import { ShoppingCart, DollarSign, Workflow, Bookmark, User } from "lucide-react";
+import UserApi from "../../lib/api/User";
+import { useEffect, useState } from "react";
+import { DashboardUser } from "../../lib/models/user";
 
 interface StatItem {
   id: string;
@@ -20,14 +22,28 @@ const defaultStats: StatItem[] = [
   { id: "active", label: "Active Workflows", value: "5", icon: Workflow },
   { id: "saved", label: "Saved Workflows", value: "18", icon: Bookmark },
 ];
+  
 
-export default function StatsGrid({ stats }: StatsGridProps) {
-  const merged = defaultStats.map((s) => ({ ...s, value: stats?.[s.id as keyof typeof stats] || s.value }));
+export default function StatsGrid() {
+  const user = UserApi()
 
+const [dashboardUser, setDashboardUser] = useState<DashboardUser | null>(null);
+
+useEffect(() => {
+  const fetchData = async () => {
+    const userData = await user.getDashboardUser();
+    if (userData.success) {
+      setDashboardUser(userData.data);
+    }
+  };
+  fetchData();
+}, []);
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
-      {merged.map((item, idx) => {
+      {defaultStats.map((item, idx) => {
         const Icon = item.icon;
+        const value = dashboardUser?.[item.id as keyof DashboardUser] || 0;
         return (
           <motion.div
             key={item.id}
@@ -41,7 +57,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
                 <Icon className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xl font-bold text-[#0F172A]">{item.value}</div>
+                <div className="text-xl font-bold text-[#0F172A]">{value}</div>
                 <div className="text-sm text-gray-600">{item.label}</div>
               </div>
             </div>

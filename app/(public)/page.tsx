@@ -8,6 +8,7 @@ import {categories, testimonials } from "../../lib/data";
 import { ArrowRight, Search, Star, Check, Users, Clock, Shield, Play } from 'lucide-react';
 import FeaturedWorkflowsSlider from "../../components/shared/FeaturedWorkflowsSlider";  
 import Image from "next/image";
+import { useWorkflow } from "../../lib/contexts/WorkflowContext";
 
 // Placeholder for illustration and icons
 // const Illustration = () => (
@@ -15,6 +16,31 @@ import Image from "next/image";
 //     <div className="icon-placeholder w-32 h-32 bg-gray-200 rounded-full" />
 //   </div>
 // );
+
+// Helper function to validate and sanitize icon URLs
+const getValidIconUrl = (iconUrl: string | null | undefined): string => {
+  if (!iconUrl || iconUrl.trim() === '') {
+    return "/placeholder-icon.png";
+  }
+  
+  // Check if it's a valid URL or a valid relative path
+  try {
+    // If it starts with http/https, validate as full URL
+    if (iconUrl.startsWith('http://') || iconUrl.startsWith('https://')) {
+      new URL(iconUrl); // This will throw if invalid
+      return iconUrl;
+    }
+    // If it starts with /, treat as valid relative path
+    if (iconUrl.startsWith('/')) {
+      return iconUrl;
+    }
+    // Otherwise, assume it's a relative path and prepend /
+    return `/${iconUrl}`;
+  } catch {
+    // If URL validation fails, return placeholder
+    return "/placeholder-icon.png";
+  }
+};
 
 const fadeIn = {
   initial: { opacity: 0, y: 32 },
@@ -26,6 +52,9 @@ const fadeIn = {
 // Simple auto-slide carousel for 3 items at a time
 
 export default function HomePage() {
+  const { categories } = useWorkflow();
+
+  const  cates = categories.sort((a, b) => b.workflows_count - a.workflows_count);
   return (
     <main className="flex flex-col min-h-screen bg-white">
       {/* Hero Section */}
@@ -182,23 +211,23 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
-            {categories.slice(0, 6).map((c) => (
+            {cates.slice(0, 6).map((c) => (
               <Link
-                key={c.slug}
-                href={`/workflows?category=${c.slug}`}
+                key={c.id}
+                href={`/workflows?category=${c.name}`}
                 className="bg-white hover:bg-[#EAF4FF] hover:scale-105 hover:-translate-y-2 transition-all duration-300 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg flex flex-col items-center p-4 md:p-6 group"
               >
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl mb-3 flex items-center justify-center bg-gradient-to-br from-[#007BFF] to-[#06b6d4]">
                   <Image 
                     className="object-cover rounded-lg" 
-                    src={c.image ?? "/placeholder-icon.png"} 
+                    src={getValidIconUrl(c?.icon_url)} 
                     alt={c.name} 
                     width={32} 
                     height={32} 
                   />
                 </div>
                 <div className="font-semibold text-[#1A1A1A] text-sm md:text-base mb-1 text-center">{c.name}</div>
-                <div className="text-xs text-gray-500 text-center">{c.count} workflows</div>
+                <div className="text-xs text-gray-500 text-center">{c.workflows_count} workflows</div>
               </Link>
             ))}
           </div>
@@ -253,7 +282,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden">
                     <Image 
                       className="object-cover w-full h-full" 
-                      src={t.image ?? "/placeholder-avatar.png"} 
+                      src={t.image ?? "/defaultAva.jpg"} 
                       alt={t.name} 
                       width={48} 
                       height={48} 

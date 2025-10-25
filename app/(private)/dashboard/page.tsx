@@ -4,10 +4,17 @@ import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import StatsGrid from "../../../components/dashboard/StatsGrid";
 import TabsHeader, { Tab } from "../../../components/dashboard/TabsHeader";
 import TabsContent from "../../../components/dashboard/TabsContent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotificationType } from "../../../lib/models";
+import UserApi from "../../../lib/api/User";
+import { UserProfile } from "../../../lib/models/user";
+import { useUser } from "@/lib/contexts/UserContext";
 
 export default function DashboardPage() {
+    const user = UserApi();
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const { userName } = useUser();
+
    
 
     const notifications = [
@@ -18,20 +25,29 @@ export default function DashboardPage() {
         { id: "n5", title: "Payment Failed", body: "Your payment for Marketing Automation failed", time: "1 week ago", type: NotificationType.ERROR },
     ];
 	const [activeTab, setActiveTab] = useState<Tab>("overviews");
+    useEffect(() => {
+        const getProfile = async () => {
+            const result = await user.getUserProfile();
+                if (result.success) {
+                    setProfile(result.data);
+                }
+        };
+        getProfile();
+    }, []);
 
     return (
 		<>
-            <DashboardHeader userName="UsITech User" />
+            <DashboardHeader userName={userName || "UsITech User"} />
             <StatsGrid />
 
             <div className="space-y-6 mb-8">
                 <TabsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
                 <TabsContent activeTab={activeTab} purchases={[
-                    { id: "1", name: "Email Marketing Automation", date: "2024-01-15", price: "$49", status: "Active", category: "Marketing" },
-                    { id: "2", name: "CRM Data Sync", date: "2024-01-10", price: "$79", status: "Active", category: "CRM" },
-                    { id: "3", name: "Social Media Scheduler", date: "2024-01-08", price: "$35", status: "Active", category: "Social Media" },
-                ]} notifications={notifications} />
+                    { id: "1", name: "Email Marketing Automation", date: "2024-01-15", price: "1.176.000 ₫", status: "Active", category: "Marketing" },
+                    { id: "2", name: "CRM Data Sync", date: "2024-01-10", price: "1.896.000 ₫", status: "Active", category: "CRM" },
+                    { id: "3", name: "Social Media Scheduler", date: "2024-01-08", price: "840.000 ₫", status: "Active", category: "Social Media" },
+                ]} notifications={notifications} profile={profile || { id: "", avatar_url: "", name: "", email: "", created_at: "" }} />
             </div>
 		</>
       

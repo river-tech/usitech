@@ -8,18 +8,21 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Shield, CheckCircle, ArrowLeft } from "lucide-react";
-
+import AuthApi from "../../lib/api/Auth";
 interface VerifyOtpFormProps {
   setStep: (step: number) => void;
+  email: string;
+  setOtp: (otp: string) => void;
+  otp: string;
 }
 
-export default function VerifyOtpForm({ setStep }: VerifyOtpFormProps) {
-  const [otp, setOtp] = useState("");
+export default function VerifyOtpForm({ setStep, email, setOtp, otp }: VerifyOtpFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const auth = AuthApi();
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -40,13 +43,14 @@ export default function VerifyOtpForm({ setStep }: VerifyOtpFormProps) {
     setIsLoading(true);
     
     // Mock API call
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await auth.verifyResetOtp( email, otp.toString());
+    if (result.success) {
       setShowSuccess(true);
-      setTimeout(() => {
-        setStep(3);
-      }, 2000);
-    }, 1000);
+      setStep(3);
+    } else {
+      setError(result.error || "Failed to verify OTP");
+    }
+    setIsLoading(false);
   };
 
   const handleResendOtp = () => {
@@ -84,6 +88,14 @@ export default function VerifyOtpForm({ setStep }: VerifyOtpFormProps) {
             </Alert>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <Alert className="mb-4 border-red-200 bg-red-50">
+                  <AlertDescription className="text-red-800">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
               <div>
                 <Label htmlFor="otp" className="text-sm font-medium text-gray-700">
                   Enter OTP

@@ -1,14 +1,26 @@
 import * as React from "react";
-import WorkflowCard, { type SimpleWorkflow } from "./WorkflowCard";
+import WorkflowCard from "./WorkflowCard";
 import SectionHeader from "./SectionHeader";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { PurchasedWorkflow } from "@/lib/models/purchased-workflow";
+import UserApi from "@/lib/api/User";
 
-export default function PurchasedWorkflowList({ items }: { items?: SimpleWorkflow[] }) {
-  const data: SimpleWorkflow[] = items ?? [
-    { id: 1, title: "Email Marketing Automation", category: "Marketing", price: 49, date: "2024-01-15", status: "Active" },
-    { id: 2, title: "CRM Data Sync", category: "CRM", price: 79, date: "2025-10-02", status: "Active" },
-    { id: 3, title: "Lead Generation Bot", category: "AI", price: 55, date: "2025-09-20", status: "Expired" },
-  ];
+export default function PurchasedWorkflowList() {
+   const workflow = UserApi();
+  const [purchasedWorkflows, setPurchasedWorkflows] = useState<PurchasedWorkflow[]>([]);
+  const [loadingWorkflows, setLoadingWorkflows] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadWorkflows = async () => {
+      setLoadingWorkflows(true);
+      const result = await workflow.getMyPurchasedWorkflows();
+      if (result.success) {
+        setPurchasedWorkflows(result.data);
+      }
+    };
+    loadWorkflows();
+  }, []);
 
   return (
     <section>
@@ -27,7 +39,7 @@ export default function PurchasedWorkflowList({ items }: { items?: SimpleWorkflo
       </Link>
       <SectionHeader title="My Workflows" />
       <div className="space-y-4">
-        {data.map((wf) => (
+        {purchasedWorkflows.map((wf : PurchasedWorkflow) => (
           <WorkflowCard key={wf.id} workflow={wf} />
         ))}
       </div>

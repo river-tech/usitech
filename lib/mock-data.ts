@@ -1,4 +1,4 @@
-import { PurchaseStatus, NotificationType } from "./types";
+import { PurchaseStatus, NotificationType } from "./models/enums";
 import { Notification } from "./models";
 
 export type MockUserPurchase = {
@@ -19,9 +19,9 @@ export const mockUserPurchases: MockUserPurchase[] = [
     category: "CRM",
     image: "/background1.png",
     date: "2025-10-02",
-    price: 79,
+    price: 1896000,
     payment: "Credit Card",
-    status: PurchaseStatus.Active,
+    status: PurchaseStatus.ACTIVE,
   },
   {
     id: "2",
@@ -29,9 +29,9 @@ export const mockUserPurchases: MockUserPurchase[] = [
     category: "Marketing",
     image: "/background1.png",
     date: "2025-09-28",
-    price: 35,
+    price: 840000,
     payment: "PayPal",
-    status: PurchaseStatus.Active,
+    status: PurchaseStatus.ACTIVE,
   },
   {
     id: "3",
@@ -39,9 +39,9 @@ export const mockUserPurchases: MockUserPurchase[] = [
     category: "AI",
     image: "/background1.png",
     date: "2025-09-20",
-    price: 55,
+    price: 1320000,
     payment: "Bank Transfer",
-    status: PurchaseStatus.Pending,
+    status: PurchaseStatus.PENDING,
   },
   {
     id: "4",
@@ -49,9 +49,9 @@ export const mockUserPurchases: MockUserPurchase[] = [
     category: "E-commerce",
     image: "/background1.png",
     date: "2025-08-12",
-    price: 99,
+    price: 2376000,
     payment: "Credit Card",
-    status: PurchaseStatus.Pending,
+    status: PurchaseStatus.PENDING,
   },
 ];
 

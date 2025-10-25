@@ -3,32 +3,56 @@ import Link from "next/link";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
-import { loginDemo } from "../../../lib/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AuthApi from "../../../lib/api/Auth";
 
 export default function LoginPage() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const auth = AuthApi();
+	const [formData, setFormData] = useState({
+		email: "",
+		password: ""
+	});
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
 	const router = useRouter();
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { id, value } = e.target;
+		setFormData(prev => ({
+			...prev,
+			[id]: value
+		}));
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log("Login");
-		loginDemo();
-		router.push("/");
+		setError("");
+
+		const result = await auth.login(formData.email, formData.password);
+		
+		if (result.success) {
+			setSuccess("Login successful! Redirecting to dashboard...");
+			router.push("/");
+		} else {
+			setError(result.error || "Login failed");
+		}
 	};
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4 py-10">
 			<div className="flex flex-col items-center w-full">
-				<div className="flex items-center justify-center w-20 h-20 rounded-2xl mb-6" style={{
+				{/* Icon */}
+				<div className="flex items-center justify-center w-20 h-20 rounded-xl mb-6" style={{
 					background: "linear-gradient(135deg, #1e3a8a 0%, #06b6d4 100%)"
 				}}>
-					<svg width="40" height="40" fill="none" viewBox="0 0 40 40">
-						<rect x="0" y="0" width="40" height="40" rx="12" fill="url(#login-gradient)" />
-						<circle cx="20" cy="16" r="5" stroke="#fff" strokeWidth="2" />
-						<path d="M13 28c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-						<defs>
-						</defs>
+					<svg width="32" height="32" fill="none" viewBox="0 0 32 32">
+						<rect x="0" y="0" width="32" height="32" rx="12" fill="#fff" fillOpacity="0.08"/>
+						<circle cx="16" cy="13" r="4" stroke="#fff" strokeWidth="2"/>
+						<path d="M10 23c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+						<g>
+							<rect x="20" y="18" width="2" height="6" rx="1" fill="#fff"/>
+							<rect x="18" y="21" width="6" height="2" rx="1" fill="#fff"/>
+						</g>
 					</svg>
 				</div>
 				<h2 className="text-2xl font-bold text-[#0F172A] mb-1 text-center">Welcome Back</h2>
@@ -47,9 +71,12 @@ export default function LoginPage() {
 									<Input
 										id="email"
 										type="email"
-										placeholder="Enter your email"
+										placeholder="john@example.com"
 										aria-label="Email address"
 										className="pl-10"
+										value={formData.email}
+										onChange={handleInputChange}
+										required
 									/>
 								</div>
 							</div>
@@ -68,6 +95,9 @@ export default function LoginPage() {
 										placeholder="Enter your password"
 										aria-label="Password"
 										className="pl-10"
+										value={formData.password}
+										onChange={handleInputChange}
+										required
 									/>
 								</div>
 							</div>
@@ -76,13 +106,30 @@ export default function LoginPage() {
 									<input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#007BFF] focus:ring-[#007BFF]" aria-label="Remember me" />
 									<span>Remember me</span>
 								</label>
-								<Link href="#" className="text-[#007BFF] text-sm hover:underline">Forgot password?</Link>
+								<Link href="/auth/forgot-password" className="text-[#007BFF] text-sm hover:underline">Forgot password?</Link>
 							</div>
-							<Button type="submit" className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5">
-								Login 
+							{error && (
+								<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+									<svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+									</svg>
+									<span>{error}</span>
+								</div>
+							)}
+							{success && (
+								<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+									<svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+									</svg>
+									<span>{success}</span>
+								</div>
+							)}
+							<Button 
+								type="submit" 
+								className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								Sign In
 							</Button>
-
-
 						</form>
 						<div className="mt-6 text-center text-sm text-[#64748B]">
 							Don&apos;t have an account?{" "}

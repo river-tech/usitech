@@ -8,8 +8,10 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Lock, CheckCircle, Eye, EyeOff, AlertCircle } from "lucide-react";
+import AuthApi from "../../lib/api/Auth";
 
 export default function ChangePasswordForm() {
+  const auth = AuthApi();
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -45,7 +47,7 @@ export default function ChangePasswordForm() {
     } else if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -60,18 +62,14 @@ export default function ChangePasswordForm() {
     setShowSuccess(false);
     
     // Mock API call - simulate potential failure
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Simulate 20% chance of error for demo purposes
-      if (Math.random() < 0.2) {
-        setShowError(true);
-      } else {
-        setShowSuccess(true);
-        setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-        setTimeout(() => setShowSuccess(false), 5000);
-      }
-    }, 1500);
+    const result = await auth.changePassword(formData.currentPassword, formData.newPassword);
+    if (result.success) {
+      setShowSuccess(true);
+      setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } else {
+      setShowError(true);
+    }
+    setIsLoading(false);
   };
 
   const handleInputChange = (field: string, value: string) => {

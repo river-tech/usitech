@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { isAuthenticated, logout } from "../../lib/auth";
+import AuthApi from "../../lib/api/Auth";
+import { useUser } from "../../lib/contexts/UserContext";
+
 const nav = [
   { href: "/workflows", label: "Workflows" },
   { href: "/about", label: "About" },
@@ -16,15 +18,67 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [authed, setAuthed] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const router = useRouter();
+  const authApi = AuthApi();
+  const { userAvatar } = useUser();
 
   React.useEffect(() => {
+    console.log( 'userAvatar', userAvatar);
     setOpen(false);
-  }, [pathname]);
+  }, [pathname,userAvatar]);
 
   React.useEffect(() => {
-    setAuthed(isAuthenticated());
+    checkAuthStatus();
   }, []);
+
+  const checkAuthStatus = async () => {
+    setLoading(true);
+    
+    // Check if access token exists
+    const accessToken = authApi.getAuthToken();
+    if (accessToken) {
+      setAuthed(true);
+      setLoading(false);
+      return;
+    }
+
+    // If no access token, check for refresh token
+    const refreshToken = authApi.getRefreshToken();
+    if (refreshToken) {
+      try {
+        // Try to refresh the access token
+        const result = await authApi.refreshToken();
+        if (result) {
+          setAuthed(true);
+        } else {
+          // Refresh failed, clear tokens and set as guest
+          authApi.clearTokens();
+          setAuthed(false);
+        }
+      } catch (error) {
+        console.log('Refresh token failed:', error);
+        // // Clear tokens and set as guest
+        authApi.clearTokens();
+        setAuthed(false);
+      }
+    } else {
+      // No tokens, set as guest
+      setAuthed(false);
+    }
+    
+    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    const result = await authApi.logout();
+    if (result.success) {
+      setAuthed(false);
+      router.push("/");
+    } else {
+      console.log(result.error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white shadow-sm">
@@ -47,7 +101,7 @@ export default function Header() {
 
         {/* ---------- NAV LINKS ---------- */}
         <nav className="hidden md:flex items-center gap-8">
-          {nav.map((n) => {
+          {!loading && nav.map((n) => {
             const isActive = pathname === n.href;
             return (
               <Link
@@ -73,16 +127,33 @@ export default function Header() {
 
         {/* ---------- AUTH / AVATAR ---------- */}
         <div className="hidden md:flex items-center gap-4">
-          {authed ? (
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-[#007BFF] rounded-full animate-spin"></div>
+              <span className="text-sm text-gray-500">Checking...</span>
+            </div>
+          ) : authed ? (
             <div className="flex items-center gap-3">
               <button
                 aria-label="Open dashboard"
                 onClick={() => router.push("/dashboard")}
-                className="w-9 h-9 rounded-full cursor-pointer bg-gradient-to-br from-[#002B6B] to-[#007BFF] hover:brightness-110 shadow-sm"
-              />
+                className="rounded-full cursor-pointer hover:brightness-110 shadow-sm flex items-center justify-center p-0 border-2 border-[#007BFF] bg-white"
+                style={{ width: 40, height: 40 }}
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-white">
+                  <Image
+                    src={userAvatar || "/defaultAva.jpg"}
+                    alt="User Avatar"
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full rounded-full"
+                    key={userAvatar} // Force re-render when avatar changes
+                  />
+                </div>
+              </button>
               <button
-                onClick={() => { logout(); setAuthed(false); router.push("/"); }}
-                className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"
+                onClick={() => handleLogout()}
+                className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
               >
                 Logout
               </button>
@@ -107,7 +178,7 @@ export default function Header() {
       </div>
 
       {/* ---------- MOBILE MENU ---------- */}
-      {open && (
+      {open && !loading && (
         <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-6 py-4 flex flex-col space-y-4">
             {nav.map((n) => (
@@ -119,14 +190,30 @@ export default function Header() {
                 {n.label}
               </Link>
             ))}
-            <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] cursor-pointer">
-              Login
-            </Link>
-            <Link href="/auth/register" className="cursor-pointer">
-              <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110 cursor-pointer">
-                Register
-              </Button>
-            </Link>
+            {authed ? (
+              <>
+                <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-[#002B6B] cursor-pointer">
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => handleLogout()}
+                  className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] cursor-pointer">
+                  Login
+                </Link>
+                <Link href="/auth/register" className="cursor-pointer">
+                  <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110 cursor-pointer">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "../../../components/ui/button";
-import { workflows } from "../../../lib/data";
+import { useWorkflow } from "../../../lib/contexts/WorkflowContext"; // context ở dây nè nha cha!
 import { Search, Star } from "lucide-react";
 import SearchBar from "../../../components/search/SearchBar";
 import TagPills from "../../../components/search/TagPills";
@@ -11,119 +11,115 @@ import SortDropdown from "../../../components/shared/Dropdown";
 import { EFilter } from "@/app/modal/EFilter";
 
 export default function WorkflowsPage() {
+  // Context use ở dây nè nha ông nội!
+  const { allWorkflows, isLoading, error, categories } = useWorkflow();
+
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
   
   const [filters, setFilters] = useState({
     search: "",
-    categories: categoryFromUrl ? [categoryFromUrl] : [] as string[],
+    categoryIds: categoryFromUrl ? [categoryFromUrl] : [] as string[],
     priceRange: [] as EFilter[],
     minRating: 0,
   });
 
   const [sortBy, setSortBy] = useState("popular");
-  const [visibleCount, setVisibleCount] = useState(6); // 👈 số lượng hiện tại
+  const [visibleCount, setVisibleCount] = useState(6);
 
-  // --- 1️⃣ Lọc và sắp xếp workflows ---
+  // Bỏ workflow filter vô đây nè! Filter với sort xài context ở trên
   const filteredWorkflows = useMemo(() => {
-	const filtered = workflows.filter((workflow) => {
-	  // --- Search filter ---
-	  if (
-		filters.search &&
-		!workflow.title.toLowerCase().includes(filters.search.toLowerCase()) &&
-		!workflow.description.toLowerCase().includes(filters.search.toLowerCase())
-	  ) {
-		return false;
-	  }
-  
-	  // --- Category filter ---
-	  if (
-		filters.categories.length > 0 &&
-		!filters.categories.includes(workflow.category)
-	  ) {
-		return false;
-	  }
-  
-	  // --- Price range filter ---
-	  if (filters.priceRange.length > 0) {
-		const price = Number(workflow.price); // đảm bảo là số
-  
-		// Hàm kiểm tra một workflow có nằm trong phạm vi đã chọn không
-		const matchesRange = filters.priceRange.some((range) => {
-		  switch (range) {
-			case EFilter.FREE:
-			  return price === 0;
-			case EFilter.UNDER_50:
-			  return price > 0 && price < 50;
-			case EFilter._50_100:
-			  return price >= 50 && price <= 100;
-			case EFilter.OVER_100:
-			  return price > 100;
-			default:
-			  return false;
-		  }
-		});
-  
-		if (!matchesRange) return false;
-	  }
-  
-	  // --- Rating filter ---
-	  if (filters.minRating > 0 && workflow.rating < filters.minRating) {
-		return false;
-	  }
-  
-	  return true;
-	});
-  
-	// --- Sorting ---
-	filtered.sort((a, b) => {
-	  const priceA = Number(a.price);
-	  const priceB = Number(b.price);
-  
-	  switch (sortBy) {
-		case "newest":
-		  // Assuming id is a number, sort descending (newest first)
-		  return b.id - a.id;
-		case "rating":
-		  return b.rating - a.rating;
-		case "price-low":
-		  return priceA - priceB;
-		case "price-high":
-		  return priceB - priceA;
-		case "name":
-		  return a.title.localeCompare(b.title);
-		default: // popular
-		  return b.downloads - a.downloads;
-	  }
-	});
-  
-	return filtered;
-  }, [filters, sortBy]);
-  // Update filters when URL changes
+    return allWorkflows
+      .filter((workflow) => {
+        // Filter search
+        if (
+          filters.search &&
+          !workflow.title.toLowerCase().includes(filters.search.toLowerCase()) &&
+          !workflow.description.toLowerCase().includes(filters.search.toLowerCase())
+        ) {
+          return false;
+        }
+        // Filter category
+        if (filters.categoryIds.length > 0) {
+          if (!workflow.categories.some(category => filters.categoryIds.includes(category))) return false;
+        }
+        // Filter price (VND)
+        if (filters.priceRange.length > 0) {
+          const price = Number(workflow.price);
+          const matchesRange = filters.priceRange.some(range => {
+            switch (range) {
+              case EFilter.FREE: return price === 0;
+              case EFilter.UNDER_50: return price > 0 && price < 1200000; // Under 1,200,000₫
+              case EFilter._50_100: return price >= 1200000 && price <= 2400000; // 1,200,000₫ - 2,400,000₫
+              case EFilter.OVER_100: return price > 2400000; // Over 2,400,000₫
+            }
+          });
+          if (!matchesRange) return false;
+        }
+        // Filter rating
+        if (filters.minRating > 0 && (workflow.rating_avg || 0) < filters.minRating) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        const priceA = Number(a.price);
+        const priceB = Number(b.price);
+        switch (sortBy) {
+          case "newest":
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          case "rating": return (b.rating_avg || 0) - (a.rating_avg || 0);
+          case "price-low": return priceA - priceB;
+          case "price-high": return priceB - priceA;
+          case "name": return a.title.localeCompare(b.title);
+          default:
+            return (b.downloads_count || 0) - (a.downloads_count || 0);
+        }
+      });
+  }, [allWorkflows, filters, sortBy]);
+
+  // Sync category from URL mỗi lần đổi
   useEffect(() => {
     const categoryFromUrl = searchParams.get('category');
     if (categoryFromUrl) {
       setFilters(prev => ({
         ...prev,
-        categories: [categoryFromUrl]
+        categoryIds: [categoryFromUrl]
       }));
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    console.log(filters);
-  }, [filters]);
-
-  // --- 2️⃣ Danh sách hiển thị ---
+  // Show list
   const visibleWorkflows = filteredWorkflows.slice(0, visibleCount);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F8FAFC] to-white">
+        <div className="mx-auto max-w-6xl px-4 md:px-6 py-6 md:py-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-2 border-[#007BFF] border-t-transparent rounded-full animate-spin"></div>
+            <span className="ml-3 text-gray-600">Loading workflows...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F8FAFC] to-white">
+        <div className="mx-auto max-w-6xl px-4 md:px-6 py-6 md:py-8">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <div className="text-red-600 font-medium mb-2">Error Loading Workflows</div>
+            <div className="text-red-500 text-sm">{error}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   const showLoadMore = visibleCount < filteredWorkflows.length;
 
-  // --- 3️⃣ Hàm load thêm ---
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 6);
-  };
-
-  
+  const handleLoadMore = () => setVisibleCount(prev => prev + 6);
 
   return (
     <div className="min-h-screen bg-white">
@@ -140,8 +136,7 @@ export default function WorkflowsPage() {
               Workflow Marketplace
             </h1>
             <p className="text-white text-lg max-w-2xl mx-auto">
-              Discover professional automation workflows designed to streamline
-              your business operations
+              Discover professional automation workflows designed to streamline your business operations
             </p>
           </div>
         </div>
@@ -149,34 +144,31 @@ export default function WorkflowsPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-        {/* Unified search controls */}
         <div className="space-y-6">
           <SearchBar
             defaultValue={filters.search}
             onSearch={(q) => setFilters((prev) => ({ ...prev, search: q }))}
           />
           <TagPills
-            selectedTags={filters.categories}
+            selectedTags={filters.categoryIds}
+            categories={categories}
             onTagToggle={(tag) =>
               setFilters((prev) => ({
                 ...prev,
-                categories: prev.categories.includes(tag)
-                  ? prev.categories.filter((t) => t !== tag)
-                  : [...prev.categories, tag],
+                categoryIds: prev.categoryIds.includes(tag)
+                  ? prev.categoryIds.filter((t) => t !== tag)
+                  : [...prev.categoryIds, tag],
               }))
             }
           />
-
-          {/* Price & Rating filters */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            {/* Price filter */}
             <div className="flex items-center gap-3 flex-wrap">
               <span className="text-sm font-medium text-gray-700">Price:</span>
               {[
                 { key: EFilter.FREE, label: "Free" },
-                { key: EFilter.UNDER_50, label: "Under $50" },
-                { key: EFilter._50_100, label: "$50 – $100" },
-                { key: EFilter.OVER_100, label: "Over $100" },
+                { key: EFilter.UNDER_50, label: "Under 1,200,000₫" },
+                { key: EFilter._50_100, label: "1,200,000₫ - 2,400,000₫" },
+                { key: EFilter.OVER_100, label: "Over 2,400,000₫" },
               ].map((r) => {
                 const active = filters.priceRange.includes(r.key);
                 return (
@@ -210,14 +202,15 @@ export default function WorkflowsPage() {
               )}
             </div>
 
-            {/* Rating filter */}
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-700">Min Rating:</span>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button
                     key={n}
-                    onClick={() => setFilters((prev) => ({ ...prev, minRating: prev.minRating === n ? 0 : n }))}
+                    onClick={() =>
+                      setFilters((prev) => ({ ...prev, minRating: prev.minRating === n ? 0 : n }))
+                    }
                     className="cursor-pointer"
                     aria-label={`Minimum ${n} star`}
                   >
@@ -236,24 +229,23 @@ export default function WorkflowsPage() {
             </div>
           </div>
 
-          {/* Results */}
           <div>
             {/* Active Filters */}
-            {filters.categories.length > 0 && (
+            {filters.categoryIds.length > 0 && (
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-medium text-blue-800">Active filters:</span>
-                  {filters.categories.map((category) => (
+                  {filters.categoryIds.map((categoryId) => (
                     <span
-                      key={category}
+                      key={categoryId}
                       className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
                     >
-                      {category}
+                      {categories.find(category => category.id === categoryId)?.name}
                       <button
                         onClick={() => {
                           setFilters(prev => ({
                             ...prev,
-                            categories: prev.categories.filter(c => c !== category)
+                            categoryIds: prev.categoryIds.filter(c => c !== categoryId)
                           }));
                         }}
                         className="ml-1 text-blue-600 hover:text-blue-800"
@@ -279,14 +271,13 @@ export default function WorkflowsPage() {
               />
             </div>
 
-            {/* Grid */}
+            {/* Bỏ workflow vô đây nè cu */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {visibleWorkflows.map((workflow) => (
                 <WorkflowCard key={workflow.id} workflow={workflow} />
               ))}
             </div>
 
-            {/* Load more */}
             {showLoadMore && (
               <div className="text-center mt-16">
                 <Button
@@ -298,7 +289,6 @@ export default function WorkflowsPage() {
               </div>
             )}
 
-            {/* No results */}
             {filteredWorkflows.length === 0 && (
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -314,7 +304,7 @@ export default function WorkflowsPage() {
                   onClick={() =>
                     setFilters({
                       search: "",
-                      categories: [],
+                      categoryIds: [],
                       priceRange: [],
                       minRating: 0,
                     })

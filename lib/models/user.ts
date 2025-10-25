@@ -28,9 +28,15 @@ export interface UpdateUserRequest {
 
 export interface UserProfile {
   id: string;
-  name: string;
   avatar_url: string;
+  name: string;
   email: string;
-  role: UserRole;
   created_at: string;
+}
+
+export interface DashboardUser {
+  total_purchases: number;
+  total_spent: number;
+  active_workflows: number;
+  saved_workflows: number;
 }

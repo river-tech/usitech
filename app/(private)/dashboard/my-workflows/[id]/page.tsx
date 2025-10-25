@@ -56,7 +56,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error downloading JSON:', error);
+      console.log('Error downloading JSON:', error);
     } finally {
       setIsDownloading(false);
     }

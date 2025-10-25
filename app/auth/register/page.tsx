@@ -1,9 +1,59 @@
+"use client";
 import Link from "next/link";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import AuthApi from "../../../lib/api/Auth";
+
 
 export default function RegisterPage() {
+	const auth = AuthApi();
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		password: "",
+		confirmPassword: ""
+	});
+	const [error, setError] = useState("");
+	const [success, setSuccess] = useState("");
+	const router = useRouter();
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { id, value } = e.target;
+		setFormData(prev => ({
+			...prev,
+			[id]: value
+		}));
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setError("");
+		setSuccess("");
+
+		// Validation
+		if (formData.password !== formData.confirmPassword) {
+			setError("Passwords do not match");
+			return;
+		}
+
+		if (formData.password.length < 6) {
+			setError("Password must be at least 6 characters");
+			return;
+		}
+
+		const result = await auth.register(formData.name, formData.email, formData.password);
+
+		
+		if (result.success) {
+			setSuccess("Account created successfully! Redirecting to login...");
+			router.push("/auth/login");
+		} else {
+			setError(result.error || "Registration failed");
+		}	
+	};
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4 py-10">
 			<div className="flex flex-col items-center w-full">
@@ -25,26 +75,18 @@ export default function RegisterPage() {
 				<p className="text-[#64748B] text-center mb-7">Join UsITech and start automating your business</p>
 				<Card className="w-full max-w-md rounded-2xl border border-gray-200 shadow-sm bg-[#FFFFFF]">
 					<CardContent className="pt-8 pb-6 px-6">
-						<form className="space-y-5" aria-label="Register form">
-							<div className="flex gap-4">
-								<div className="w-1/2">
-									<label htmlFor="firstName" className="block text-sm font-medium text-[#334155] mb-1">First Name</label>
-									<Input
-										id="firstName"
-										type="text"
-										placeholder="John"
-										aria-label="First Name"
-									/>
-								</div>
-								<div className="w-1/2">
-									<label htmlFor="lastName" className="block text-sm font-medium text-[#334155] mb-1">Last Name</label>
-									<Input
-										id="lastName"
-										type="text"
-										placeholder="Doe"
-										aria-label="Last Name"
-									/>
-								</div>
+						<form onSubmit={handleSubmit} className="space-y-5" aria-label="Register form">
+							<div>
+								<label htmlFor="name" className="block text-sm font-medium text-[#334155] mb-1">Full Name</label>
+								<Input
+									id="name"
+									type="text"
+									placeholder="John Doe"
+									aria-label="Full Name"
+									value={formData.name}
+									onChange={handleInputChange}
+									required
+								/>
 							</div>
 							<div>
 								<label htmlFor="email" className="block text-sm font-medium text-[#334155] mb-1">Email Address</label>
@@ -60,6 +102,9 @@ export default function RegisterPage() {
 										placeholder="john@example.com"
 										aria-label="Email address"
 										className="pl-10"
+										value={formData.email}
+										onChange={handleInputChange}
+										required
 									/>
 								</div>
 							</div>
@@ -78,6 +123,9 @@ export default function RegisterPage() {
 										placeholder="Create a strong password"
 										aria-label="Password"
 										className="pl-10"
+										value={formData.password}
+										onChange={handleInputChange}
+										required
 									/>
 								</div>
 							</div>
@@ -96,6 +144,9 @@ export default function RegisterPage() {
 										placeholder="Confirm your password"
 										aria-label="Confirm Password"
 										className="pl-10"
+										value={formData.confirmPassword}
+										onChange={handleInputChange}
+										required
 									/>
 								</div>
 							</div>
@@ -113,7 +164,26 @@ export default function RegisterPage() {
 									<Link href="#" className="text-[#007BFF] hover:underline">Privacy Policy</Link>
 								</label>
 							</div>
-							<Button className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5">
+							{error && (
+								<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+									<svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+									</svg>
+									<span>{error}</span>
+								</div>
+							)}
+							{success && (
+								<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+									<svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+										<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+									</svg>
+									<span>{success}</span>
+								</div>
+							)}
+							<Button 
+								type="submit"
+								className="w-full rounded-xl bg-gradient-to-r from-[#0057D8] to-[#00A3FF] text-white font-medium shadow-sm hover:shadow transition-all duration-200 text-base py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
 								Create Account
 							</Button>
 							

@@ -13,7 +13,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 		<>
 			<Header />
 			<main className="min-h-[calc(100vh-200px)]">
-				<MotionProvider>
+				<MotionProvider >
 					{children}
 				</MotionProvider>
 			</main>
