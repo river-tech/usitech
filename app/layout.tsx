@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "../lib/contexts/AuthContext";
 import { UserProvider } from "../lib/contexts/UserContext";
 import { WorkflowProvider } from "../lib/contexts/WorkflowContext";
+import { WishlistProvider } from "../lib/contexts/WishlistContext";
+import { WalletProvider } from "../lib/contexts/WalletContext";
+import AutoRefreshToken from "../components/shared/AutoRefreshToken";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +35,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>
-          <WorkflowProvider>
-            {children}
-          </WorkflowProvider>
-        </UserProvider>
+        <AuthProvider>
+          <UserProvider>
+            <WorkflowProvider>
+              <WishlistProvider>
+                <WalletProvider>
+                  <AutoRefreshToken />
+                  {children}
+                </WalletProvider>
+              </WishlistProvider>
+            </WorkflowProvider>
+          </UserProvider>
+        </AuthProvider>
       </body>
     </html>
   );

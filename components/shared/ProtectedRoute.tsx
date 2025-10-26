@@ -8,13 +8,31 @@ import AuthApi from "../../lib/api/Auth";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const router = useRouter();
+
     const [authed, setAuthed] = React.useState(false);
     const [checking, setChecking] = React.useState(true);
     const auth = AuthApi();
     React.useEffect(() => {
         setAuthed(auth.getAuthToken() ? true : false);
+        if(!authed){
+            const tryRefresh = async () => {
+                try {
+                    const refreshed = await auth.refreshToken();
+                    if(refreshed){
+                        setAuthed(true);
+                    }
+                    else{
+                        setAuthed(false);
+                        router.push("/login");
+                    }
+                } catch (e) {
+                    // ignore error, stay unauthenticated
+                }
+            };
+            tryRefresh();
+        }   
         setChecking(false);
-    }, []);
+    }, [authed]);
 
     if (checking) {
         return (

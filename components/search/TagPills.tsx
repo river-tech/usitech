@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { popularTags } from "../../lib/search/mockData";
 import { Category } from "../../lib/models/workflow";
 
 interface TagPillsProps {
@@ -18,7 +17,7 @@ export default function TagPills({ selectedTags, onTagToggle, categories }: TagP
       </h3>
       
       <div className="flex flex-wrap gap-2 justify-center">
-        {popularTags.slice(0, 12).map((tag, index) => {
+        {categories.slice(0, 12).map((tag, index) => {
           const isSelected = selectedTags.includes(tag.name);
           
           return (
@@ -39,7 +38,7 @@ export default function TagPills({ selectedTags, onTagToggle, categories }: TagP
               `}
             >
               {tag.name}
-              <span className="ml-1 text-xs opacity-60">({tag.count})</span>
+              <span className="ml-1 text-xs opacity-60">({tag.workflows_count})</span>
             </motion.button>
           );
         })}

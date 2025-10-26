@@ -5,8 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Rating } from "@/components/ui/rating";
 import { Send, Star } from "lucide-react";
-import { isAuthenticated } from "@/lib/auth";
-
+import Cookies from "js-cookie";
+import { useAuth } from "@/lib/contexts/AuthContext";
 interface CommentFormProps {
   onSubmit: (content: string, rating?: number) => void;
   isLoading?: boolean;
@@ -14,6 +14,7 @@ interface CommentFormProps {
 
 export default function CommentForm({ onSubmit }: CommentFormProps) {
   const [content, setContent] = useState("");
+  const {isAuthenticated} = useAuth();
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authed, setAuthed] = useState(false);
@@ -21,7 +22,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
 
   useEffect(() => {
     setMounted(true);
-    setAuthed(isAuthenticated());
+    setAuthed(isAuthenticated);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

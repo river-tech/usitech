@@ -1,80 +1,41 @@
 "use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Heart, Reply, MoreHorizontal, Star } from "lucide-react";
+import { Reply, MoreHorizontal, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import ReplyForm from "./ReplyForm";
+import { Review } from "@/lib/models/Reviews";
 
-export interface Comment {
-  id: string;
-  author: {
-    name: string;
-    avatar?: string;
-  };
-  content: string;
-  createdAt: string;
-  likes: number;
-  isLiked?: boolean;
-  rating?: number;
-  replies?: Comment[];
-}
+
 
 interface CommentCardProps {
-  comment: Comment;
-  onLike?: (commentId: string) => void;
+  comment: Review;
   onReply?: (commentId: string, content: string) => void;
   onDelete?: (commentId: string) => void;
   showReplies?: boolean;
-  isOwnComment?: boolean;
   isNestedReply?: boolean;
   parentCommentId?: string;
 }
 
 export default function CommentCard({ 
   comment, 
-  onLike, 
   onReply, 
   onDelete,
   showReplies = true,
-  isOwnComment = false,
   isNestedReply = false,
   parentCommentId: _parentCommentId // eslint-disable-line @typescript-eslint/no-unused-vars
 }: CommentCardProps) {
-  const [isLiked, setIsLiked] = useState(comment.isLiked || false);
-  const [likes, setLikes] = useState(comment.likes);
   const [mounted, setMounted] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [isLiking, setIsLiking] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Debug logging
+    console.log("CommentCard - comment.is_me:", comment.is_me);
+    console.log("CommentCard - onDelete:", !!onDelete);
+    console.log("CommentCard - comment:", comment);
   }, []);
-
-  // Sync local state with props
-  useEffect(() => {
-    setIsLiked(comment.isLiked || false);
-    setLikes(comment.likes);
-  }, [comment.isLiked, comment.likes]);
-
-  const handleLike = async () => {
-    if (isLiking) return;
-    
-    setIsLiking(true);
-    try {
-      if (onLike) {
-        await onLike(comment.id);
-      } else {
-        // Fallback for standalone usage
-        setIsLiked(!isLiked);
-        setLikes(prev => isLiked ? prev - 1 : prev + 1);
-      }
-    } catch (error) {
-      console.log("Error liking comment:", error);
-    } finally {
-      setIsLiking(false);
-    }
-  };
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -94,6 +55,7 @@ export default function CommentCard({
   const handleReplySubmit = async (content: string) => {
     if (onReply) {
       await onReply(comment.id, content);
+      
     }
     setShowReplyForm(false);
   };
@@ -105,7 +67,16 @@ export default function CommentCard({
   const formatTimeAgo = (dateString: string) => {
     if (!mounted) return "Loading...";
     
+    if (!dateString) return "Just now";
+    
     const date = new Date(dateString);
+    
+    // Kiểm tra nếu date không hợp lệ
+    if (isNaN(date.getTime())) {
+      console.log("Invalid date string:", dateString);
+      return "Just now";
+    }
+    
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
@@ -121,13 +92,13 @@ export default function CommentCard({
       <div className="flex items-start gap-3">
         <Avatar className="w-10 h-10 flex-shrink-0">
           <AvatarFallback className="bg-gradient-to-br from-[#007BFF] to-[#06B6D4] text-white font-semibold">
-            {comment.author.name.charAt(0).toUpperCase()}
+            {comment.user?.avatar_url}
           </AvatarFallback>
         </Avatar>
         
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <h4 className="font-semibold text-gray-900">{comment.author.name}</h4>
+            <h4 className="font-semibold text-gray-900">{comment.user?.name}</h4>
             {comment.rating && (
               <div className="flex items-center gap-1">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -143,29 +114,13 @@ export default function CommentCard({
                 </span>
               </div>
             )}
-            <span className="text-sm text-gray-500">{formatTimeAgo(comment.createdAt)}</span>
+            <span className="text-sm text-gray-500">{formatTimeAgo(comment.created_at)}</span>
           </div>
           
-          <p className="text-gray-700 leading-relaxed mb-3">{comment.content}</p>
+          <p className="text-gray-700 leading-relaxed mb-3">{comment.comment}</p>
           
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLike}
-              disabled={isLiking}
-              className={`flex items-center gap-1 text-sm transition-all duration-200 ${
-                isLiked 
-                  ? "text-red-500 hover:text-red-600" 
-                  : "text-gray-500 hover:text-red-500"
-              } ${isLiking ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              <Heart className={`w-4 h-4 transition-all duration-200 ${isLiked ? "fill-current scale-110" : ""}`} />
-              {likes > 0 && <span className="font-medium">{likes}</span>}
-              {isLiking && <span className="text-xs">...</span>}
-            </Button>
-            
-            {onReply && (
+            {onReply && !comment.parent_comment_id && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -177,7 +132,7 @@ export default function CommentCard({
               </Button>
             )}
             
-            {onDelete && (isOwnComment || comment.author.name === "You") && (
+            {onDelete && (comment.is_me) && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -194,22 +149,20 @@ export default function CommentCard({
             <ReplyForm
               onSubmit={handleReplySubmit}
               onCancel={handleReplyCancel}
-              placeholder={`Reply to ${comment.author.name}...`}
+              placeholder={`Reply to ${comment.user?.name}...`}
             />
           )}
 
           {/* Replies */}
           {showReplies && comment.replies && comment.replies.length > 0 && (
             <div className={`mt-4 space-y-3 ${isNestedReply ? 'pl-2' : 'pl-4 border-l-2 border-gray-100'}`}>
-              {comment.replies.map((reply) => (
+              {comment.replies.map((reply, index) => (
                 <CommentCard
-                  key={reply.id}
-                  comment={reply}
-                  onLike={onLike}
+                  key={index}
+                  comment={reply as Review}
                   onReply={onReply}
                   onDelete={onDelete}
                   showReplies={true}
-                  isOwnComment={reply.author.name === "You" || reply.author.name === "current-user"}
                   isNestedReply={true}
                   parentCommentId={comment.id}
                 />

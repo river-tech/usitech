@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Star, Users } from "lucide-react";
 import { Button } from "../ui/button";
 import { Workflow } from "@/lib/models/workflow";
+import WishlistButton from "./WishlistButton";
 
 export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
     
@@ -64,14 +65,13 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
             <span>{workflow.downloads_count}</span>
           </div>
 
-          {/* Right: Price + CTA */}
+          {/* Right: Price + Wishlist + CTA */}
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-end leading-none">
               <span className="text-sm font-semibold text-gray-900">
                 {workflow.price === 0 ? "Free" : `$${workflow.price}`}
               </span>
             </div>
-
           </div>
           
         </div>

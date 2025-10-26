@@ -14,7 +14,7 @@ import { type Tab } from "./TabsHeader";
 import Link from "next/link";
 import { ActivityItem } from "./RecentActivity";
 import { useRouter } from "next/navigation";
-import { NotificationType, UserProfile } from "../../lib/models";
+import { DetailWorkflow, NotificationType, PurchaseStatus, UserProfile } from "../../lib/models";
 import LikedWorkflowList from "./my-workflows/LikedWorkflowList";
 import { useEffect, useState } from "react";
 import { uploadAvatar } from "../../lib/api/UploadFile";
@@ -24,39 +24,7 @@ import { PurchasedWorkflow } from "../../lib/models/purchased-workflow";
 import { Notification } from "../../lib/models/notification";
 import { useUser } from "../../lib/contexts/UserContext";
 import NotificationApi from "../../lib/api/Notification";
-export type PurchaseItem = {
-  id: string;
-  name: string;
-  date: string; // ISO or display string
-  price: string; // formatted
-  status: "Active" | "Expired";
-  category?: string;
-  thumbnailUrl?: string;
-};
 
-const recent: ActivityItem[] = [
-  {
-    id: "1",
-    name: "CRM Data Sync",
-    date: "2025-10-02",
-    price: "$79",
-    status: "Paid",
-  },
-  {
-    id: "2",
-    name: "Social Media Automation",
-    date: "2025-09-28",
-    price: "$35",
-    status: "Pending",
-  },
-  {
-    id: "3",
-    name: "Lead Generation Bot",
-    date: "2025-09-20",
-    price: "$55",
-    status: "Rejected",
-  },
-];
 
 export type NotificationItem = {
   id: string;
@@ -69,9 +37,9 @@ export type NotificationItem = {
 
 interface TabsContentProps {
   activeTab: Tab;
-  purchases: PurchaseItem[];
-  notifications: NotificationItem[];
   profile: UserProfile;
+  notifications: Notification[];
+  workflows: DetailWorkflow[];
 }
 
 const fade: React.ComponentProps<typeof motion.div>["variants"] = {
@@ -81,9 +49,9 @@ const fade: React.ComponentProps<typeof motion.div>["variants"] = {
 
 export default function TabsContent({
   activeTab,
-  purchases,
-  notifications,
   profile,
+  notifications,
+  workflows,
 }: TabsContentProps) {
   console.log(activeTab);
   useEffect(() => {
@@ -262,11 +230,11 @@ export default function TabsContent({
                             <td className="py-3">
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                  purchase.status === "completed" || purchase.status === "paid"
+                                  purchase.status === PurchaseStatus.ACTIVE || purchase.status === PurchaseStatus.PENDING
                                     ? "bg-green-100 text-green-700"
-                                    : purchase.status === "pending"
-                                    ? "bg-yellow-100 text-yellow-700"
-                                    : "bg-red-100 text-red-700"
+                                  : purchase.status === PurchaseStatus.REJECT
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-yellow-100 text-yellow-700"
                                 }`}
                               >
                                 {purchase.status}
@@ -344,7 +312,7 @@ export default function TabsContent({
                               onClick={() =>
                                 router.push(`/dashboard/my-workflows/${workflow.id}`)
                               }
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
                               className="flex items-center gap-2 text-[#007BFF] hover:text-[#0057D8] border-none bg-transparent p-0 shadow-none hover:bg-sky-50 transition-colors rounded-lg"
                             >
@@ -581,6 +549,44 @@ export default function TabsContent({
                 )}
               </div>
             )}
+          </motion.div>
+        )}
+
+          {activeTab === "wallet" && (
+          <motion.div
+            key="wallet"
+            initial="hidden"
+            animate="show"
+            exit="hidden"
+            variants={fade}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <div className="w-full flex justify-between items-center mb-4">
+                <div className="font-bold text-xl text-[#002B6B]">
+                  My Wallet
+                </div>
+                <Link
+                  href="/dashboard/wallet"
+                  className="text-sm text-[#007BFF] hover:underline cursor-pointer"
+                >
+                  View all
+                </Link>
+              </div>
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <p className="text-gray-600 mb-4">Manage your wallet balance and transactions</p>
+                <Link href="/dashboard/wallet">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    Go to Wallet
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </motion.div>
         )}
 

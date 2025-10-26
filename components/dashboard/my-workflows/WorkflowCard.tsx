@@ -4,6 +4,7 @@ import { Badge } from "../../ui/badge";
 import { Eye, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PurchasedWorkflow } from "@/lib/models/purchased-workflow";
+import { PurchaseStatus, WorkflowStatus } from "@/lib/models/enums";
 
 // Có thể truyền vào null/undefined cho workflow để hiện nút mua nếu không có
 export default function WorkflowCard({ workflow }: { workflow?: PurchasedWorkflow | null }) {
@@ -69,8 +70,8 @@ export default function WorkflowCard({ workflow }: { workflow?: PurchasedWorkflo
         <div className="text-lg font-bold text-[#0F172A]">${workflow.price}</div>
         <div className="mt-2">
           <span
-            className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-              workflow.status === "Active"
+            className={`px-2.5 py-0.5 rounded-full capitalize text-xs font-semibold ${
+              workflow.status === WorkflowStatus.ACTIVE
                 ? "bg-green-100 text-green-700"
                 : "bg-gray-100 text-gray-700"
             }`}

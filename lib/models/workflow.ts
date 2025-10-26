@@ -5,6 +5,7 @@ import { WorkflowStatus } from "./enums";
 export interface Workflow {
   id: string;
   title: string;
+  wishlist_count: number;
   description: string;
   price: number;
   status: WorkflowStatus;
@@ -18,6 +19,8 @@ export interface Workflow {
   updated_at: string;
   categories: string[];
   image_urls: string[];
+  is_like?: boolean; // Field từ workflow detail API
+  is_buy?: boolean;
 }
 
 
@@ -42,13 +45,44 @@ export interface UpdateWorkflowRequest {
   video_demo?: string;
   flow?: Record<string, any>;
 }
+export interface DetailWorkflow {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  status: WorkflowStatus;
+  features: string[];
+  downloads_count: number;
+  wishlist_count: number;
+  time_to_setup: number;
+  video_demo: string;
+  flow: Record<string, any>;
+  rating_avg: number;
+  created_at: string;
+  updated_at: string;
+  categories: string[];
+  image_urls: string[];
+  is_like: boolean;
+  is_buy :boolean ;
+}
 
-// export interface WorkflowWithDetails extends Workflow {
-//   categories: Category[];
-//   assets: WorkflowAsset[];
-//   comments_count: number;
-//   is_favorited?: boolean;
-// }
+export interface Invoice {
+  invoice_number: string;
+  issued_at: string;
+  status: string;
+  billing_name: string;
+  billing_email: string;
+  workflow: Workflow;
+  amount: number;
+}
+
+export interface RelatedWorkflow {
+  id: string;
+  title: string;
+  thumbnail_url: string;
+  rating_avg: number;
+  price: number;
+}
 
 export interface Category {
   id: string;

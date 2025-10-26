@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send, X } from "lucide-react";
 import { isAuthenticated } from "@/lib/auth";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 interface ReplyFormProps {
   onSubmit: (content: string) => void;
@@ -20,13 +21,9 @@ export default function ReplyForm({
 }: ReplyFormProps) {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authed, setAuthed] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const {isAuthenticated} = useAuth();
 
-  useEffect(() => {
-    setMounted(true);
-    setAuthed(isAuthenticated());
-  }, []);
+ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,15 +40,7 @@ export default function ReplyForm({
     }
   };
 
-  if (!mounted) {
-    return (
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-center">
-        <p className="text-gray-500 text-sm">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!authed) {
+  if (!isAuthenticated) {
     return (
       <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-center">
         <p className="text-blue-700 text-sm">

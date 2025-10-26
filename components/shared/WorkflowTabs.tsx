@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CheckCircle, Eye, Star, Zap } from "lucide-react";
-import { workflowReviews, workflowOverviews, workflowFeatures } from "../../lib/data";
+import { DetailWorkflow } from "@/lib/models/workflow";
 
-export default function WorkflowTabs({ workflow }: any) {
+export default function WorkflowTabs({ workflow }: { workflow: DetailWorkflow }) {
     const tabs = [
         { name: "Overview", icon: Eye },
         { name: "Features", icon: Zap }
@@ -35,10 +35,10 @@ export default function WorkflowTabs({ workflow }: any) {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">About This Workflow</h3>
                         <p className="text-gray-700 leading-relaxed">
-                            {workflowOverviews[workflow.id]?.about || `This ${workflow.category.toLowerCase()} automation streamlines processes and improves efficiency.`}
+                            {workflow?.description}
                         </p>
                         <div className="mt-4 flex flex-wrap gap-2">
-                            {(workflowOverviews[workflow.id]?.tags || [workflow.category.toLowerCase(), "automation", "workflow"]).map((tag) => (
+                            {(workflow?.features || []).map((tag) => (
                                 <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">{tag}</span>
                             ))}
                         </div>
@@ -48,7 +48,7 @@ export default function WorkflowTabs({ workflow }: any) {
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Key Features</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {(workflowFeatures[workflow.id] || []).map((feature, index) => (
+                            {(workflow?.features || []).map((feature, index) => (
                                 <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                                     <span className="text-gray-700 text-sm">{feature}</span>

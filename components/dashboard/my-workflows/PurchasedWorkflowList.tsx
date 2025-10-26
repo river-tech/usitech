@@ -9,11 +9,9 @@ import UserApi from "@/lib/api/User";
 export default function PurchasedWorkflowList() {
    const workflow = UserApi();
   const [purchasedWorkflows, setPurchasedWorkflows] = useState<PurchasedWorkflow[]>([]);
-  const [loadingWorkflows, setLoadingWorkflows] = useState<boolean>(false);
 
   useEffect(() => {
     const loadWorkflows = async () => {
-      setLoadingWorkflows(true);
       const result = await workflow.getMyPurchasedWorkflows();
       if (result.success) {
         setPurchasedWorkflows(result.data);

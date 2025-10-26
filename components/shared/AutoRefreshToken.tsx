@@ -1,69 +1,123 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import AuthApi from "../../lib/api/Auth";
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import AuthApi from '../../lib/api/Auth';
 
-interface AutoRefreshTokenProps {
-  children: React.ReactNode;
-}
-
-export default function AutoRefreshToken({ children }: AutoRefreshTokenProps) {
+export default function AutoRefreshToken() {
   const authApi = AuthApi();
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const isRefreshingRef = useRef<boolean>(false);
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isRefreshingRef = useRef(false);
 
-  const checkAndRefreshToken = async () => {
-    // Skip if already refreshing
-    if (isRefreshingRef.current) return;
-    
-    // Skip if no token
+  const scheduleTokenRefresh = () => {
+    // Clear existing timeout
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
+
     const token = authApi.getAuthToken();
     if (!token) return;
 
-    // Check if token is expired or will expire in next 2 minutes
-    const remaining = authApi.getTokenTimeRemaining();
-    if (remaining > 120) return; // More than 2 minutes left
+    // Check if token is expired
+    if (authApi.isTokenExpired()) {
+      console.log('🔄 Token expired, refreshing immediately...');
+      handleTokenRefresh();
+      return;
+    }
 
-    // Start refresh process
+    // Schedule refresh every 10 minutes (600 seconds)
+    const refreshTime = 10 * 60 * 1000; // 10 minutes in milliseconds
+    console.log('⏰ Scheduling token refresh every 10 minutes');
+    
+    refreshTimeoutRef.current = setTimeout(() => {
+      handleTokenRefresh();
+    }, refreshTime);
+  };
+
+  const handleTokenRefresh = async () => {
+    if (isRefreshingRef.current) {
+      console.log('🔄 Token refresh already in progress, skipping...');
+      return;
+    }
+
     isRefreshingRef.current = true;
     
     try {
-      console.log('Token expiring soon, refreshing...');
-      const success = await authApi.refreshToken();
+      console.log('🔄 Attempting to refresh token...');
+      const result = await authApi.refreshToken();
       
-      if (success) {
-        console.log('Token refreshed successfully');
+      if (result.success) {
+        console.log('✅ Token refreshed successfully');
+        // Schedule next refresh in 10 minutes
+        scheduleTokenRefresh();
       } else {
-        console.log('Token refresh failed, redirecting to login');
-        authApi.clearTokens();
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
+        console.log('❌ Token refresh failed:', result.error);
+        // Don't redirect immediately - refresh token might still be valid
+        // Try again in next cycle
+        scheduleTokenRefresh();
       }
     } catch (error) {
-      console.log('Error refreshing token:', error);
-      authApi.clearTokens();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
+      console.log('💥 Token refresh error:', error);
+      // Don't redirect immediately - might be network error
+      // Try again in next cycle
+      scheduleTokenRefresh();
     } finally {
       isRefreshingRef.current = false;
     }
   };
 
+
+  // Check token status on mount
   useEffect(() => {
-    // Check token status immediately
-    checkAndRefreshToken();
+    const checkInitialToken = () => {
+      const token = authApi.getAuthToken();
+      if (token) {
+        if (authApi.isTokenExpired()) {
+          console.log('🔄 Initial token check: expired, refreshing...');
+          handleTokenRefresh();
+        } else {
+          console.log('✅ Initial token check: valid, scheduling refresh every 10 minutes...');
+          scheduleTokenRefresh();
+        }
+      }
+    };
 
-    // Set up interval to check every 30 seconds
-    refreshIntervalRef.current = setInterval(checkAndRefreshToken, 30000);
+    checkInitialToken();
 
+    // Cleanup on unmount
     return () => {
-      if (refreshIntervalRef.current) {
-        clearInterval(refreshIntervalRef.current);
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
       }
     };
   }, []);
 
-  return <>{children}</>;
+  // Listen for storage changes (token updates from other tabs)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'access_token' || e.key === 'token_expires_at') {
+        console.log('🔄 Token updated in another tab, rescheduling refresh...');
+        scheduleTokenRefresh();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Listen for focus events (user returns to tab)
+  useEffect(() => {
+    const handleFocus = () => {
+      const token = authApi.getAuthToken();
+      if (token && authApi.isTokenExpired()) {
+        console.log('🔄 Tab focused, token expired, refreshing...');
+        handleTokenRefresh();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
+  return null; // This component doesn't render anything
 }

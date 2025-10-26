@@ -16,9 +16,6 @@ export type {
 
 export type {
   Notification,
-  CreateNotificationRequest,
-  UpdateNotificationRequest,
-  NotificationWithUser,
 } from "./notification";
 
 export type {
@@ -30,7 +27,6 @@ export type {
 
 export type {
   Workflow,
-  WorkflowWithDetails,
   Category,
   CreateCategoryRequest,
   WorkflowCategory,
@@ -44,10 +40,4 @@ export type {
 
 export type {
   Purchase,
-  CreatePurchaseRequest,
-  UpdatePurchaseRequest,
-  PurchaseWithDetails,
-  Invoice,
-  CreateInvoiceRequest,
-  InvoiceWithPurchase,
 } from "./purchase";

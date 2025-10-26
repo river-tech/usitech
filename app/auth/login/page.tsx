@@ -39,7 +39,7 @@ export default function LoginPage() {
 		}
 	};
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4 py-10">
+		<div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-10 w-full py-10">
 			<div className="flex flex-col items-center w-full">
 				{/* Icon */}
 				<div className="flex items-center justify-center w-20 h-20 rounded-xl mb-6" style={{

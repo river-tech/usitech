@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import CommentCard, { Comment } from "./CommentCard";
+import CommentCard from "./CommentCard";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Review } from "@/lib/models/Reviews";
 
 interface CommentListProps {
-  comments: Comment[];
-  onLike?: (commentId: string) => void;
+  comments: Review[];
   onReply?: (commentId: string, content: string) => void;
   onDelete?: (commentId: string) => void;
   showLoadMore?: boolean;
@@ -17,20 +17,16 @@ interface CommentListProps {
 
 export default function CommentList({ 
   comments, 
-  onLike, 
   onReply, 
   onDelete,
   showLoadMore = false,
   onLoadMore,
   isLoading = false,
-  currentUserId = "current-user"
 }: CommentListProps) {
   // currentUserId will be used for future user identification
-  console.log("Current user ID:", currentUserId);
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "popular">("newest");
   const [showAll, setShowAll] = useState(false);
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -38,11 +34,11 @@ export default function CommentList({
   const sortedComments = [...comments].sort((a, b) => {
     switch (sortBy) {
       case "newest":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       case "oldest":
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       case "popular":
-        return b.likes - a.likes;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // Fallback to newest
       default:
         return 0;
     }
@@ -115,20 +111,17 @@ export default function CommentList({
 
       {/* Comments */}
       <div className="space-y-4">
-        {displayedComments.map((comment) => (
+        {displayedComments.map((comment: Review, index) => (
           <CommentCard
-            key={comment.id}
+            key={index}
             comment={comment}
-            onLike={onLike}
             onReply={onReply}
             onDelete={onDelete}
-            isOwnComment={comment.author.name === "You" || comment.author.name === "current-user"}
+            
           />
         ))}
       </div>
 
-      {/* Load More */}
-    
     </div>
   );
 }

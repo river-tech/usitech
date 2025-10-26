@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,32 +10,25 @@ import {
   ThankYouCard,
 } from "@/components/dashboard/workflow-detail";
 import { mockWorkflowDetails } from "@/lib/mock-data";
+import WorkflowApi from "@/lib/api/Workflow";
+import { DetailWorkflow } from "@/lib/models/workflow";
 
 export default function WorkflowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
+  const workflowApi = WorkflowApi();
   const router = useRouter();
-  const workflow = mockWorkflowDetails.find((w) => w.id === id);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [workflow, setWorkflow] = useState<DetailWorkflow | null>(null);
+  const getWorkflow = async () => {
+    const result = await workflowApi.getWorkflowDetail(id);
+    if (result.success) {
+      setWorkflow(result.data);
+    }
+  }
 
-  // Generate JSON data for the workflow
-  const generateWorkflowJSON = () => {
-    const jsonData = {
-      workflow: {
-        id: workflow?.id,
-        title: workflow?.title,
-        category: workflow?.category,
-        date: workflow?.date,
-        video: workflow?.video,
-        docs: workflow?.docs,
-        metadata: {
-          generatedAt: new Date().toISOString(),
-          version: "1.0.0",
-          source: "UsITech Workflow Marketplace"
-        }
-      }
-    };
-    return jsonData;
-  };
+  useEffect(() => {
+    getWorkflow();
+  }, [id]);
 
   // Download JSON file
   const handleDownloadJSON = async () => {
@@ -43,7 +36,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
     
     setIsDownloading(true);
     try {
-      const jsonData = generateWorkflowJSON();
+      const jsonData = workflow.flow;
       const jsonString = JSON.stringify(jsonData, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -102,13 +95,13 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
         </div>
 
         {/* Workflow Header */}
-        <WorkflowHeader workflow={workflow} />
+        <WorkflowHeader workflow={{ title: workflow?.title || "", category: workflow?.categories[0] || "", date: workflow?.created_at || "" }} />
 
         {/* Video Section */}
-        <WorkflowVideo url={workflow.video} />
+        <WorkflowVideo url={workflow?.video_demo || ""} />
 
         {/* Docs Section */}
-        <WorkflowDocs docs={workflow.docs} />
+        {/* <WorkflowDocs docs={workflow.docs} /> */}
 
         {/* JSON Download Section */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">

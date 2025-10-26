@@ -1,23 +1,37 @@
 "use client";
-import { notFound } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { workflows } from "../../../../lib/data";
 import { Button } from "../../../../components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import HeroSection from "../../../../components/shared/Herosection";
 import WorkflowTabs from "../../../../components/shared/WorkflowTabs";
 import SidebarCard from "../../../../components/shared/SidebarWorkflow";
 import CommentsSection from "../../../../components/workflow/CommentsSection";
+import WorkflowApi from "@/lib/api/Workflow";
+import { DetailWorkflow, RelatedWorkflow } from "@/lib/models/workflow";
 
 
 
 export default function WorkflowDetails({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = React.use(params); 
     const router = useRouter();
-    const workflow = workflows.find((w) => w.id.toString() === id);
+    const workflowApi = WorkflowApi();    
+    const [workflowDetail, setWorkflowDetail] = useState<DetailWorkflow | null>(null);
+    const [relatedWorkflows, setRelatedWorkflows] = useState<RelatedWorkflow[]>([]);
+    const getWorkflow = async () => {
+        const result = await workflowApi.getWorkflowDetail(id);
+        const relatedResult = await workflowApi.getRelatedWorkflows(id);
+        if (result.success) {
+            setWorkflowDetail(result.data);
+            setRelatedWorkflows(relatedResult.data);
+        }
+    }
+
+    useEffect(() => {
+        getWorkflow();
+        console.log("workflowDetail", workflowDetail);
+    }, [id]);
 	
-    if (!workflow) return notFound();
     
     return (
         <div className="min-h-screen bg-gray-50">
@@ -36,25 +50,42 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
-                        <HeroSection workflow={workflow} />	
-                        <WorkflowTabs workflow={workflow} />
-                        
+                        {workflowDetail && (
+                            <>
+                                <HeroSection workflow={workflowDetail} />	
+                                <WorkflowTabs workflow={workflowDetail} />
+                            </>
+                        )}
                         {/* Comments Section */}
                         <div className="mt-8">
                             <CommentsSection workflowId={id} />
                         </div>
                     </div>
                     <div className="lg:col-span-1 space-y-6">
-                        <SidebarCard workflow={workflow} />
+                        {workflowDetail  && (
+                            <SidebarCard workflow={workflowDetail} relatedWorkflows={relatedWorkflows} />
+                        )}
                     </div>
                 </div>
                 
             </div>
             {/* Mobile sticky CTA */}
             <div className="lg:hidden fixed bottom-3 inset-x-3 z-30">
-                <Button onClick={() => router.push(`/dashboard/checkout/${id}`)} className="w-full bg-gradient-to-r from-[#007BFF] to-[#06B6D4] text-white font-semibold py-3 rounded-xl shadow-lg">
-                    Buy Now
-                </Button>
+                {workflowDetail?.is_buy ? (
+                    <Button 
+                        disabled
+                        className="w-full bg-gray-200 text-gray-500 font-semibold py-3 rounded-xl shadow-lg cursor-not-allowed"
+                    >
+                        Already bought
+                    </Button>
+                ) : (
+                    <Button 
+                        onClick={() => router.push(`/dashboard/checkout/${id}`)} 
+                        className="w-full bg-gradient-to-r from-[#007BFF] to-[#06B6D4] text-white font-semibold py-3 rounded-xl shadow-lg"
+                    >
+                        Buy Now
+                    </Button>
+                )}
             </div>
         </div>
     );

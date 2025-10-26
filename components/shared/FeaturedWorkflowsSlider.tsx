@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Download, Star } from "lucide-react";
 import { useWorkflow } from "../../lib/contexts/WorkflowContext";
+import WishlistButton from "./WishlistButton";
 
 // Fixed items per page for 1080px screen
 function getItemsPerPage() {
@@ -150,7 +151,9 @@ export default function FeaturedWorkflowsSlider() {
 										<Download className="w-4 h-4 text-gray-500" fill="currentColor" />
 										<span className="text-xs text-gray-500">{w.downloads_count || "1.2k"} downloads</span>
 									</div>
-									<span className="text-sm font-semibold text-[#007BFF]">{w.price === 0 ? "Free" : `${w.price} ₫`}</span>
+									<div className="flex items-center gap-2">
+										<span className="text-sm font-semibold text-[#007BFF]">{w.price === 0 ? "Free" : `${w.price} ₫`}</span>
+									</div>
 								</div>
 								<Link href={`/workflows/${w.id}`} className="mt-auto">
 									<Button

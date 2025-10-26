@@ -16,14 +16,26 @@ export default function WorkflowVideo({ url }: { url: string }) {
         </div>
         
         {/* Video element (hidden for now, would be shown when play is clicked) */}
-        <video 
+        {
+          url && (
+            <video 
+              controls 
+              className="w-full h-full object-cover hidden"
+              poster="/placeholder-video.jpg"
+            >
+              <source src={url || ""} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )
+        }
+        {/* <video 
           controls 
           className="w-full h-full object-cover hidden"
           poster="/placeholder-video.jpg"
         >
-          <source src={url} type="video/mp4" />
+          <source src={url || ""} type="video/mp4" />
           Your browser does not support the video tag.
-        </video>
+        </video> */}
       </div>
       
       {/* Video info */}

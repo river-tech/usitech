@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import WorkflowApi from "../api/Workflow";
 import { Category, Workflow } from "../models/workflow";
 import CategoryApi from "../api/Category";
+import { WorkflowStatus } from "../models/enums";
 
 interface WorkflowContextType {
   allWorkflows: Workflow[];
@@ -35,18 +36,14 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
     
     try {
       
-      const allResult = await workflowApi.getAllWorkflows();
+      const allResult = await workflowApi.getAllWorkflows() ;
+      
       
       if (allResult.success) {
-        console.log('✅ All workflows loaded successfully:', allResult.data);
-       
-        
-        // Log first workflow structure for debugging
-        if (allResult.data && allResult.data.length > 0) {
-          console.log('🔍 First workflow structure:', allResult.data[0]);
-          console.log('🔍 First workflow keys:', Object.keys(allResult.data[0]));
-        }
-        
+        console.log('🔍 All workflows loaded successfully:', allResult.data);
+        const data = allResult.data.filter((workflow: Workflow) =>  workflow.is_buy === null);
+        console.log('🔍 All workflows loaded successfully:', data);
+        // console.log('🔍 All workflows loaded successfully:', data);
         setAllWorkflows(allResult.data);
       } else {
         console.log('❌ Failed to load all workflows:', allResult.error);

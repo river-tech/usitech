@@ -24,3 +24,9 @@ export enum NotificationType {
   WARNING = "WARNING",
   ERROR = "ERROR"
 }
+
+export enum TransactionType {
+  DEPOSIT = "DEPOSIT",   
+  PURCHASE = "PURCHASE",  
+  REFUND = "REFUND"      
+}

@@ -6,8 +6,11 @@ interface PageProps {
 }
 
 export default async function CheckoutPage({ params }: PageProps) {
-  const p = await params;
-  const item = mockUserPurchases.find((i) => i.id === p.id) || mockUserPurchases[0];
+  const { id } = await params;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}/api/workflows/${id}`, {
+    cache: "no-store"
+  });
+  const item = await res.json();
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-4 grid md:grid-cols-3 gap-6">

@@ -34,17 +34,30 @@ const AuthApi = () => {
     return localStorage.getItem('refresh_token') || null;
   };
 
-  // Helper function to clear tokens
+  // Helper function to clear tokens (only when logout)
   const clearTokens = () => {
     if (typeof window !== 'undefined') {
       // Clear access_token from cookies
       Cookies.remove('access_token', { path: '/' });
       
-      // Clear refresh_token from localStorage
+      // Clear refresh_token from localStorage (only on logout)
       localStorage.removeItem('refresh_token');
       
       // Clear token expiry time
       localStorage.removeItem('token_expires_at');
+    }
+  };
+
+  // Helper function to clear only access token (when refresh fails)
+  const clearAccessToken = () => {
+    if (typeof window !== 'undefined') {
+      // Clear access_token from cookies
+      Cookies.remove('access_token', { path: '/' });
+      
+      // Clear token expiry time
+      localStorage.removeItem('token_expires_at');
+      
+      // Keep refresh_token for retry
     }
   };
 
@@ -297,9 +310,11 @@ const AuthApi = () => {
     try {
       const refreshTokenValue = getRefreshToken();
       if (!refreshTokenValue) {
-        throw new Error('No refresh token available');
+        console.log('❌ No refresh token available');
+        return { success: false, error: 'No refresh token available' };
       }
 
+      console.log('🔄 Attempting to refresh token...');
       const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
         method: 'POST',
         headers: {
@@ -311,20 +326,31 @@ const AuthApi = () => {
       });
 
       const data = await response.json();
+      console.log('📥 Refresh response:', { status: response.status, data });
 
       if (response.ok && data.access_token) {
-        // Update tokens with new access token
-        setTokens(data.access_token, data.refresh_token || refreshTokenValue, data.expires_in);
-        return true;
+        // Update only access token, keep the same refresh token
+        setTokens(data.access_token, refreshTokenValue, data.expires_in);
+        console.log('✅ Token refreshed successfully');
+        return { success: true, data };
       } else {
-        // Refresh failed, clear tokens
-        clearTokens();
-        return false;
+        // Refresh failed, but don't clear refresh token - it might still be valid
+        console.log('❌ Token refresh failed:', data);
+        // Only clear access token and expiry, keep refresh token
+        clearAccessToken();
+        return { 
+          success: false, 
+          error: data.detail || data.message || data.error || 'Token refresh failed' 
+        };
       }
     } catch (error) {
-      console.log('Error refreshing token:', error);
-      clearTokens();
-      return false;
+      console.log('💥 Error refreshing token:', error);
+      // Only clear access token and expiry, keep refresh token
+      clearAccessToken();
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Token refresh failed' 
+      };
     }
   };
 
@@ -347,6 +373,7 @@ const AuthApi = () => {
     clearTokens,
     // Token management
     refreshToken,
+    clearAccessToken,
 
     // Helper functions
     getTokenExpiryTime,

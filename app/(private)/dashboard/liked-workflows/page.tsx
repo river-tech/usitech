@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import UserApi from "../../../../lib/api/User";
 import { PurchasedWorkflow } from "../../../../lib/models/purchased-workflow";
-import { ArrowLeft, Eye, Heart, Star, Clock, Users, Play, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Eye, Heart, Star, Clock, Users, Play, ShoppingCart, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../../../components/ui/button";
 import { useRouter } from "next/navigation";
+import { useWishlist } from "../../../../lib/contexts/WishlistContext";
 
 export default function LikedWorkflowsPage() {
   const [workflows, setWorkflows] = useState<PurchasedWorkflow[]>([]);
@@ -15,6 +16,7 @@ export default function LikedWorkflowsPage() {
   const [error, setError] = useState<string>("");
   const userApi = UserApi();
   const router = useRouter();
+  const { removeFromWishlist } = useWishlist();
 
   useEffect(() => {
     const loadWorkflows = async () => {
@@ -53,6 +55,20 @@ export default function LikedWorkflowsPage() {
     console.log('Purchase workflow:', workflowId);
   };
 
+  const handleRemoveFromWishlist = async (workflowId: string) => {
+    try {
+      const result = await removeFromWishlist(workflowId);
+      if (result.success) {
+        // Remove from local state
+        setWorkflows(prev => prev.filter(w => w.id !== workflowId));
+      } else {
+        console.log('Failed to remove from wishlist:', result.error);
+      }
+    } catch (error) {
+      console.log('Error removing from wishlist:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#EAF2FF] via-[#F8FAFC] to-white">
       <div className="mx-auto max-w-6xl px-4 md:px-6 py-6 md:py-8">
@@ -71,7 +87,6 @@ export default function LikedWorkflowsPage() {
               <h1 className="text-3xl font-bold text-[#002B6B] mb-2">My Wishlist</h1>
               <p className="text-gray-600">Workflows you've saved for later</p>
             </div>
-            
             <div className="text-right">
               <div className="text-2xl font-bold text-[#002B6B]">
                 {workflows.length} {workflows.length === 1 ? 'Item' : 'Items'}
@@ -108,101 +123,74 @@ export default function LikedWorkflowsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {workflows.map((workflow, index) => (
               <motion.div
                 key={workflow.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300"
+                transition={{ duration: 0.33, delay: index * 0.07 }}
+                className="relative flex bg-white rounded-3xl border border-blue-100 px-6 py-5 shadow-lg hover:shadow-2xl hover:border-blue-300 transition-all duration-350 items-center group"
+                style={{ minHeight: 112 }}
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-[#0F172A] mb-2 line-clamp-2">
+                {/* Thumbnail with overlay */}
+                <div className="relative w-20 h-20 rounded-2xl overflow-hidden shadow shrink-0 mr-6 flex items-center justify-center bg-gradient-to-br from-[#ddeaff] to-[#f4f8ff]">
+                  <span className="text-3xl select-none text-blue-200 font-semibold">IMG</span>
+                
+                </div>
+
+                {/* Info Block */}
+                <div className="flex-1 min-w-0 flex flex-col gap-1 justify-center">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <h3 className="text-lg font-semibold text-[#062855] truncate max-w-[150px] md:max-w-[240px]">
                       {workflow.title}
                     </h3>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                        Wishlist
-                      </span>
-                      {workflow.categories && workflow.categories.length > 0 && (
-                        <span className="text-xs text-[#0a637a] bg-[#d7f6ff] px-2 py-1 rounded-full">
-                          {workflow.categories[0]}
-                        </span>
-                      )}
-                    </div>
+                   
                   </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-[#002B6B]">
-                      {formatPrice(workflow.price)}
-                    </div>
+                  <div className="text-gray-500 text-sm truncate max-w-[260px] md:max-w-[400px]">
+                    {workflow.description || "No description provided."}
                   </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                  {workflow.description}
-                </p>
-
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-yellow-500" />
-                    <span className="text-gray-600">{workflow.rating_avg.toFixed(1)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-blue-500" />
-                    <span className="text-gray-600">{workflow.downloads_count}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-green-500" />
-                    <span className="text-gray-600">{workflow.time_to_setup}min</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Play className="w-4 h-4 text-purple-500" />
-                    <span className="text-gray-600">Demo</span>
-                  </div>
-                </div>
-
-                {/* Features */}
-                {workflow.features && workflow.features.length > 0 && (
-                  <div className="mb-4">
-                    <div className="text-xs text-gray-500 mb-2">Key Features:</div>
-                    <div className="flex flex-wrap gap-1">
-                      {workflow.features.slice(0, 3).map((feature, idx) => (
-                        <span key={idx} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                          {feature}
+                  {workflow.categories && workflow.categories.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {workflow.categories.slice(0, 2).map((cat, idx) => (
+                        <span
+                          key={cat}
+                          className="inline-block bg-blue-100 text-[#1764b1] text-[11px] font-semibold rounded-full px-2 py-0.5"
+                        >
+                          {cat}
                         </span>
                       ))}
-                      {workflow.features.length > 3 && (
-                        <span className="text-xs text-gray-500">+{workflow.features.length - 3} more</span>
-                      )}
                     </div>
-                  </div>
-                )}
-
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleViewDetails(workflow.id)}
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 border-[#007BFF] text-[#007BFF] hover:bg-[#EAF2FF]"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View Details
-                  </Button>
-                  <Button
-                    onClick={() => handlePurchase(workflow.id)}
-                    size="sm"
-                    className="flex-1 bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white hover:brightness-110"
-                  >
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    Purchase
-                  </Button>
+                  )}
                 </div>
+
+                {/* Price & Actions */}
+                <div className="flex flex-col items-end min-w-[145px] ml-5 gap-3 self-stretch justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-gradient bg-gradient-to-r from-[#2487ff] to-[#013374] bg-clip-text text-transparent drop-shadow-lg">
+                      {formatPrice(workflow.price)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => handleViewDetails(workflow.id)}
+                      variant="ghost"
+                      className="flex items-center gap-2 px-2 h-8 text-sm font-medium rounded-lg text-[#13409f] hover:bg-blue-50 border-none shadow-none"
+                    >
+                      <Eye className="w-5 h-5" />
+                      View
+                    </Button>
+                    <Button
+                      onClick={() => handlePurchase(workflow.id)}
+                      className="flex items-center gap-2 px-4 h-8 text-sm font-semibold rounded-lg bg-gradient-to-r from-[#144299] to-[#41a4ff] text-white hover:brightness-110 transition"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      Purchase
+                    </Button>
+                  </div>
+                </div>
+                {/* Remove Btn */}
+            
               </motion.div>
             ))}
           </div>

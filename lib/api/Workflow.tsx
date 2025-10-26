@@ -12,6 +12,7 @@ const WorkflowApi = () => {
         method: "GET",
         headers: {
           "Accept": "application/json",
+          "Authorization": `Bearer ${authApi.getAuthToken()}`,
         },
       });
       const data = await response.json();
@@ -97,10 +98,13 @@ const WorkflowApi = () => {
         method: "GET",
         headers: {
           "Accept": "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authApi.getAuthToken()}`,
         },
       });
       const data = await response.json();
       if (response.ok) {
+        console.log("data", data);
         return { success: true, data: data };
       } else {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching workflow detail" };
@@ -112,29 +116,29 @@ const WorkflowApi = () => {
   };
 
   // 17. Search Workflows
-  const searchWorkflows = async (q = "", category = "") => {
-    try {
-      const params = new URLSearchParams();
-      if (q) params.append("q", q);
-      if (category) params.append("category", category);
+  // const searchWorkflows = async (q = "", category = "") => {
+  //   try {
+  //     const params = new URLSearchParams();
+  //     if (q) params.append("q", q);
+  //     if (category) params.append("category", category);
 
-      const response = await fetch(`${API_BASE_URL}/api/workflows/search?${params.toString()}`, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        return { success: true, data: data };
-      } else {
-        return { success: false, error: data.detail || data.message || data.error || "Error searching workflows" };
-      }
-    } catch (error) {
-      console.log("Error searching workflows:", error);
-      throw error;
-    }
-  };
+  //     const response = await fetch(`${API_BASE_URL}/api/workflows/search?${params.toString()}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Accept": "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       return { success: true, data: data };
+  //     } else {
+  //       return { success: false, error: data.detail || data.message || data.error || "Error searching workflows" };
+  //     }
+  //   } catch (error) {
+  //     console.log("Error searching workflows:", error);
+  //     throw error;
+  //   }
+  // };
 
   // 18. Add to Wishlist
   const addToWishlist = async (workflow_id: string) => {
@@ -256,13 +260,52 @@ const WorkflowApi = () => {
     }
   };
 
+  const orderWorkflow = async (workflow_id: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/wallet/orders/${workflow_id}`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authApi.getAuthToken()}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) return { success: true, data };
+      return { success: false, error: data.detail || data.message || data.error || "Error ordering workflow" };
+    } catch (error) {
+      console.log("Error ordering workflow:", error);
+      throw error;
+    }
+  }
+
+  const getInvoice = async (order_id: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/orders/${order_id}/invoice`, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          Authorization: `Bearer ${authApi.getAuthToken()}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) return { success: true, data };
+      return { success: false, error: data.detail || data.message || data.error || "Error fetching invoice" };
+    } catch (error) {
+      console.log("Error fetching invoice:", error);
+      throw error;
+    }
+  }
+
   return {
+    orderWorkflow,
     getAllWorkflows,
     getFeaturedWorkflows,
     getRelatedWorkflows,
     getMyWorkflows,
     getWorkflowDetail,
-    searchWorkflows,
+    getInvoice,
+    // searchWorkflows,
     addToWishlist,
     removeFromWishlist,
     createReview,

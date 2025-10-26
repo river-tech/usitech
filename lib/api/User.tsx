@@ -77,10 +77,11 @@ const UserApi = () => {
         },
       });
       const data = await response.json();
+      // console.log("data dashboard", data);
       if (response.ok) {
         return {
           success: true,
-          data: data.data,
+          data: data,
         };
       } else {
         return {

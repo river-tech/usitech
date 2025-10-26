@@ -231,32 +231,7 @@ export default function WorkflowsPage() {
 
           <div>
             {/* Active Filters */}
-            {filters.categoryIds.length > 0 && (
-              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-medium text-blue-800">Active filters:</span>
-                  {filters.categoryIds.map((categoryId) => (
-                    <span
-                      key={categoryId}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-                    >
-                      {categories.find(category => category.id === categoryId)?.name}
-                      <button
-                        onClick={() => {
-                          setFilters(prev => ({
-                            ...prev,
-                            categoryIds: prev.categoryIds.filter(c => c !== categoryId)
-                          }));
-                        }}
-                        className="ml-1 text-blue-600 hover:text-blue-800"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            
 
             {/* Sort bar */}
             <div className="flex items-center justify-between mb-8">
