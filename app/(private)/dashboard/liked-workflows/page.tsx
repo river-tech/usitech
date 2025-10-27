@@ -42,7 +42,7 @@ export default function LikedWorkflowsPage() {
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'VND'
     }).format(amount);
   };
 

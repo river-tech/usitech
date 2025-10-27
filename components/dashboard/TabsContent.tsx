@@ -17,12 +17,11 @@ import { useRouter } from "next/navigation";
 import { DetailWorkflow, NotificationType, PurchaseStatus, UserProfile } from "../../lib/models";
 import LikedWorkflowList from "./my-workflows/LikedWorkflowList";
 import { useEffect, useState } from "react";
-import { uploadAvatar } from "../../lib/api/UploadFile";
 import UserApi from "../../lib/api/User";
 import { Purchase } from "../../lib/models/purchase";
 import { PurchasedWorkflow } from "../../lib/models/purchased-workflow";
 import { Notification } from "../../lib/models/notification";
-import { useUser } from "../../lib/contexts/UserContext";
+import { useAuth } from "../../lib/contexts/AuthContext";
 import NotificationApi from "../../lib/api/Notification";
 
 
@@ -58,9 +57,9 @@ export default function TabsContent({
     console.log(profile);
   }, [profile]);
   const router = useRouter();
-  const { userName, setUserName } = useUser();
+  const { userName } = useAuth();
   useEffect(() => {
-    setUserName(profile.name || "");
+    // Profile name is now managed by AuthContext
   }, [profile.name]);
   const [name, setName] = useState<string>(userName || "");
   const [success, setSuccess] = useState<string>("");
@@ -158,7 +157,7 @@ export default function TabsContent({
     const result = await user.updateUserProfile(name, profile.avatar_url || "");
     if (result.success) {
       setSuccess("Account settings updated successfully");
-      setUserName(name);
+      // Name is now managed by AuthContext
       setLoading(false);
       router.refresh();
     } else {
@@ -225,7 +224,7 @@ export default function TabsContent({
                               {new Date(purchase.paid_at || purchase.created_at).toLocaleDateString()}
                             </td>
                             <td className="py-3 text-gray-600">
-                              ${purchase.amount.toFixed(2)}
+                              {purchase.amount} ₫
                             </td>
                             <td className="py-3">
                               <span
@@ -324,7 +323,7 @@ export default function TabsContent({
                       </div>
                       <div className="text-right min-w-[72px]">
                         <div className="text-base md:text-lg font-bold text-[#0F172A]">
-                          ${workflow.price.toFixed(2)}
+                          {workflow.price} ₫
                         </div>
                         <div className="mt-2">
                           <span
@@ -419,7 +418,7 @@ export default function TabsContent({
                       </div>
                       <div className="text-right min-w-[72px]">
                         <div className="text-base md:text-lg font-bold text-[#0F172A]">
-                          ${workflow.price.toFixed(2)}
+                          {workflow.price} ₫
                         </div>
                         <div className="mt-2">
                           <span className="px-2.5 py-0.5 rounded-full text-[10px] md:text-xs font-semibold bg-blue-100 text-blue-700">

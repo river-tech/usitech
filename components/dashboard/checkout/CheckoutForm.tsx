@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
-import { useUser } from "@/lib/contexts/UserContext";
+import { useAuth } from "@/lib/contexts/AuthContext";
 import { useWallet } from "@/lib/contexts/WalletContext";
 import WorkflowApi from "@/lib/api/Workflow";
 
 export default function CheckoutForm({ total, orderId }: { total: string; orderId: string }) {
-  const { userEmail, userName } = useUser()
+  const { userEmail, userName } = useAuth()
   const { walletStats } = useWallet();
   const walletBalance = walletStats?.balance;
   const workflowApi = WorkflowApi();
@@ -26,18 +26,10 @@ export default function CheckoutForm({ total, orderId }: { total: string; orderI
     const result = await workflowApi.orderWorkflow(orderId);
     if (result.success) {
       setIsLoading(false);
-      router.push(`/dashboard/checkout/${orderId}/invoice`);
+      router.push(`/dashboard/checkout/${result.data.purchase_id}/invoice`);
     } else {
       setIsLoading(false);
     }
-    // Giả sử total dạng: "150.000 ₫"
-    // const amountNumber = parseInt(total.replace(/[^\d]/g, ""));
-    // if (walletBalance && walletBalance < amountNumber) {
-    //   setIsInsufficient(true);
-    //   return;
-    // }
-    // // TODO: Gọi API thanh toán thực sự với orderId và trừ ví (ở đây redirect demo luôn)
-    // router.push(`/dashboard/checkout/${orderId}/invoice`);
   };
 
   return (

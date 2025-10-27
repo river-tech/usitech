@@ -19,11 +19,11 @@ export default function OrderSummary({ item }: { item: any }) {
       <div className="text-sm border-t pt-2 space-y-2">
         <div className="flex justify-between text-gray-800">
           <span>Subtotal</span>
-          <span className="font-medium">${item.price}</span>
+          <span className="font-medium">{item.price} ₫</span>
         </div>
         <div className="flex justify-between font-semibold pt-2 border-t text-gray-900 text-base">
           <span>Total</span>
-          <span>${item.price}</span>
+          <span>{item.price} ₫</span>
         </div>
       </div>
 

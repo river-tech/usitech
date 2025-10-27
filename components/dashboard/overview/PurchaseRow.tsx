@@ -33,7 +33,7 @@ export default function PurchaseRow({ purchase }: { purchase: PurchaseItem }) {
     <tr className="border-b last:border-none hover:bg-gray-50 transition">
       <td className="py-4 px-6 font-medium text-[#0F172A]">{purchase.workflow}</td>
       <td className="py-4 px-6 text-gray-600">{purchase.date}</td>
-      <td className="py-4 px-6 font-semibold text-[#0F172A]">${purchase.price}</td>
+      <td className="py-4 px-6 font-semibold text-[#0F172A]">{purchase.price} ₫</td>
       <td className="py-4 px-6 text-gray-600">{purchase.payment}</td>
       <td className="py-4 px-6">
        <div className={`${getBadgeClass(purchase.status)} rounded-full  py-1 text-xs font-semibold flex items-center justify-center`}>{purchase.status}</div>

@@ -3,15 +3,20 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import AuthApi from '../api/Auth';
-import { useUser } from './UserContext';
+import UserApi from '../api/User';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: any | null;
+  userAvatar: string | null;
+  userName: string | null;
+  userEmail: string | null;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   checkAuth: () => Promise<void>;
+  refreshUserData: () => Promise<void>;
+  setUserAvatar: (avatar: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,9 +25,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const authApi = AuthApi();
+  const userApi = UserApi();
+
+  const refreshUserData = async () => {
+    try {
+      console.log('🔄 Refreshing user data...');
+      const result = await userApi.getUserProfile();
+      if (result.success) {
+        console.log('✅ User profile loaded:', result.data);
+        setUserAvatar(result.data.avatar_url);
+        setUserName(result.data.name);
+        setUserEmail(result.data.email);
+        console.log('✅ User data updated');
+      } else {
+        console.log('❌ Failed to load user profile:', result.error);
+      }
+    } catch (error) {
+      console.log('❌ Failed to fetch user data:', error);
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -33,6 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('🔍 No token found');
         setIsAuthenticated(false);
         setUser(null);
+        setUserAvatar(null);
+        setUserName(null);
+        setUserEmail(null);
         return;
       }
 
@@ -44,11 +74,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (refreshResult.success) {
             console.log('✅ Token refreshed successfully');
             setIsAuthenticated(true);
+            // Load user data after successful refresh
+            await refreshUserData();
           } else {
             console.log('❌ Token refresh failed:', refreshResult.error);
             authApi.clearTokens();
             setIsAuthenticated(false);
             setUser(null);
+            setUserAvatar(null);
+            setUserName(null);
+            setUserEmail(null);
             return;
           }
         } catch (refreshError) {
@@ -56,12 +91,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           authApi.clearTokens();
           setIsAuthenticated(false);
           setUser(null);
+          setUserAvatar(null);
+          setUserName(null);
+          setUserEmail(null);
           return;
         }
       } else {
         // Token is valid, set authenticated state
         console.log('✅ Token is valid');
         setIsAuthenticated(true);
+        // Load user data when token is valid
+        await refreshUserData();
       }
       
       // Optionally fetch user data here
@@ -74,6 +114,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('💥 Auth check failed:', error);
       setIsAuthenticated(false);
       setUser(null);
+      setUserAvatar(null);
+      setUserName(null);
+      setUserEmail(null);
     } finally {
       setIsLoading(false);
     }
@@ -87,8 +130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (result.success) {
         setIsAuthenticated(true);
         setUser(result.data);
-        // Trigger custom event to refresh avatar
-        window.dispatchEvent(new Event('userLogin'));
+        // Load user data after successful login
+        await refreshUserData();
         return { success: true };
       } else {
         return { success: false, error: result.error || 'Login failed' };
@@ -105,8 +148,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authApi.clearTokens();
     setIsAuthenticated(false);
     setUser(null);
-    // Trigger custom event to clear avatar
-    window.dispatchEvent(new Event('userLogout'));
+    setUserAvatar(null);
+    setUserName(null);
+    setUserEmail(null);
+    
     router.push('/auth/login');
   };
 
@@ -131,9 +176,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated,
     isLoading,
     user,
+    userAvatar,
+    userName,
+    userEmail,
     login,
     logout,
     checkAuth,
+    refreshUserData,
+    setUserAvatar,
   };
 
   return (

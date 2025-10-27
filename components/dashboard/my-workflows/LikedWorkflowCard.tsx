@@ -48,7 +48,7 @@ export default function LikedWorkflowCard({ workflow }: { workflow: LikedWorkflo
         </div>
       </div>
       <div className="text-right">
-        <div className="text-lg font-semibold text-[#0F172A]">${workflow.price}</div>
+        <div className="text-lg font-semibold text-[#0F172A]">{workflow.price} ₫</div>
         <div className="mt-2">
           <span className="inline-block px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
             Liked

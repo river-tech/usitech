@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Notification } from "../../../lib/models/notification";
 import UserApi from "../../../lib/api/User";
 import { UserProfile } from "../../../lib/models/user";
-import { useUser } from "@/lib/contexts/UserContext";
+import { useAuth } from "@/lib/contexts/AuthContext";
 import { DetailWorkflow } from "@/lib/models/workflow";
 import NotificationApi from "@/lib/api/Notification";
 import WorkflowApi from "@/lib/api/Workflow";
@@ -17,7 +17,7 @@ export default function DashboardPage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [workflows, setWorkflows] = useState<DetailWorkflow[]>([]);
-    const { userName } = useUser();
+    const { userName } = useAuth();
     const notificationApi = NotificationApi();
     const workflowApi = WorkflowApi();
 

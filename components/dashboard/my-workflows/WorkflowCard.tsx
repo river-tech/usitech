@@ -67,7 +67,7 @@ export default function WorkflowCard({ workflow }: { workflow?: PurchasedWorkflo
       </div>
 
       <div className="text-right min-w-[96px]">
-        <div className="text-lg font-bold text-[#0F172A]">${workflow.price}</div>
+        <div className="text-lg font-bold text-[#0F172A]">{workflow.price} ₫</div>
         <div className="mt-2">
           <span
             className={`px-2.5 py-0.5 rounded-full capitalize text-xs font-semibold ${

@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AuthApi from "../../lib/api/Auth";
-import { useUser } from "../../lib/contexts/UserContext";
+import { useAuth } from "../../lib/contexts/AuthContext";
 
 const nav = [
   { href: "/workflows", label: "Workflows" },
@@ -21,7 +21,7 @@ export default function Header() {
   const [loading, setLoading] = React.useState(true);
   const router = useRouter();
   const authApi = AuthApi();
-  const { userAvatar } = useUser();
+  const { userAvatar, isLoading: userLoading } = useAuth();
 
   React.useEffect(() => {
     console.log( 'userAvatar', userAvatar);

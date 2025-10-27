@@ -9,14 +9,14 @@ import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { User, Mail, CheckCircle, AlertCircle, Upload, X } from "lucide-react";
-import { useUser } from "../../lib/contexts/UserContext";
+import { useAuth } from "../../lib/contexts/AuthContext";
 import UserApi from "../../lib/api/User";
 import { UserProfile } from "../../lib/models/user";
 import { uploadAvatar } from "../../lib/api/UploadFile";
 import Image from "next/image";
 
 export default function AccountSettings() {
-  const { userAvatar, setUserAvatar } = useUser();
+  const { userAvatar, userName, userEmail, refreshUserData, setUserAvatar } = useAuth();
   const userApi = UserApi();
   const [formData, setFormData] = useState({
     name: "",
@@ -71,7 +71,8 @@ export default function AccountSettings() {
       
       if (result.success) {
         setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 5000);
+        setTimeout(() => setShowSuccess(false), 1000);
+        await refreshUserData();
       } else {
         setShowError(true);
       }
@@ -115,7 +116,10 @@ export default function AccountSettings() {
         setFormData(prev => ({ ...prev, avatar: avatarUrl }));
         
         // Update global avatar state immediately for navbar
+        // Update avatar in context
+        await refreshUserData();
         setUserAvatar(avatarUrl);
+        
         const result = await userApi.updateUserProfile(formData.name, avatarUrl);
         if (result.success) {
           setShowSuccess(true);

@@ -6,10 +6,10 @@ import WalletStats from "@/components/dashboard/wallet/WalletStats";
 import AddFunds from "@/components/dashboard/wallet/AddFunds";
 import TransactionHistory from "@/components/dashboard/wallet/TransactionHistory";
 
-import { useUser } from "@/lib/contexts/UserContext";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 export default function WalletPage() {
-  const { userName } = useUser();
+  const { userName } = useAuth();
   const { walletStats, transactions, isLoading } = useWallet();
 
 

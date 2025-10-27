@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../lib/contexts/AuthContext";
-import { UserProvider } from "../lib/contexts/UserContext";
 import { WorkflowProvider } from "../lib/contexts/WorkflowContext";
 import { WishlistProvider } from "../lib/contexts/WishlistContext";
 import { WalletProvider } from "../lib/contexts/WalletContext";
@@ -36,16 +35,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <UserProvider>
-            <WorkflowProvider>
-              <WishlistProvider>
-                <WalletProvider>
-                  <AutoRefreshToken />
-                  {children}
-                </WalletProvider>
-              </WishlistProvider>
-            </WorkflowProvider>
-          </UserProvider>
+          <WorkflowProvider>
+            <WishlistProvider>
+              <WalletProvider>
+                <AutoRefreshToken />
+                {children}
+              </WalletProvider>
+            </WishlistProvider>
+          </WorkflowProvider>
         </AuthProvider>
       </body>
     </html>

@@ -69,7 +69,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-end leading-none">
               <span className="text-sm font-semibold text-gray-900">
-                {workflow.price === 0 ? "Free" : `$${workflow.price}`}
+                {workflow.price === 0 ? "Free" : `${workflow.price} ₫`}
               </span>
             </div>
           </div>

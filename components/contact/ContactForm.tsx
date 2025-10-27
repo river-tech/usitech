@@ -5,12 +5,12 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import * as React from "react";
 import ContactApi from "../../lib/api/Contact";
-import { useAuth } from "../../lib/contexts/AuthContext";
 import { useEffect } from "react";
-import { useUser } from "@/lib/contexts/UserContext";
+import { useAuth } from "@/lib/contexts/AuthContext";
+
 
 export default function ContactForm() {
-    const {userEmail, userName} = useUser();
+    const {userEmail, userName} = useAuth();
 
     const [message, setMessage] = React.useState("");
     const max = 500;
