@@ -12,8 +12,12 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
       {/* Image Section */}
       <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
         <Image
-          src={workflow.image_urls[0] || "/placeholder-workflow.png"}
-          alt={`${workflow.title} workflow automation template preview`}
+          src={
+            workflow?.image_urls?.[0] && workflow.image_urls[0].startsWith("http")
+              ? workflow.image_urls[0]
+              : "/placeholder-workflow.png"
+          }
+          alt={`${workflow?.title || "Workflow"} workflow automation template preview`}
           width={600}
           height={338}
           className="object-cover w-full h-full rounded-t-xl"

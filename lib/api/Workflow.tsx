@@ -2,7 +2,7 @@ import AuthApi from "./Auth";
 
 const WorkflowApi = () => {
   const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const authApi = AuthApi();
 
   // 12. Get All Workflows

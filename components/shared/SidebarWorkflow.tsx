@@ -120,7 +120,10 @@ export default  function SidebarCard({ workflow, relatedWorkflows }: { workflow:
                                         {/* Image */}
                                         <div className="relative w-[72px] h-[56px] rounded-lg overflow-hidden border border-gray-200 bg-white flex-shrink-0">
                                             <Image
-                                                src={w.thumbnail_url || "/placeholder-workflow.png"}
+                                                src={w.thumbnail_url && w.thumbnail_url.startsWith("http")
+                                                    ? w.thumbnail_url
+                                                    : "/placeholder-workflow.png"
+                                                }
                                                 alt={w.title}
                                                 fill
                                                 className="object-cover"

@@ -1,7 +1,7 @@
 import { Deposit } from "../models/Wallet";
 import AuthApi from "./Auth";
 const WalletApi = () => {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   const authApi = AuthApi();
   const getWalletStats = async () => {
     try {
