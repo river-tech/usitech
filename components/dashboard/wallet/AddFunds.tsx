@@ -28,14 +28,12 @@ export default function AddFunds() {
   const [showPreview, setShowPreview] = useState(false);
   const quickAmounts = [100000, 500000, 1000000, 2000000];
   useEffect(() => {
-    console.log("Last bank transfer:", lastBankTransfer);
     getLastBankTransfer();
   }, []);
 
   // Update form when lastBankTransfer data is loaded
   useEffect(() => {
     if (lastBankTransfer) {
-      console.log("Updating form with last bank transfer:", lastBankTransfer);
       setSelectedBank(lastBankTransfer.bank_name);
       setAccountNumber(lastBankTransfer.bank_account);
     }

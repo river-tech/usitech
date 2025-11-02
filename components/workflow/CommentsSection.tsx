@@ -28,19 +28,13 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
       const result = await commentApi.getComments(workflowId);
       
       if (result.success) {
-        // Debug logging
-        console.log("CommentsSection - API data:", result.data);
-        console.log("CommentsSection - First comment is_me:", result.data?.[0]?.is_me);
-        
         // Sắp xếp comments theo cấu trúc cha-con
         const sortedComments = organizeCommentsByParent(result.data || []);
         setComments(sortedComments);
       } else {
         setError(result.error || "Failed to load comments");
-        console.log("Error loading comments:", result.error);
       }
     } catch (error) {
-      console.log("Error loading comments:", error);
       setError("Failed to load comments");
     } finally {
       setIsLoading(false);
@@ -49,10 +43,6 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
 
   // Hàm sắp xếp comments theo cấu trúc cha-con
   const organizeCommentsByParent = (comments: Review[]): Review[] => {
-    console.log("=== organizeCommentsByParent START ===");
-    console.log("Input comments:", comments);
-    console.log("Comments with parent_comment_id:", comments.filter(c => c.parent_comment_id));
-    
     const commentMap = new Map<string, Review>();
     const rootComments: Review[] = [];
 
@@ -60,8 +50,6 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
     comments.forEach(comment => {
       commentMap.set(comment.id, { ...comment });
     });
-
-    console.log("Comment map created:", commentMap.size, "entries");
 
     // Sắp xếp theo cấu trúc cha-con
     comments.forEach(comment => {
@@ -73,26 +61,15 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
             parentComment.replies = [];
           }
           parentComment.replies.push(comment);
-          console.log(`Added reply ${comment.id} to parent ${comment.parent_comment_id}`);
-        } else {
-          console.log(`Parent comment ${comment.parent_comment_id} not found for reply ${comment.id}`);
         }
       } else {
         // Đây là comment gốc - lấy từ map để có thể có replies
         const rootComment = commentMap.get(comment.id);
         if (rootComment) {
           rootComments.push(rootComment);
-          console.log(`Added root comment ${comment.id}`);
         }
       }
     });
-
-    console.log("Organized comments:", rootComments);
-    console.log("Root comments count:", rootComments.length);
-    rootComments.forEach(comment => {
-      console.log(`Comment ${comment.id} has ${comment.replies?.length || 0} replies`);
-    });
-    console.log("=== organizeCommentsByParent END ===");
 
     return rootComments;
   };
@@ -102,19 +79,11 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
       const result = await commentApi.createComment(workflowId, undefined, rating, content);
       
       if (result.success) {
-        // Debug logging
-        console.log("CommentsSection - New comment data:", result.data);
-        console.log("CommentsSection - New comment is_me:", result.data?.is_me);
-        
         // Thêm comment mới vào đầu danh sách và sắp xếp lại
         loadComments();
-      } else {
-        console.log("Error creating comment:", result.error);
-        // Bạn có thể thêm toast notification ở đây
       }
     } catch (error) {
-      console.log("Error creating comment:", error);
-      // Bạn có thể thêm toast notification ở đây
+      // Error creating comment
     }
   };
 
@@ -157,13 +126,9 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
         //   })
         // );
         loadComments();
-      } else {
-        console.log("Error creating reply:", result.error);
-        // Bạn có thể thêm toast notification ở đây
       }
     } catch (error) {
-      console.log("Error creating reply:", error);
-      // Bạn có thể thêm toast notification ở đây
+      // Error creating reply
     }
   };
 
@@ -174,13 +139,9 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
       if (result.success) {
         // Xóa comment khỏi state và sắp xếp lại
         loadComments();
-      } else {
-        console.log("Error deleting comment:", result.error);
-        // Bạn có thể thêm toast notification ở đây
       }
     } catch (error) {
-      console.log("Error deleting comment:", error);
-      // Bạn có thể thêm toast notification ở đây
+      // Error deleting comment
     }
   };
 

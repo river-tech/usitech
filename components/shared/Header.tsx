@@ -7,6 +7,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AuthApi from "../../lib/api/Auth";
 import { useAuth } from "../../lib/contexts/AuthContext";
+import { useNotification } from "../../lib/contexts/NotificationContext";
+import { BellIcon } from "lucide-react";
 
 const nav = [
   { href: "/workflows", label: "Workflows" },
@@ -22,9 +24,9 @@ export default function Header() {
   const router = useRouter();
   const authApi = AuthApi();
   const { userAvatar, isLoading: userLoading } = useAuth();
-
+  const { unreadCount } = useNotification();
+  
   React.useEffect(() => {
-    console.log( 'userAvatar', userAvatar);
     setOpen(false);
   }, [pathname,userAvatar]);
 
@@ -34,7 +36,6 @@ export default function Header() {
 
   const checkAuthStatus = async () => {
     setLoading(true);
-    
     // Check if access token exists
     const accessToken = authApi.getAuthToken();
     if (accessToken) {
@@ -57,8 +58,7 @@ export default function Header() {
           setAuthed(false);
         }
       } catch (error) {
-        console.log('Refresh token failed:', error);
-        // // Clear tokens and set as guest
+        // Clear tokens and set as guest
         authApi.clearTokens();
         setAuthed(false);
       }
@@ -75,8 +75,6 @@ export default function Header() {
     if (result.success) {
       setAuthed(false);
       router.push("/");
-    } else {
-      console.log(result.error);
     }
   };
 
@@ -134,6 +132,20 @@ export default function Header() {
             </div>
           ) : authed ? (
             <div className="flex items-center gap-3">
+              <Link href="/dashboard/notifications" className="relative flex items-center justify-center group">
+                <span className="relative inline-flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 bg-[#F3F8FF] group-hover:bg-[#e6efff] shadow-sm border border-[#C6E0FF]">
+                  <BellIcon className="h-5 w-5 text-[#007BFF] group-hover:text-[#002B6B] transition-colors duration-200" />
+                  {/* Notification badge with unread count */}
+                  {(unreadCount ?? 0) >= 0 && (
+                   <span
+                   className="absolute top-[-5px] right-[-5px] w-[20px] h-[20px] bg-[#007BFF] text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white shadow"
+                 >
+                   {unreadCount > 99 ? "99+" : unreadCount}
+                 </span>
+                  )}
+                </span>
+                <span className="sr-only">Notifications</span>
+              </Link>
               <button
                 aria-label="Open dashboard"
                 onClick={() => router.push("/dashboard")}
@@ -192,6 +204,7 @@ export default function Header() {
             ))}
             {authed ? (
               <>
+             
                 <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-[#002B6B] cursor-pointer">
                   Dashboard
                 </Link>

@@ -22,7 +22,7 @@ import { Purchase } from "../../lib/models/purchase";
 import { PurchasedWorkflow } from "../../lib/models/purchased-workflow";
 import { Notification } from "../../lib/models/notification";
 import { useAuth } from "../../lib/contexts/AuthContext";
-import NotificationApi from "../../lib/api/Notification";
+import { useNotification } from "../../lib/contexts/NotificationContext";
 
 
 export type NotificationItem = {
@@ -52,9 +52,8 @@ export default function TabsContent({
   notifications,
   workflows,
 }: TabsContentProps) {
-  console.log(activeTab);
   useEffect(() => {
-    console.log(profile);
+    // Profile loaded
   }, [profile]);
   const router = useRouter();
   const { userName } = useAuth();
@@ -71,10 +70,8 @@ export default function TabsContent({
   const [loadingWorkflows, setLoadingWorkflows] = useState<boolean>(false);
   const [wishlistWorkflows, setWishlistWorkflows] = useState<PurchasedWorkflow[]>([]);
   const [loadingWishlist, setLoadingWishlist] = useState<boolean>(false);
-  const [apiNotifications, setApiNotifications] = useState<Notification[]>([]);
-  const [loadingNotifications, setLoadingNotifications] = useState<boolean>(false);
   const user = UserApi();
-  const notificationApi = NotificationApi();
+  const { notifications: apiNotifications, isLoading: loadingNotifications } = useNotification();
 
   // Load purchases from API
   useEffect(() => {
@@ -86,7 +83,7 @@ export default function TabsContent({
           setApiPurchases(result.data);
         }
       } catch (error) {
-        console.log('Failed to load purchases:', error);
+        // Error loading purchases
       } finally {
         setLoadingPurchases(false);
       }
@@ -105,7 +102,7 @@ export default function TabsContent({
           setPurchasedWorkflows(result.data);
         }
       } catch (error) {
-        console.log('Failed to load purchased workflows:', error);
+        // Error loading purchased workflows
       } finally {
         setLoadingWorkflows(false);
       }
@@ -124,7 +121,7 @@ export default function TabsContent({
           setWishlistWorkflows(result.data);
         }
       } catch (error) {
-        console.log('Failed to load wishlist:', error);
+        // Error loading wishlist
       } finally {
         setLoadingWishlist(false);
       }
@@ -133,24 +130,7 @@ export default function TabsContent({
     loadWishlist();
   }, []);
 
-  // Load notifications from API
-  useEffect(() => {
-    const loadNotifications = async () => {
-      setLoadingNotifications(true);
-      try {
-        const result = await notificationApi.getMyNotifications();
-        if (result.success) {
-          setApiNotifications(result.data);
-        }
-      } catch (error) {
-        console.log('Failed to load notifications:', error);
-      } finally {
-        setLoadingNotifications(false);
-      }
-    };
-    
-    loadNotifications();
-  }, []);
+  // Notifications are now loaded from NotificationContext
 
   const handleSaveChanges = async () => {
     setLoading(true);
@@ -229,7 +209,7 @@ export default function TabsContent({
                             <td className="py-3">
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                  purchase.status === PurchaseStatus.ACTIVE || purchase.status === PurchaseStatus.PENDING
+                                  purchase.status === PurchaseStatus.ACTIVE 
                                     ? "bg-green-100 text-green-700"
                                   : purchase.status === PurchaseStatus.REJECT
                                     ? "bg-red-100 text-red-700"

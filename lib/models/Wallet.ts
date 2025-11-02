@@ -1,4 +1,5 @@
 import { PurchaseStatus, TransactionType } from "./enums";
+import { DepositStatus } from "./enums";
 
 export interface IWalletStats{
     balance?: number;
@@ -10,7 +11,7 @@ export interface WalletTransaction{
     id: string;
     transaction_type: TransactionType;
     amount: number;
-    status: PurchaseStatus;
+    status: DepositStatus;
     bank_name: string;
     bank_account: string;
     transfer_code: string;

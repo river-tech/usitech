@@ -19,7 +19,6 @@ const WalletApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error getting wallet balance" };
       }
     } catch (error) {
-      console.log("Error getting wallet balance:", error);
       throw error;
     }
   };
@@ -40,7 +39,6 @@ const WalletApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error getting last bank transfer" };
       }
     } catch (error) {
-      console.log("Error getting last bank transfer:", error);
       throw error;
     }
   };
@@ -64,7 +62,6 @@ const WalletApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error creating deposit" };
       }
     } catch (error) {
-      console.log("Error creating deposit:", error);
       throw error;
     }
   };
@@ -85,7 +82,6 @@ const WalletApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error getting transactions" };
       }
     } catch (error) {
-      console.log("Error getting transactions:", error);
       throw error;
     }
   };    

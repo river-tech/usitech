@@ -63,7 +63,6 @@ export default function OverviewPage() {
           setError(result.error || "Failed to load purchases");
         }
       } catch (error) {
-        console.log('Failed to load purchases:', error);
         setError("Failed to load purchases");
       } finally {
         setLoading(false);

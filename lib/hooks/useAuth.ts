@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from '../lib/contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Hook to check if user is authenticated

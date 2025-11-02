@@ -1,5 +1,4 @@
 import { CheckoutForm, OrderSummary } from "../../../../../components/dashboard/checkout";
-import { mockUserPurchases } from "../../../../../lib/mock-data";
 
 interface PageProps {
   params: Promise<{ id: string }>;

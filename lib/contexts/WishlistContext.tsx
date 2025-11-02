@@ -37,7 +37,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         setWishlistItems(workflowIds);
       }
     } catch (error) {
-      console.log("Error loading wishlist:", error);
+      // Error loading wishlist
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.log("Error adding to wishlist:", error);
       return { success: false, error: "Failed to add to wishlist" };
     } finally {
       setIsLoading(false);
@@ -76,7 +75,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.log("Error removing from wishlist:", error);
       return { success: false, error: "Failed to remove from wishlist" };
     } finally {
       setIsLoading(false);

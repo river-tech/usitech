@@ -9,7 +9,6 @@ import {
   WorkflowDocs,
   ThankYouCard,
 } from "@/components/dashboard/workflow-detail";
-import { mockWorkflowDetails } from "@/lib/mock-data";
 import WorkflowApi from "@/lib/api/Workflow";
 import { DetailWorkflow } from "@/lib/models/workflow";
 
@@ -49,7 +48,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.log('Error downloading JSON:', error);
+      // Error downloading JSON
     } finally {
       setIsDownloading(false);
     }

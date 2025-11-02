@@ -14,7 +14,6 @@ const CategoryApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching categories" };
       }
     } catch (error) {
-      console.log("Error fetching categories:", error);
       throw error;
     }
   };

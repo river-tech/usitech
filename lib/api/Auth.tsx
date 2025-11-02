@@ -105,11 +105,7 @@ const AuthApi = () => {
         },
         body: JSON.stringify({ name, email, password }),
       });
-      console.log(
-        'body', JSON.stringify({ name, email, password })
-      )
       const data = await response.json();
-      console.log('data', data);
       
       if(response.ok){
         return {
@@ -123,7 +119,6 @@ const AuthApi = () => {
         };
       }
     } catch (error) {
-      console.log('Error registering user:', error);
       return {
         success: false,
         error: 'Network error, please try again'
@@ -142,11 +137,7 @@ const AuthApi = () => {
           },
           body: JSON.stringify({ email, password }),
         });
-        console.log(
-          'body', JSON.stringify({ email, password })
-        )
         const data = await response.json();
-        console.log('data', data);
       
       // Check if response is successful
       if (response.ok){
@@ -164,7 +155,6 @@ const AuthApi = () => {
       
       
     } catch (error) {
-      console.log('Error logging in:', error);
       return {
         success: false,
         error: 'Network error, please try again'
@@ -185,7 +175,6 @@ const AuthApi = () => {
 
       return await response.json();
     } catch (error) {
-      console.log('Error resending OTP:', error);
       throw error;
     }
   };
@@ -201,7 +190,6 @@ const AuthApi = () => {
         body: JSON.stringify({ email, otp_code }),
       });
       const data = await response.json();
-      console.log('data', data);
       if(response.ok){
         return {
           success: true,
@@ -214,7 +202,6 @@ const AuthApi = () => {
         };
       }
     } catch (error) {
-      console.log('Error verifying OTP:', error);
       throw error;
     }
   };
@@ -232,7 +219,6 @@ const AuthApi = () => {
 
       return await response.json();
     } catch (error) {
-      console.log('Error setting new password:', error);
       throw error;
     }
   };
@@ -264,7 +250,6 @@ const AuthApi = () => {
         };
       }
     } catch (error) {
-      console.log('Error changing password:', error);
       throw error;
     }
   };
@@ -281,7 +266,6 @@ const AuthApi = () => {
         },
       });
       const data = await response.json();
-      console.log('data', data);
       if(response.ok){
         clearTokens();
         return {
@@ -299,7 +283,6 @@ const AuthApi = () => {
       
 
     } catch (error) {
-      console.log('Error logging out:', error);
       // Still clear tokens even if API call fails
       throw error;
     }
@@ -310,11 +293,8 @@ const AuthApi = () => {
     try {
       const refreshTokenValue = getRefreshToken();
       if (!refreshTokenValue) {
-        console.log('❌ No refresh token available');
         return { success: false, error: 'No refresh token available' };
       }
-
-      console.log('🔄 Attempting to refresh token...');
       const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
         method: 'POST',
         headers: {
@@ -326,16 +306,13 @@ const AuthApi = () => {
       });
 
       const data = await response.json();
-      console.log('📥 Refresh response:', { status: response.status, data });
 
       if (response.ok && data.access_token) {
         // Update only access token, keep the same refresh token
         setTokens(data.access_token, refreshTokenValue, data.expires_in);
-        console.log('✅ Token refreshed successfully');
         return { success: true, data };
       } else {
         // Refresh failed, but don't clear refresh token - it might still be valid
-        console.log('❌ Token refresh failed:', data);
         // Only clear access token and expiry, keep refresh token
         clearAccessToken();
         return { 
@@ -344,7 +321,6 @@ const AuthApi = () => {
         };
       }
     } catch (error) {
-      console.log('💥 Error refreshing token:', error);
       // Only clear access token and expiry, keep refresh token
       clearAccessToken();
       return { 

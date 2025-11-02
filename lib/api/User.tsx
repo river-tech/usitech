@@ -29,7 +29,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting user profile:", error);
       throw error;
     }
   };
@@ -63,7 +62,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error updating user profile:", error);
       throw error;
     }
   };
@@ -94,7 +92,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting dashboard user:", error);
       throw error;
     }
   }
@@ -125,7 +122,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting my purchases:", error);
       throw error;
     }
   }
@@ -156,7 +152,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting my purchased workflows:", error);
       throw error;
     }
   }
@@ -187,7 +182,6 @@ const UserApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting my wishlist:", error);
       throw error;
     }
   }

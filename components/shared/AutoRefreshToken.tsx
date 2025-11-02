@@ -20,14 +20,12 @@ export default function AutoRefreshToken() {
 
     // Check if token is expired
     if (authApi.isTokenExpired()) {
-      console.log('🔄 Token expired, refreshing immediately...');
       handleTokenRefresh();
       return;
     }
 
     // Schedule refresh every 10 minutes (600 seconds)
     const refreshTime = 10 * 60 * 1000; // 10 minutes in milliseconds
-    console.log('⏰ Scheduling token refresh every 10 minutes');
     
     refreshTimeoutRef.current = setTimeout(() => {
       handleTokenRefresh();
@@ -36,28 +34,23 @@ export default function AutoRefreshToken() {
 
   const handleTokenRefresh = async () => {
     if (isRefreshingRef.current) {
-      console.log('🔄 Token refresh already in progress, skipping...');
       return;
     }
 
     isRefreshingRef.current = true;
     
     try {
-      console.log('🔄 Attempting to refresh token...');
       const result = await authApi.refreshToken();
       
       if (result.success) {
-        console.log('✅ Token refreshed successfully');
         // Schedule next refresh in 10 minutes
         scheduleTokenRefresh();
       } else {
-        console.log('❌ Token refresh failed:', result.error);
         // Don't redirect immediately - refresh token might still be valid
         // Try again in next cycle
         scheduleTokenRefresh();
       }
     } catch (error) {
-      console.log('💥 Token refresh error:', error);
       // Don't redirect immediately - might be network error
       // Try again in next cycle
       scheduleTokenRefresh();
@@ -73,10 +66,8 @@ export default function AutoRefreshToken() {
       const token = authApi.getAuthToken();
       if (token) {
         if (authApi.isTokenExpired()) {
-          console.log('🔄 Initial token check: expired, refreshing...');
           handleTokenRefresh();
         } else {
-          console.log('✅ Initial token check: valid, scheduling refresh every 10 minutes...');
           scheduleTokenRefresh();
         }
       }
@@ -96,7 +87,6 @@ export default function AutoRefreshToken() {
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'access_token' || e.key === 'token_expires_at') {
-        console.log('🔄 Token updated in another tab, rescheduling refresh...');
         scheduleTokenRefresh();
       }
     };
@@ -110,7 +100,6 @@ export default function AutoRefreshToken() {
     const handleFocus = () => {
       const token = authApi.getAuthToken();
       if (token && authApi.isTokenExpired()) {
-        console.log('🔄 Tab focused, token expired, refreshing...');
         handleTokenRefresh();
       }
     };

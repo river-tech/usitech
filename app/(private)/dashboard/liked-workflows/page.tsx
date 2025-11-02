@@ -29,7 +29,6 @@ export default function LikedWorkflowsPage() {
           setError(result.error || "Failed to load wishlist");
         }
       } catch (error) {
-        console.log('Failed to load wishlist:', error);
         setError("Failed to load wishlist");
       } finally {
         setLoading(false);
@@ -52,7 +51,6 @@ export default function LikedWorkflowsPage() {
 
   const handlePurchase = (workflowId: string) => {
     // TODO: Implement purchase functionality
-    console.log('Purchase workflow:', workflowId);
   };
 
   const handleRemoveFromWishlist = async (workflowId: string) => {
@@ -61,11 +59,9 @@ export default function LikedWorkflowsPage() {
       if (result.success) {
         // Remove from local state
         setWorkflows(prev => prev.filter(w => w.id !== workflowId));
-      } else {
-        console.log('Failed to remove from wishlist:', result.error);
       }
     } catch (error) {
-      console.log('Error removing from wishlist:', error);
+      // Error removing from wishlist
     }
   };
 

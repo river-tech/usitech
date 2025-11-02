@@ -20,9 +20,6 @@ export default function DashboardPage() {
     const { userName } = useAuth();
     const notificationApi = NotificationApi();
     const workflowApi = WorkflowApi();
-
-   
-
 	const [activeTab, setActiveTab] = useState<Tab>("overviews");
     useEffect(() => {
         const getProfile = async () => {

@@ -31,10 +31,6 @@ export default function CommentCard({
 
   useEffect(() => {
     setMounted(true);
-    // Debug logging
-    console.log("CommentCard - comment.is_me:", comment.is_me);
-    console.log("CommentCard - onDelete:", !!onDelete);
-    console.log("CommentCard - comment:", comment);
   }, []);
 
   const handleDeleteClick = () => {
@@ -73,7 +69,6 @@ export default function CommentCard({
     
     // Kiểm tra nếu date không hợp lệ
     if (isNaN(date.getTime())) {
-      console.log("Invalid date string:", dateString);
       return "Just now";
     }
     

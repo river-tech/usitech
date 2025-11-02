@@ -5,6 +5,8 @@ import { AuthProvider } from "../lib/contexts/AuthContext";
 import { WorkflowProvider } from "../lib/contexts/WorkflowContext";
 import { WishlistProvider } from "../lib/contexts/WishlistContext";
 import { WalletProvider } from "../lib/contexts/WalletContext";
+import { NotificationProvider } from "../lib/contexts/NotificationContext";
+import { ToastProvider } from "../lib/contexts/ToastContext";
 import AutoRefreshToken from "../components/shared/AutoRefreshToken";
 
 const geistSans = Geist({
@@ -38,8 +40,12 @@ export default function RootLayout({
           <WorkflowProvider>
             <WishlistProvider>
               <WalletProvider>
-                <AutoRefreshToken />
-                {children}
+                <NotificationProvider>
+                  <ToastProvider>
+                    <AutoRefreshToken />
+                    {children}
+                  </ToastProvider>
+                </NotificationProvider>
               </WalletProvider>
             </WishlistProvider>
           </WorkflowProvider>

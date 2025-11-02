@@ -21,7 +21,6 @@ const TABS: { id: Tab; label: string; icon: React.ComponentType<React.SVGProps<S
 ];
 
 export default function TabsHeader({ activeTab, setActiveTab }: TabsHeaderProps) {
-    console.log(activeTab);
     const containerRef = React.useRef<HTMLDivElement>(null);
 
     // Keyboard navigation: ArrowLeft/ArrowRight, Home/End

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { WalletTransaction } from "@/lib/models/Wallet";
 import { PurchaseStatus, TransactionType } from "@/lib/models/enums";
+import { DepositStatus } from "@/lib/models/enums";
 import { useState } from "react";
 
 function formatVND(amount: number) {
@@ -105,11 +106,11 @@ export default function TransactionHistory({ transactions }: { transactions: Wal
           </p>
           <div className="flex flex-col items-end gap-1">
             <span className={`text-xs px-3 py-1 rounded-full font-medium ${
-              tx.status === PurchaseStatus.ACTIVE
+              tx.status === DepositStatus.SUCCESS
                 ? "bg-green-100 text-green-700"
-                : tx.status === PurchaseStatus.PENDING
+                : tx.status === DepositStatus.PENDING
                 ? "bg-yellow-100 text-yellow-800"
-                : "bg-gray-100 text-gray-800"
+                : "bg-red-100 text-red-800"
             }`}>
               {tx.status?.toUpperCase()}
             </span>
@@ -140,9 +141,9 @@ export default function TransactionHistory({ transactions }: { transactions: Wal
                 className="text-sm text-black border border-gray-300 rounded-lg px-2 py-1 focus:outline-none"
               >
                 <option value="all">All</option>
-                <option  value={PurchaseStatus.ACTIVE}>Active</option>
-                <option value={PurchaseStatus.PENDING}>Pending</option>
-                <option value={PurchaseStatus.REJECT}>Failed</option>
+                <option  value={DepositStatus.SUCCESS}>Success</option>
+                <option value={DepositStatus.PENDING}>Pending</option>
+                <option value={PurchaseStatus.REJECT}>Reject</option>
               </select>
             </div>
             {/* View All Button */}

@@ -1,58 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import NotificationApi from "../../../../lib/api/Notification";
-import { Notification } from "../../../../lib/models/notification";
+import { useNotification } from "../../../../lib/contexts/NotificationContext";
 import { ArrowLeft, CheckCircle2, AlertTriangle, XCircle, Trash2, Check } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../../../components/ui/button";
-import { useRouter } from "next/navigation";
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const { 
+    notifications, 
+    isLoading: loading, 
+    error,
+    markAsRead,
+    deleteNotification,
+    deleteAllNotifications,
+    refreshNotifications
+  } = useNotification();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const notificationApi = NotificationApi();
-  const router = useRouter();
-
-  useEffect(() => {
-    const loadNotifications = async () => {
-      setLoading(true);
-      try {
-        const result = await notificationApi.getMyNotifications();
-        if (result.success) {
-          setNotifications(result.data);
-        } else {
-          setError(result.error || "Failed to load notifications");
-        }
-      } catch (error) {
-        console.log('Failed to load notifications:', error);
-        setError("Failed to load notifications");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadNotifications();
-  }, []);
 
   const handleMarkAsRead = async (notificationId: string) => {
     setActionLoading(notificationId);
     try {
-      const result = await notificationApi.markNotificationAsRead(notificationId);
-      if (result.success) {
-        setNotifications(prev => 
-          prev.map(n => 
-            n.id === notificationId 
-              ? { ...n, is_unread: false }
-              : n
-          )
-        );
-      }
+      await markAsRead(notificationId);
     } catch (error) {
-      console.log('Failed to mark notification as read:', error);
+      // Error marking notification as read
     } finally {
       setActionLoading(null);
     }
@@ -61,12 +33,9 @@ export default function NotificationsPage() {
   const handleDeleteNotification = async (notificationId: string) => {
     setActionLoading(notificationId);
     try {
-      const result = await notificationApi.deleteNotification(notificationId);
-      if (result.success) {
-        setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      }
+      await deleteNotification(notificationId);
     } catch (error) {
-      console.log('Failed to delete notification:', error);
+      // Error deleting notification
     } finally {
       setActionLoading(null);
     }
@@ -75,12 +44,9 @@ export default function NotificationsPage() {
   const handleDeleteAll = async () => {
     setActionLoading('all');
     try {
-      const result = await notificationApi.deleteAllNotifications();
-      if (result.success) {
-        setNotifications([]);
-      }
+      await deleteAllNotifications();
     } catch (error) {
-      console.log('Failed to delete all notifications:', error);
+      // Error deleting all notifications
     } finally {
       setActionLoading(null);
     }
@@ -190,6 +156,7 @@ export default function NotificationsPage() {
           <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
             <div className="text-red-600 font-medium mb-2">Error Loading Notifications</div>
             <div className="text-red-500 text-sm">{error}</div>
+            <Button onClick={() => refreshNotifications()}>Refresh</Button>
           </div>
         ) : notifications.length === 0 ? (
           <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">

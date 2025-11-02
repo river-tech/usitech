@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter, usePathname } from 'next/navigation';
 import AuthApi from '../api/Auth';
 import UserApi from '../api/User';
+import { loadNotificationsOnAuth } from './NotificationContext';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -35,19 +36,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUserData = async () => {
     try {
-      console.log('🔄 Refreshing user data...');
       const result = await userApi.getUserProfile();
       if (result.success) {
-        console.log('✅ User profile loaded:', result.data);
         setUserAvatar(result.data.avatar_url);
         setUserName(result.data.name);
         setUserEmail(result.data.email);
-        console.log('✅ User data updated');
-      } else {
-        console.log('❌ Failed to load user profile:', result.error);
       }
     } catch (error) {
-      console.log('❌ Failed to fetch user data:', error);
+      // Error fetching user data
     }
   };
 
@@ -57,7 +53,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = authApi.getAuthToken();
       
       if (!token) {
-        console.log('🔍 No token found');
         setIsAuthenticated(false);
         setUser(null);
         setUserAvatar(null);
@@ -68,16 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Check if token is expired
       if (authApi.isTokenExpired()) {
-        console.log('⏰ Token expired, attempting refresh...');
         try {
           const refreshResult = await authApi.refreshToken();
           if (refreshResult.success) {
-            console.log('✅ Token refreshed successfully');
             setIsAuthenticated(true);
             // Load user data after successful refresh
             await refreshUserData();
+            // Load notifications after successful token refresh
+            try {
+              await loadNotificationsOnAuth();
+            } catch (error) {
+              // Error loading notifications, but don't fail refresh
+              console.error('Failed to load notifications after token refresh:', error);
+            }
           } else {
-            console.log('❌ Token refresh failed:', refreshResult.error);
             authApi.clearTokens();
             setIsAuthenticated(false);
             setUser(null);
@@ -87,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return;
           }
         } catch (refreshError) {
-          console.log('💥 Token refresh error:', refreshError);
           authApi.clearTokens();
           setIsAuthenticated(false);
           setUser(null);
@@ -98,20 +96,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } else {
         // Token is valid, set authenticated state
-        console.log('✅ Token is valid');
         setIsAuthenticated(true);
         // Load user data when token is valid
         await refreshUserData();
+        // Load notifications when token is valid
+        try {
+          await loadNotificationsOnAuth();
+        } catch (error) {
+          // Error loading notifications, but don't fail checkAuth
+          console.error('Failed to load notifications during checkAuth:', error);
+        }
       }
       
-      // Optionally fetch user data here
-      // const userResult = await userApi.getUserProfile();
-      // if (userResult.success) {
-      //   setUser(userResult.data);
-      // }
-      
     } catch (error) {
-      console.log('💥 Auth check failed:', error);
       setIsAuthenticated(false);
       setUser(null);
       setUserAvatar(null);
@@ -132,12 +129,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(result.data);
         // Load user data after successful login
         await refreshUserData();
+        // Load notifications after successful login
+        try {
+          await loadNotificationsOnAuth();
+        } catch (error) {
+          // Error loading notifications, but don't fail login
+          console.error('Failed to load notifications after login:', error);
+        }
         return { success: true };
       } else {
         return { success: false, error: result.error || 'Login failed' };
       }
     } catch (error) {
-      console.log('Login error:', error);
       return { success: false, error: 'Login failed' };
     } finally {
       setIsLoading(false);

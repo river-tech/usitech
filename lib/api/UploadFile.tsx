@@ -16,6 +16,5 @@ export const uploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     );
 
     const data = await res.json();
-    console.log(data.url);
     return data.url;
   };

@@ -15,6 +15,13 @@ export enum PurchaseStatus {
   REJECT = "REJECT"
 }
 
+
+export enum DepositStatus {
+  SUCCESS = "SUCCESS",
+  PENDING = "PENDING",
+  FAILED = "FAILED"
+}
+
 export enum PaymentMethod {
   QR = "QR"
 }

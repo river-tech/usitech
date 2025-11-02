@@ -35,7 +35,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
       setContent("");
       setRating(0);
     } catch (error) {
-      console.log("Error submitting comment:", error);
+      // Error submitting comment
     } finally {
       setIsSubmitting(false);
     }

@@ -18,7 +18,6 @@ const ContactApi = () => {
                     return { success: false, error: responseData.detail || responseData.message || responseData.error || "Error creating contact message" };
                 }
             } catch (error) {
-                console.log("Error creating contact message:", error);
                 return { success: false, error: error as string };
             }   
         }

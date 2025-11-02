@@ -120,7 +120,7 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
           </span>
         </div>
         <div className="mt-2 text-sm text-gray-600">
-          <div>Payment method: <span className="font-medium text-indigo-700">Bank transfer</span></div>
+          <div>Payment method: <span className="font-medium text-indigo-700">Wallet</span></div>
           <div>
             Status:{" "}
             <span

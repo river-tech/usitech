@@ -3,10 +3,8 @@
 import { useState } from "react";
 import NotificationCard, { type SimpleNotification } from "./NotificationCard";
 import NotificationHeader from "./NotificationHeader";
-import { mockNotifications } from "../../../lib/mock-data";
-
 export default function NotificationList() {
-  const [notifications, setNotifications] = useState<SimpleNotification[]>(mockNotifications);
+  const [notifications, setNotifications] = useState<SimpleNotification[]>([]);
   const [filter, setFilter] = useState("All");
 
   const handleDelete = (id: string) => {

@@ -36,7 +36,6 @@ export default function AccountSettings() {
       try {
         setIsLoadingProfile(true);
         const result = await userApi.getUserProfile();
-        console.log(result);
         if (result.success) {
           setFormData({
             name: result.data.name || "",
@@ -45,7 +44,7 @@ export default function AccountSettings() {
           });
         }
       } catch (error) {
-        console.log('Failed to load profile:', error);
+        // Error loading profile
       } finally {
         setIsLoadingProfile(false);
       }
@@ -77,7 +76,6 @@ export default function AccountSettings() {
         setShowError(true);
       }
     } catch (error) {
-      console.log('Failed to update profile:', error);
       setShowError(true);
     } finally {
       setIsLoading(false);
@@ -130,7 +128,6 @@ export default function AccountSettings() {
         
       } 
     } catch (error) {
-      console.log('Failed to upload avatar:', error);
       setShowError(true);
     } finally {
       setIsUploadingAvatar(false);

@@ -29,7 +29,6 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
 
     useEffect(() => {
         getWorkflow();
-        console.log("workflowDetail", workflowDetail);
     }, [id]);
 	
     

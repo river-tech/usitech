@@ -34,7 +34,7 @@ export default function ReplyForm({
       await onSubmit(content.trim());
       setContent("");
     } catch (error) {
-      console.log("Error submitting reply:", error);
+      // Error submitting reply
     } finally {
       setIsSubmitting(false);
     }

@@ -16,10 +16,7 @@ const CommentApi = () => {
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    console.log("Authenticated comments:", data);
                     return { success: true, data };
-                } else {
-                    console.log("Authenticated endpoint failed, falling back to public");
                 }
             }
             
@@ -31,14 +28,12 @@ const CommentApi = () => {
             });
             const data = await response.json();
             if (response.ok) {
-                console.log("Public comments:", data);
                 return { success: true, data };
             } else {
                 return { success: false, error: data.detail || data.message || data.error || "Error getting comments" };
             }
 
         } catch (error) {
-            console.log("Error getting comments:", error);
             throw error;
         }
     }
@@ -50,9 +45,6 @@ const CommentApi = () => {
                 rating,
                 content
             };
-            
-            console.log("Creating comment with body:", requestBody);
-            console.log("JSON stringified:", JSON.stringify(requestBody));
             
             const response = await fetch(`${API_BASE_URL}/api/workflows/${workflowId}/reviews`, {
                 method: "POST",
@@ -69,7 +61,6 @@ const CommentApi = () => {
                 return { success: false, error: data.detail || data.message || data.error || "Error creating comment" };
             }
         } catch (error) {
-            console.log("Error creating comment:", error);
             throw error;
         }
     }
@@ -91,7 +82,6 @@ const CommentApi = () => {
                 return { success: false, error: data.detail || data.message || data.error || "Error deleting comment" };
             }
         } catch (error) {
-            console.log("Error deleting comment:", error);
             throw error;
         }
     }

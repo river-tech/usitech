@@ -1,9 +1,7 @@
 import * as React from "react";
 import PurchaseRow, { type PurchaseItem } from "./PurchaseRow";
-import { mockUserPurchases } from "../../../lib/mock-data";
-
 export default function PurchaseTable({ items }: { items?: PurchaseItem[] }) {
-  const data: PurchaseItem[] = items ?? mockUserPurchases;
+  const data: PurchaseItem[] = items ?? [];
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-0 overflow-hidden">

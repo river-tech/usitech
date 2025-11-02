@@ -40,13 +40,10 @@ export default function WishlistButton({
       } else {
         // Rollback nếu API fail
         setCurrentIsLiked(currentIsLiked);
-        console.log("Wishlist toggle failed:", result.error);
-        // You might want to show a toast notification here
       }
     } catch (error) {
       // Rollback nếu có lỗi
       setCurrentIsLiked(currentIsLiked);
-      console.log("Error toggling wishlist:", error);
     } finally {
       setIsToggling(false);
     }

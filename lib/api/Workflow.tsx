@@ -22,7 +22,6 @@ const WorkflowApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching workflows" };
       }
     } catch (error) {
-      console.log("Error fetching workflows:", error);
       throw error;
     }
   };
@@ -43,7 +42,6 @@ const WorkflowApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching featured workflows" };
       }
     } catch (error) {
-      console.log("Error fetching featured workflows:", error);
       throw error;
     }
   };
@@ -64,7 +62,6 @@ const WorkflowApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching related workflows" };
       }
     } catch (error) {
-      console.log("Error fetching related workflows:", error);
       throw error;
     }
   };
@@ -72,7 +69,7 @@ const WorkflowApi = () => {
   // 15. Get My Purchased Workflows
   const getMyWorkflows = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/my-workflow`, {
+      const response = await fetch(`${API_BASE_URL}/api/workflows/my-workflow`, {
         method: "GET",
         headers: {
           "Accept": "application/json",
@@ -86,7 +83,6 @@ const WorkflowApi = () => {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching my workflows" };
       }
     } catch (error) {
-      console.log("Error fetching my workflows:", error);
       throw error;
     }
   };
@@ -104,13 +100,11 @@ const WorkflowApi = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        console.log("data", data);
         return { success: true, data: data };
       } else {
         return { success: false, error: data.detail || data.message || data.error || "Error fetching workflow detail" };
       }
     } catch (error) {
-      console.log("Error fetching workflow detail:", error);
       throw error;
     }
   };
@@ -155,7 +149,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error adding to wishlist" };
     } catch (error) {
-      console.log("Error adding to wishlist:", error);
       throw error;
     }
   };
@@ -175,7 +168,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error removing from wishlist" };
     } catch (error) {
-      console.log("Error removing from wishlist:", error);
       throw error;
     }
   };
@@ -199,7 +191,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error creating review" };
     } catch (error) {
-      console.log("Error creating review:", error);
       throw error;
     }
   };
@@ -219,7 +210,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error deleting review" };
     } catch (error) {
-      console.log("Error deleting review:", error);
       throw error;
     }
   };
@@ -235,7 +225,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error fetching reviews" };
     } catch (error) {
-      console.log("Error fetching reviews:", error);
       throw error;
     }
   };
@@ -255,7 +244,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error fetching full workflow detail" };
     } catch (error) {
-      console.log("Error fetching full workflow detail:", error);
       throw error;
     }
   };
@@ -274,7 +262,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error ordering workflow" };
     } catch (error) {
-      console.log("Error ordering workflow:", error);
       throw error;
     }
   }
@@ -292,7 +279,6 @@ const WorkflowApi = () => {
       if (response.ok) return { success: true, data };
       return { success: false, error: data.detail || data.message || data.error || "Error fetching invoice" };
     } catch (error) {
-      console.log("Error fetching invoice:", error);
       throw error;
     }
   }

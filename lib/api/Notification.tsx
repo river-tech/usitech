@@ -31,7 +31,6 @@ const NotificationApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error getting notifications:", error);
       throw error;
     }
   };
@@ -62,7 +61,6 @@ const NotificationApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error marking notification as read:", error);
       throw error;
     }
   };
@@ -93,7 +91,6 @@ const NotificationApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error deleting notification:", error);
       throw error;
     }
   };
@@ -124,7 +121,6 @@ const NotificationApi = () => {
         };
       }
     } catch (error) {
-      console.log("Error deleting all notifications:", error);
       throw error;
     }
   };
