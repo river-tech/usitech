@@ -22,6 +22,7 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
         const result = await workflowApi.getWorkflowDetail(id);
         const relatedResult = await workflowApi.getRelatedWorkflows(id);
         if (result.success) {
+            console.log(result.data);
             setWorkflowDetail(result.data);
             setRelatedWorkflows(relatedResult.data);
         }
@@ -30,6 +31,12 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
     useEffect(() => {
         getWorkflow();
     }, [id]);
+
+    useEffect(() => {
+        if(workflowDetail) {
+            console.log(workflowDetail);
+        }
+    }, [workflowDetail]);
 	
     
     return (

@@ -28,7 +28,7 @@ export default function Header() {
   
   React.useEffect(() => {
     setOpen(false);
-  }, [pathname,userAvatar]);
+  }, [pathname, userAvatar]);
 
   React.useEffect(() => {
     checkAuthStatus();
@@ -36,46 +36,36 @@ export default function Header() {
 
   const checkAuthStatus = async () => {
     setLoading(true);
-    // Check if access token exists
     const accessToken = authApi.getAuthToken();
     if (accessToken) {
       setAuthed(true);
       setLoading(false);
       return;
     }
-
-    // If no access token, check for refresh token
     const refreshToken = authApi.getRefreshToken();
     if (refreshToken) {
       try {
-        // Try to refresh the access token
         const result = await authApi.refreshToken();
         if (result) {
           setAuthed(true);
         } else {
-          // Refresh failed, clear tokens and set as guest
           authApi.clearTokens();
           setAuthed(false);
         }
       } catch (error) {
-        // Clear tokens and set as guest
         authApi.clearTokens();
         setAuthed(false);
       }
     } else {
-      // No tokens, set as guest
       setAuthed(false);
     }
-    
     setLoading(false);
   };
 
   const handleLogout = async () => {
     const result = await authApi.logout();
-    if (result.success) {
-      setAuthed(false);
-      router.push("/");
-    }
+    setAuthed(false);
+    router.push("/");
   };
 
   return (
@@ -83,45 +73,56 @@ export default function Header() {
       <div className="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
         {/* ---------- LOGO (you will insert your logo here) ---------- */}
         <Link href="/" className="flex items-center gap-2 cursor-pointer">
-          {/* <span className="h-9 w-9 rounded-lg bg-gradient-to-br from-[#002B6B] to-[#007BFF] flex items-center justify-center">
-            <span className="text-white font-bold text-xl select-none" style={{ fontFamily: "Inter, sans-serif" }}>U</span>
-          </span> */}
           <span className="relative w-25 h-10 flex items-center justify-center overflow-hidden rounded-lg bg-white">
             <Image
               src="/logo.png"
               alt="USITech"
-			  fill
+              fill
               className="object-cover bg-white"
-              
             />
           </span>
         </Link>
 
         {/* ---------- NAV LINKS ---------- */}
         <nav className="hidden md:flex items-center gap-8">
-          {!loading && nav.map((n) => {
-            const isActive = pathname === n.href;
-            return (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={`
-                  text-sm font-medium px-1 relative transition-colors duration-200 ease-in-out cursor-pointer
-                  ${isActive ? "text-[#002B6B]" : "text-gray-700 hover:text-[#007BFF]"}
-                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-[#007BFF] after:rounded-full
-                  after:transition-transform after:duration-300 after:ease-in-out
-                  ${isActive ? "after:scale-x-100 after:opacity-100" : "after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:opacity-100"}
-                `}
-                style={{
-                  transitionProperty: "color, background, transform",
-                  fontWeight: isActive ? 700 : 500,
-                }}
-              >
-                {n.label}
-              </Link>
-            );
-          })}
+          {!loading &&
+            nav.map((n) => {
+              const isActive = pathname === n.href;
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`
+                    text-sm font-medium px-1 relative transition-colors duration-200 ease-in-out cursor-pointer
+                    ${isActive ? "text-[#002B6B]" : "text-gray-700 hover:text-[#007BFF]"}
+                    after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-[#007BFF] after:rounded-full
+                    after:transition-transform after:duration-300 after:ease-in-out
+                    ${isActive ? "after:scale-x-100 after:opacity-100" : "after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:opacity-100"}
+                  `}
+                  style={{
+                    transitionProperty: "color, background, transform",
+                    fontWeight: isActive ? 700 : 500,
+                  }}
+                >
+                  {n.label}
+                </Link>
+              );
+            })}
         </nav>
+
+        {/* ---------- MOBILE MENU BUTTON ---------- */}
+        <button
+          className="flex items-center justify-center md:hidden p-2 rounded-full hover:bg-gray-100 transition-all"
+          aria-label="Mở menu"
+          onClick={() => setOpen(true)}
+          type="button"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#002B6B]">
+            <rect x="4" y="6" width="16" height="2" rx="1" fill="currentColor" />
+            <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor" />
+            <rect x="4" y="16" width="16" height="2" rx="1" fill="currentColor" />
+          </svg>
+        </button>
 
         {/* ---------- AUTH / AVATAR ---------- */}
         <div className="hidden md:flex items-center gap-4">
@@ -137,11 +138,11 @@ export default function Header() {
                   <BellIcon className="h-5 w-5 text-[#007BFF] group-hover:text-[#002B6B] transition-colors duration-200" />
                   {/* Notification badge with unread count */}
                   {(unreadCount ?? 0) >= 0 && (
-                   <span
-                   className="absolute top-[-5px] right-[-5px] w-[20px] h-[20px] bg-[#007BFF] text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white shadow"
-                 >
-                   {unreadCount > 99 ? "99+" : unreadCount}
-                 </span>
+                    <span
+                      className="absolute top-[-5px] right-[-5px] w-[20px] h-[20px] bg-[#007BFF] text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white shadow"
+                    >
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
                   )}
                 </span>
                 <span className="sr-only">Notifications</span>
@@ -149,17 +150,17 @@ export default function Header() {
               <button
                 aria-label="Open dashboard"
                 onClick={() => router.push("/dashboard")}
-                className="rounded-full cursor-pointer hover:brightness-110 shadow-sm flex items-center justify-center p-0 border-2 border-[#007BFF] bg-white"
+                className="rounded-full cursor-pointer hover:brightness-110 shadow-sm flex items-center justify-center p-0  bg-white"
                 style={{ width: 40, height: 40 }}
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-white">
+                <div className=" rounded-full overflow-hidden flex items-center justify-center bg-white">
                   <Image
                     src={userAvatar || "/defaultAva.jpg"}
                     alt="User Avatar"
                     width={40}
                     height={40}
                     className="object-cover w-full h-full rounded-full"
-                    key={userAvatar} // Force re-render when avatar changes
+                    key={userAvatar}
                   />
                 </div>
               </button>
@@ -186,48 +187,174 @@ export default function Header() {
             </>
           )}
         </div>
-
       </div>
 
       {/* ---------- MOBILE MENU ---------- */}
       {open && !loading && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
-          <div className="px-6 py-4 flex flex-col space-y-4">
-            {nav.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="text-sm font-medium text-gray-700 hover:text-[#002B6B] cursor-pointer"
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 md:hidden flex flex-col">
+          <div
+            className={`
+              bg-white w-full mt-auto rounded-t-2xl shadow-lg
+              transition-transform transition-opacity duration-400
+              animate-slide-up-header-menu
+            `}
+            style={{
+              animation: 'slideUpHeaderMenu 0.35s cubic-bezier(0.22, 1, 0.36, 1)'
+            }}
+          >
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
+              <span className="font-bold text-lg text-[#002B6B]">Menu</span>
+              <button
+                aria-label="Đóng menu"
+                className="text-gray-500 hover:text-gray-700 p-1 rounded"
+                onClick={() => setOpen(false)}
               >
-                {n.label}
-              </Link>
-            ))}
-            {authed ? (
-              <>
-             
-                <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-[#002B6B] cursor-pointer">
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => handleLogout()}
-                  className="text-sm text-gray-700 hover:text-[#002B6B] px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer text-left"
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <div className="px-6 py-4 flex flex-col gap-1">
+              {nav.map((n, idx) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`
+                    py-3 px-2 rounded-lg text-base font-medium
+                    transition-all duration-200
+                    ${
+                      pathname === n.href
+                        ? "bg-blue-50 text-[#007BFF]"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-[#002B6B]"
+                    }
+                  `}
+                  style={{
+                    animation: `fadeInHeaderMenu 0.35s ${(0.02 + idx * 0.03).toFixed(2)}s both`
+                  }}
+                  onClick={() => setOpen(false)}
                 >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/login" className="text-sm text-gray-700 hover:text-[#002B6B] cursor-pointer">
-                  Login
+                  {n.label}
                 </Link>
-                <Link href="/auth/register" className="cursor-pointer">
-                  <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110 cursor-pointer">
-                    Register
-                  </Button>
-                </Link>
-              </>
+              ))}
+
+              {authed ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className={`
+                      py-3 px-2 rounded-lg text-base font-medium
+                      transition-all duration-200
+                      ${
+                        pathname.startsWith("/dashboard")
+                          ? "bg-blue-50 text-[#007BFF]"
+                          : "text-gray-700 hover:bg-gray-50 hover:text-[#002B6B]"
+                      }
+                    `}
+                    style={{ animation: `fadeInHeaderMenu 0.35s 0.13s both` }}
+                    onClick={() => setOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/dashboard/notifications"
+                    className={`
+                      py-3 px-2 rounded-lg text-base font-medium flex items-center
+                      transition-all duration-200
+                      ${
+                        pathname === "/dashboard/notifications"
+                          ? "bg-blue-50 text-[#007BFF]"
+                          : "text-gray-700 hover:bg-gray-50 hover:text-[#002B6B]"
+                      }
+                    `}
+                    style={{ animation: `fadeInHeaderMenu 0.35s 0.16s both` }}
+                    onClick={() => setOpen(false)}
+                  >
+                    <BellIcon size={18} className="mr-2" />
+                    Notifications
+                    {unreadCount > 0 && (
+                      <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-[#007BFF] rounded-full">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full text-base text-left py-3 px-2 rounded-lg text-gray-700 hover:text-[#B1001A] hover:bg-red-50 border transition-colors mt-2 border-gray-100"
+                    style={{ animation: `fadeInHeaderMenu 0.35s 0.18s both` }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    className={`
+                      py-3 px-2 rounded-lg text-base font-medium text-gray-700
+                      hover:bg-gray-50 hover:text-[#002B6B] transition-all
+                    `}
+                    style={{ animation: `fadeInHeaderMenu 0.35s 0.13s both` }}
+                    onClick={() => setOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    onClick={() => setOpen(false)}
+                    className="mt-1"
+                    style={{ animation: `fadeInHeaderMenu 0.35s 0.16s both` }}
+                  >
+                    <Button className="w-full rounded-xl bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white font-semibold hover:brightness-110 cursor-pointer">
+                      Register
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+            {authed && (
+              <div
+                className="flex items-center gap-3 px-6 py-4 border-t border-gray-100"
+                style={{ animation: `fadeInHeaderMenu 0.35s 0.21s both` }}
+              >
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                  <Image
+                    src={userAvatar || "/defaultAva.jpg"}
+                    alt="User Avatar"
+                    width={36}
+                    height={36}
+                    className="object-cover w-full h-full rounded-full"
+                  />
+                </div>
+                <span className="text-sm text-gray-600">Tài khoản của bạn</span>
+              </div>
             )}
           </div>
+          <style jsx global>{`
+            @keyframes slideUpHeaderMenu {
+              from {
+                transform: translateY(80px);
+                opacity: 0.5;
+              }
+              to {
+                transform: translateY(0);
+                opacity: 1;
+              }
+            }
+            @keyframes fadeInHeaderMenu {
+              from {
+                opacity: 0;
+                transform: translateY(15px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0px);
+              }
+            }
+          `}</style>
         </div>
       )}
     </header>

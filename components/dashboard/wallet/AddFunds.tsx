@@ -24,7 +24,7 @@ export default function AddFunds() {
   const [amountInput, setAmountInput] = useState("");
   const [selectedBank, setSelectedBank] = useState<string>(lastBankTransfer?.bank_name ?? BANKS[0].id);
   const [error, setError] = useState<string>("");
-  const [accountNumber, setAccountNumber] = useState<string>(lastBankTransfer?.bank_account ?? "");
+  const [accountNumber, setAccountNumber] = useState<string>(lastBankTransfer?.bank_account || "");
   const [showPreview, setShowPreview] = useState(false);
   const quickAmounts = [100000, 500000, 1000000, 2000000];
   useEffect(() => {
@@ -58,18 +58,15 @@ export default function AddFunds() {
       setError("Please complete all fields");
       return;
     }
-  //  const result = 
-  const result = await createDeposit({
-    bank_name: selectedBank,
-    bank_account: accountNumber,
-    transfer_code: transferCode,
-    amount: parseInt(amountInput),
-  });
-  if (result?.success ) {
+    if(parseInt(amountInput) < 100000) {
+      setError("Minimum deposit amount is 100,000 VND");
+      return;
+    }
+    if(parseInt(amountInput) > 5000000) {
+      setError("Maximum deposit amount is 5,000,000 VND");
+      return;
+    }
     setShowPreview(true);
-  } else {
-    setError(result?.error ?? "Failed to create deposit");
-  }
   };
 
   const handleEdit = () => {
@@ -82,10 +79,20 @@ export default function AddFunds() {
      setSelectedBank(BANKS[0].id);
      setAccountNumber("");
      setShowPreview(false);
-     // Optionally update balance via API here
-     getWalletStats();
-     getTransactions();
 
+    const result = await createDeposit({
+      bank_name: selectedBank,
+      bank_account: accountNumber,
+      transfer_code: transferCode,
+      amount: parseInt(amountInput),
+    });
+    if (result?.success ) {
+      // Optionally update balance via API here
+      getWalletStats();
+      getTransactions();
+    } else {
+      setError(result?.error ?? "Failed to create deposit");
+    }
   }
   // Find the selected bank object (for preview display)
   const selectedBankObj = BANKS.find((bank) => bank.id === selectedBank);
@@ -119,7 +126,7 @@ export default function AddFunds() {
                 type="text"
                 placeholder="Transfer Code"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow-sm bg-white transition-all placeholder:text-gray-400"
-                value={transferCode}
+                value={transferCode ?? ""}
                 readOnly
               />
             </div>
@@ -128,7 +135,7 @@ export default function AddFunds() {
               <label className="block text-xs font-medium text-gray-700 mb-1">Bank</label>
               <select
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow-sm bg-white transition-all placeholder:text-gray-400"
-                value={selectedBank}
+                value={selectedBank ?? BANKS[0].id}
                 onChange={(e) => {
                   setSelectedBank(e.target.value);
                 }}
@@ -150,8 +157,7 @@ export default function AddFunds() {
                 type="text"
                 placeholder="Account Number"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow font-sans transition-all placeholder:text-gray-400 bg-white"
-                value={accountNumber}
-                  
+                value={typeof accountNumber === "string" ? accountNumber : ""}
                 onChange={(e) => {
                   setAccountNumber(e.target.value.replace(/[^0-9]/g, ""));
                 }}
@@ -188,7 +194,7 @@ export default function AddFunds() {
                 type="text"
                 placeholder="Enter amount"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow font-sans transition-all placeholder:text-gray-400 bg-white"
-                value={amountInput}
+                value={typeof amountInput === "string" ? amountInput : ""}
                 onChange={(e) => {
                   setAmountInput(e.target.value.replace(/[^0-9]/g, ""));
                 }}
@@ -216,7 +222,7 @@ export default function AddFunds() {
             <div className="space-y-2 bg-blue-50 rounded-lg py-3 px-4 mb-3 max-w-md mx-auto">
               <div className="flex justify-between">
                 <span className="font-medium">Transfer Code:</span>
-                <span className="font-mono">{transferCode}</span>
+                <span className="font-mono">{transferCode ?? ""}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Bank:</span>
@@ -224,20 +230,20 @@ export default function AddFunds() {
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Account Number:</span>
-                <span className="font-mono">{accountNumber}</span>
+                <span className="font-mono">{typeof accountNumber === "string" ? accountNumber : ""}</span>
               </div>
               <div className="p-4 bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-inner w-fit mx-auto">
-              <div className="relative w-[220px] h-[220px] overflow-hidden rounded-2xl shadow-lg mx-auto">
-  <Image
-    src="/QR.PNG"
-    alt="QR Code"
-    width={400}
-    height={400}
-    className="object-cover scale-[1.4] translate-y-[-15%]"
-  />
-</div>
-  <p className="text-center text-gray-500 mt-2 text-sm">Scan this QR to transfer</p>
-</div>
+                <div className="relative w-[220px] h-[220px] overflow-hidden rounded-2xl shadow-lg mx-auto">
+                  <Image
+                    src="/QR.PNG"
+                    alt="QR Code"
+                    width={400}
+                    height={400}
+                    className="object-cover scale-[1.4] translate-y-[-15%]"
+                  />
+                </div>
+                <p className="text-center text-gray-500 mt-2 text-sm">Scan this QR to transfer</p>
+              </div>
             </div>
             <p className="text-xs text-gray-500 mb-3 text-center">
               You <span className="font-semibold text-red-500">must transfer EXACTLY</span> according to the information above. Once completed, please click "I have completed the transfer".

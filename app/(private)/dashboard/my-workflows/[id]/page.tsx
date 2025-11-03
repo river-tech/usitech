@@ -19,15 +19,25 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
   const [isDownloading, setIsDownloading] = useState(false);
   const [workflow, setWorkflow] = useState<DetailWorkflow | null>(null);
   const getWorkflow = async () => {
-    const result = await workflowApi.getWorkflowDetail(id);
+    const result = await workflowApi.getWorkflowFullDetail(id);
     if (result.success) {
+      console.log(result.data);
       setWorkflow(result.data);
+      
     }
   }
 
   useEffect(() => {
     getWorkflow();
   }, [id]);
+
+
+  useEffect(() => {
+    if(workflow) {
+      console.log(workflow);
+    }
+  }, [workflow]);
+
 
   // Download JSON file
   const handleDownloadJSON = async () => {
