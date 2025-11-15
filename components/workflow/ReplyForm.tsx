@@ -1,10 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send, X } from "lucide-react";
-import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/contexts/AuthContext";
 
 interface ReplyFormProps {
@@ -33,7 +32,7 @@ export default function ReplyForm({
     try {
       await onSubmit(content.trim());
       setContent("");
-    } catch (error) {
+    } catch {
       // Error submitting reply
     } finally {
       setIsSubmitting(false);

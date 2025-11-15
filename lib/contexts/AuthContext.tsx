@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import AuthApi from '../api/Auth';
 import UserApi from '../api/User';
@@ -9,7 +9,7 @@ import { loadNotificationsOnAuth } from './NotificationContext';
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: any | null;
+  user: Record<string, unknown> | null;
   userAvatar: string | null;
   userName: string | null;
   userEmail: string | null;
@@ -25,16 +25,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<Record<string, unknown> | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const authApi = AuthApi();
-  const userApi = UserApi();
+  const authApi = useMemo(() => AuthApi(), []);
+  const userApi = useMemo(() => UserApi(), []);
 
-  const refreshUserData = async () => {
+  const refreshUserData = useCallback(async () => {
     try {
       const result = await userApi.getUserProfile();
       if (result.success) {
@@ -42,12 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUserName(result.data.name);
         setUserEmail(result.data.email);
       }
-    } catch (error) {
+    } catch {
       // Error fetching user data
     }
-  };
+  }, [userApi]);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = authApi.getAuthToken();
@@ -72,9 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Load notifications after successful token refresh
             try {
               await loadNotificationsOnAuth();
-            } catch (error) {
-              // Error loading notifications, but don't fail refresh
-              console.error('Failed to load notifications after token refresh:', error);
+            } catch (notificationError) {
+              console.error('Failed to load notifications after token refresh:', notificationError);
             }
           } else {
             authApi.clearTokens();
@@ -85,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUserEmail(null);
             return;
           }
-        } catch (refreshError) {
+        } catch {
           authApi.clearTokens();
           setIsAuthenticated(false);
           setUser(null);
@@ -102,13 +101,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Load notifications when token is valid
         try {
           await loadNotificationsOnAuth();
-        } catch (error) {
-          // Error loading notifications, but don't fail checkAuth
-          console.error('Failed to load notifications during checkAuth:', error);
+        } catch (notificationError) {
+          console.error('Failed to load notifications during checkAuth:', notificationError);
         }
       }
       
-    } catch (error) {
+    } catch {
       setIsAuthenticated(false);
       setUser(null);
       setUserAvatar(null);
@@ -117,9 +115,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authApi, refreshUserData]);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true);
       const result = await authApi.login(email, password);
@@ -132,22 +130,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Load notifications after successful login
         try {
           await loadNotificationsOnAuth();
-        } catch (error) {
-          // Error loading notifications, but don't fail login
-          console.error('Failed to load notifications after login:', error);
+        } catch (notificationError) {
+          console.error('Failed to load notifications after login:', notificationError);
         }
         return { success: true };
       } else {
         return { success: false, error: result.error || 'Login failed' };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Login failed' };
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authApi, refreshUserData]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     authApi.clearTokens();
     setIsAuthenticated(false);
     setUser(null);
@@ -156,12 +153,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserEmail(null);
     
     router.push('/auth/login');
-  };
+  }, [authApi, router]);
 
   // Check auth on mount and when pathname changes
   useEffect(() => {
     checkAuth();
-  }, [pathname]);
+  }, [checkAuth, pathname]);
 
   // Auto-redirect for protected routes
   useEffect(() => {

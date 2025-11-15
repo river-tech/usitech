@@ -85,6 +85,13 @@ export default function ForgotPasswordEmailForm({ setStep, setEmail }: ForgotPas
               >
                 {isLoading ? "Sending..." : "Send OTP"}
               </Button>
+              {error && (
+                <Alert className="border-red-200 bg-red-50 mt-4">
+                  <AlertDescription className="text-red-700">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
             </form>
           )}
         </CardContent>

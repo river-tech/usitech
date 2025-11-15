@@ -22,19 +22,15 @@ export default function Header() {
   const [authed, setAuthed] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const router = useRouter();
-  const authApi = AuthApi();
-  const { userAvatar, isLoading: userLoading } = useAuth();
+  const authApi = React.useMemo(() => AuthApi(), []);
+  const { userAvatar } = useAuth();
   const { unreadCount } = useNotification();
   
   React.useEffect(() => {
     setOpen(false);
   }, [pathname, userAvatar]);
 
-  React.useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = React.useCallback(async () => {
     setLoading(true);
     const accessToken = authApi.getAuthToken();
     if (accessToken) {
@@ -52,7 +48,7 @@ export default function Header() {
           authApi.clearTokens();
           setAuthed(false);
         }
-      } catch (error) {
+      } catch {
         authApi.clearTokens();
         setAuthed(false);
       }
@@ -60,10 +56,14 @@ export default function Header() {
       setAuthed(false);
     }
     setLoading(false);
-  };
+  }, [authApi]);
+
+  React.useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const handleLogout = async () => {
-    const result = await authApi.logout();
+    await authApi.logout();
     setAuthed(false);
     router.push("/");
   };

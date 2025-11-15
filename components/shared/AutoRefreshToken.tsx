@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import AuthApi from '../../lib/api/Auth';
 
 export default function AutoRefreshToken() {
-  const authApi = AuthApi();
+  const authApi = useMemo(() => AuthApi(), []);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isRefreshingRef = useRef(false);
+  const handleTokenRefreshRef = useRef<() => void>(() => {});
 
-  const scheduleTokenRefresh = () => {
+  const scheduleTokenRefresh = useCallback(() => {
     // Clear existing timeout
     if (refreshTimeoutRef.current) {
       clearTimeout(refreshTimeoutRef.current);
@@ -20,7 +20,7 @@ export default function AutoRefreshToken() {
 
     // Check if token is expired
     if (authApi.isTokenExpired()) {
-      handleTokenRefresh();
+      handleTokenRefreshRef.current?.();
       return;
     }
 
@@ -28,11 +28,11 @@ export default function AutoRefreshToken() {
     const refreshTime = 10 * 60 * 1000; // 10 minutes in milliseconds
     
     refreshTimeoutRef.current = setTimeout(() => {
-      handleTokenRefresh();
+      handleTokenRefreshRef.current?.();
     }, refreshTime);
-  };
+  }, [authApi]);
 
-  const handleTokenRefresh = async () => {
+  const handleTokenRefresh = useCallback(async () => {
     if (isRefreshingRef.current) {
       return;
     }
@@ -50,14 +50,20 @@ export default function AutoRefreshToken() {
         // Try again in next cycle
         scheduleTokenRefresh();
       }
-    } catch (error) {
+    } catch {
       // Don't redirect immediately - might be network error
       // Try again in next cycle
       scheduleTokenRefresh();
     } finally {
       isRefreshingRef.current = false;
     }
-  };
+  }, [authApi, scheduleTokenRefresh]);
+
+  useEffect(() => {
+    handleTokenRefreshRef.current = () => {
+      void handleTokenRefresh();
+    };
+  }, [handleTokenRefresh]);
 
 
   // Check token status on mount
@@ -81,7 +87,7 @@ export default function AutoRefreshToken() {
         clearTimeout(refreshTimeoutRef.current);
       }
     };
-  }, []);
+  }, [authApi, handleTokenRefresh, scheduleTokenRefresh]);
 
   // Listen for storage changes (token updates from other tabs)
   useEffect(() => {
@@ -93,7 +99,7 @@ export default function AutoRefreshToken() {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [scheduleTokenRefresh]);
 
   // Listen for focus events (user returns to tab)
   useEffect(() => {
@@ -106,7 +112,7 @@ export default function AutoRefreshToken() {
 
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, []);
+  }, [authApi, handleTokenRefresh]);
 
   return null; // This component doesn't render anything
 }

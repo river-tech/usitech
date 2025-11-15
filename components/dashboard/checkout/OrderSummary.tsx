@@ -1,7 +1,16 @@
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
 
-export default function OrderSummary({ item }: { item: any }) {
+export interface OrderSummaryItem {
+  id: string;
+  image?: string;
+  workflow?: string;
+  title?: string;
+  category?: string;
+  price: number;
+}
+
+export default function OrderSummary({ item }: { item: OrderSummaryItem }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 w-full md:w-[320px]">
       <h3 className="text-lg font-semibold mb-4 text-gray-900">Order Summary</h3>
@@ -44,5 +53,4 @@ export default function OrderSummary({ item }: { item: any }) {
     </div>
   );
 }
-
 

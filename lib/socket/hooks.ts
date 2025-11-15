@@ -4,6 +4,16 @@ import { useEffect, useRef, useCallback } from "react";
 import { getWebSocketClient } from "./client";
 import { WalletStatusUpdate, NotificationUpdate } from "./client";
 
+const isWalletStatusUpdate = (data: unknown): data is WalletStatusUpdate =>
+  typeof data === "object" &&
+  data !== null &&
+  (data as WalletStatusUpdate).type === "wallet_status_update";
+
+const isNotificationUpdate = (data: unknown): data is NotificationUpdate =>
+  typeof data === "object" &&
+  data !== null &&
+  (data as NotificationUpdate).type === "notification";
+
 interface UseWebSocketOptions {
   endpoint?: string;
   onConnect?: () => void;
@@ -11,7 +21,7 @@ interface UseWebSocketOptions {
   onError?: (error: Event) => void;
   onWalletStatusUpdate?: (data: WalletStatusUpdate) => void;
   onNotificationUpdate?: (data: NotificationUpdate) => void;
-  onMessage?: (data: any) => void;
+  onMessage?: (data: unknown) => void;
   autoConnect?: boolean;
 }
 
@@ -28,7 +38,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
   } = options;
 
   const wsClientRef = useRef(getWebSocketClient());
-  const handlersRef = useRef<Map<string, (data: any) => void>>(new Map());
+  const handlersRef = useRef<Map<string, (data: unknown) => void>>(new Map());
   const isConnectingRef = useRef(false);
   
   // Lưu latest callbacks vào ref để tránh re-render
@@ -64,13 +74,17 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
         handlersRef.current.set("disconnected", handler);
       }
       if (callbacks.onError) {
-        const handler = (error: Event) => callbacks.onError?.(error);
+        const handler = (error: unknown) => {
+          if (error instanceof Event) {
+            callbacks.onError?.(error);
+          }
+        };
         wsClient.on("error", handler);
         handlersRef.current.set("error", handler);
       }
       if (callbacks.onWalletStatusUpdate) {
-        const handler = (data: WalletStatusUpdate) => {
-          if (data.type === "wallet_status_update") {
+        const handler = (data: unknown) => {
+          if (isWalletStatusUpdate(data)) {
             callbacks.onWalletStatusUpdate?.(data);
           }
         };
@@ -78,16 +92,17 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
         handlersRef.current.set("wallet_status_update", handler);
       }
       if (callbacks.onNotificationUpdate) {
-        const handler = (data: any) => {
+        const handler = (data: unknown) => {
           console.log("Hook received notification event (already connected):", data);
-          // Accept any data structure and pass to callback
-          callbacks.onNotificationUpdate?.(data as NotificationUpdate);
+          if (isNotificationUpdate(data)) {
+            callbacks.onNotificationUpdate?.(data);
+          }
         };
         wsClient.on("notification", handler);
         handlersRef.current.set("notification", handler);
       }
       if (callbacks.onMessage) {
-        const handler = (data: any) => callbacks.onMessage?.(data);
+        const handler = (data: unknown) => callbacks.onMessage?.(data);
         wsClient.on("message", handler);
         handlersRef.current.set("message", handler);
       }
@@ -116,10 +131,12 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       handlersRef.current.set("disconnected", handler);
     }
 
-    if (callbacks.onError) {
-      const handler = (error: Event) => {
+  if (callbacks.onError) {
+      const handler = (error: unknown) => {
         isConnectingRef.current = false;
-        callbacks.onError?.(error);
+        if (error instanceof Event) {
+          callbacks.onError?.(error);
+        }
       };
       wsClient.on("error", handler);
       handlersRef.current.set("error", handler);
@@ -127,8 +144,8 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
 
     // Listen for wallet status updates
     if (callbacks.onWalletStatusUpdate) {
-      const handler = (data: WalletStatusUpdate) => {
-        if (data.type === "wallet_status_update") {
+      const handler = (data: unknown) => {
+        if (isWalletStatusUpdate(data)) {
           callbacks.onWalletStatusUpdate?.(data);
         }
       };
@@ -138,10 +155,11 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
 
     // Listen for notification updates
     if (callbacks.onNotificationUpdate) {
-      const handler = (data: any) => {
+      const handler = (data: unknown) => {
         console.log("Hook received notification event (initial connect):", data);
-        // Accept any data structure and pass to callback
-        callbacks.onNotificationUpdate?.(data as NotificationUpdate);
+        if (isNotificationUpdate(data)) {
+          callbacks.onNotificationUpdate?.(data);
+        }
         
       };
       wsClient.on("notification", handler);
@@ -150,7 +168,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
 
     // Listen for all messages
     if (callbacks.onMessage) {
-      const handler = (data: any) => {
+      const handler = (data: unknown) => {
         callbacks.onMessage?.(data);
       };
       wsClient.on("message", handler);
@@ -180,17 +198,17 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
   }, []);
 
   // Send message
-  const send = useCallback((data: any) => {
+  const send = useCallback((data: string | Record<string, unknown>) => {
     return wsClientRef.current.send(data);
   }, []);
 
   // Listen to event
-  const on = useCallback((event: string, callback: (data: any) => void) => {
+  const on = useCallback((event: string, callback: (data: unknown) => void) => {
     wsClientRef.current.on(event, callback);
   }, []);
 
   // Remove event listener
-  const off = useCallback((event: string, callback?: (data: any) => void) => {
+  const off = useCallback((event: string, callback?: (data: unknown) => void) => {
     wsClientRef.current.off(event, callback);
   }, []);
 

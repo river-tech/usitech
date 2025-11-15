@@ -2,19 +2,40 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star, Users } from "lucide-react";
 import { Button } from "../ui/button";
-import { Workflow } from "@/lib/models/workflow";
-import WishlistButton from "./WishlistButton";
+import type { Workflow as WorkflowModel } from "@/lib/models/workflow";
+import type { Workflow as SearchWorkflow } from "@/lib/search/types";
 
-export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
-    
+type WorkflowCardProps = {
+  workflow: WorkflowModel | SearchWorkflow;
+};
+
+const isSearchWorkflow = (
+  workflow: WorkflowModel | SearchWorkflow
+): workflow is SearchWorkflow => !("wishlist_count" in workflow);
+
+export default function WorkflowCard({ workflow }: WorkflowCardProps) {
+  const categories = isSearchWorkflow(workflow)
+    ? [workflow.category]
+    : workflow.categories;
+  const rating = isSearchWorkflow(workflow)
+    ? workflow.rating
+    : workflow.rating_avg;
+  const downloads = isSearchWorkflow(workflow)
+    ? workflow.downloads
+    : workflow.downloads_count;
+  const imageUrls = isSearchWorkflow(workflow)
+    ? workflow.image
+    : workflow.image_urls;
+  const ratingDisplay = typeof rating === "number" ? rating.toFixed(1) : rating ?? "5.0";
+
   return (
     <article className="group bg-white border border-gray-100 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 flex flex-col overflow-hidden cursor-pointer font-inter">
       {/* Image Section */}
       <div className="relative aspect-[16/9] rounded-xl overflow-hidden">
         <Image
           src={
-            workflow?.image_urls?.[0] && workflow.image_urls[0].startsWith("http")
-              ? workflow.image_urls[0]
+            imageUrls?.[0] && imageUrls[0].startsWith("http")
+              ? imageUrls[0]
               : "/placeholder-workflow.png"
           }
           alt={`${workflow?.title || "Workflow"} workflow automation template preview`}
@@ -29,13 +50,11 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
         {/* Category + Rating */}
         <div className="flex justify-between items-center mt-3 mb-2">
           <span className="bg-sky-50 text-sky-700 font-medium text-xs px-2 py-1 rounded-full">
-            {workflow.categories?.[0] || "Uncategorized"}
+            {categories?.[0] || "Uncategorized"}
           </span>
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-semibold text-gray-700">
-              {workflow.rating_avg?.toFixed(1) || "5.0"}
-            </span>
+            <span className="text-sm font-semibold text-gray-700">{ratingDisplay}</span>
           </div>
         </div>
 
@@ -66,7 +85,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           {/* Left: Downloads */}
           <div className="flex items-center gap-1 text-sm text-gray-500">
             <Users className="w-4 h-4" />
-            <span>{workflow.downloads_count}</span>
+            <span>{downloads}</span>
           </div>
 
           {/* Right: Price + Wishlist + CTA */}

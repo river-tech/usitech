@@ -4,7 +4,7 @@ import { Badge } from "../../ui/badge";
 import { Eye, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PurchasedWorkflow } from "@/lib/models/purchased-workflow";
-import { PurchaseStatus, WorkflowStatus } from "@/lib/models/enums";
+import { WorkflowStatus } from "@/lib/models/enums";
 
 // Có thể truyền vào null/undefined cho workflow để hiện nút mua nếu không có
 export default function WorkflowCard({ workflow }: { workflow?: PurchasedWorkflow | null }) {

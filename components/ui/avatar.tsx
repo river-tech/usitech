@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const Avatar = React.forwardRef<
@@ -28,8 +29,13 @@ const Avatar = React.forwardRef<
       {...props}
     >
       {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} className="h-full w-full object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={`${size}px`}
+          className="object-cover"
+        />
       ) : (
         <AvatarFallback>{initials}</AvatarFallback>
       )}
@@ -37,18 +43,6 @@ const Avatar = React.forwardRef<
   );
 });
 Avatar.displayName = "Avatar";
-
-const AvatarImage = React.forwardRef<
-  HTMLImageElement,
-  React.ImgHTMLAttributes<HTMLImageElement>
->(({ className, ...props }, ref) => (
-  <img
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    {...props}
-  />
-));
-AvatarImage.displayName = "AvatarImage";
 
 const AvatarFallback = React.forwardRef<
   HTMLDivElement,
@@ -65,4 +59,4 @@ const AvatarFallback = React.forwardRef<
 ));
 AvatarFallback.displayName = "AvatarFallback";
 
-export { Avatar, AvatarImage, AvatarFallback };
+export { Avatar, AvatarFallback };

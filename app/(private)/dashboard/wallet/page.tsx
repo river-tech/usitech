@@ -28,9 +28,11 @@ export default function WalletPage() {
     <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
       <WalletHeader userName={userName || "UsITech User"} />
       
-      <WalletStats 
-        Stats={walletStats}
-      />
+      {walletStats && (
+        <WalletStats 
+          Stats={walletStats}
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <AddFunds 

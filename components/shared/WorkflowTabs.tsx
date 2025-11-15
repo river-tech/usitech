@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle, Eye, Star, Zap } from "lucide-react";
+import { CheckCircle, Eye, Zap } from "lucide-react";
 import { DetailWorkflow } from "@/lib/models/workflow";
 
 export default function WorkflowTabs({ workflow }: { workflow: DetailWorkflow }) {

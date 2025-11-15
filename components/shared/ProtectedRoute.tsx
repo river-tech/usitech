@@ -11,28 +11,32 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
     const [authed, setAuthed] = React.useState(false);
     const [checking, setChecking] = React.useState(true);
-    const auth = AuthApi();
+    const auth = React.useMemo(() => AuthApi(), []);
     React.useEffect(() => {
-        setAuthed(auth.getAuthToken() ? true : false);
-        if(!authed){
-            const tryRefresh = async () => {
-                try {
-                    const refreshed = await auth.refreshToken();
-                    if(refreshed){
-                        setAuthed(true);
-                    }
-                    else{
-                        setAuthed(false);
-                        router.push("/login");
-                    }
-                } catch (e) {
-                    // ignore error, stay unauthenticated
+        const verifyAuth = async () => {
+            const hasToken = Boolean(auth.getAuthToken());
+            if (hasToken) {
+                setAuthed(true);
+                setChecking(false);
+                return;
+            }
+            try {
+                const refreshed = await auth.refreshToken();
+                if (refreshed) {
+                    setAuthed(true);
+                } else {
+                    setAuthed(false);
+                    router.push("/login");
                 }
-            };
-            tryRefresh();
-        }   
-        setChecking(false);
-    }, [authed]);
+            } catch {
+                setAuthed(false);
+                router.push("/login");
+            } finally {
+                setChecking(false);
+            }
+        };
+        verifyAuth();
+    }, [auth, router]);
 
     if (checking) {
         return (

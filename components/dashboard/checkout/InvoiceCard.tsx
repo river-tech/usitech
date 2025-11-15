@@ -11,13 +11,6 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
       ? "text-green-600"
       : "text-gray-500";
 
-  // Company Info (static)
-  const company = {
-    name: "UsITech Ltd.",
-    email: "support@usitech.io.vn",
-    address: "123 Tech Street, HCMC",
-  };
-
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-100 border border-indigo-200 rounded-2xl shadow-lg p-6 space-y-6 max-w-3xl mx-auto animate-fade-in transition-all duration-500">
       {/* Invoice Header */}
@@ -185,4 +178,3 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
     </div>
   );
 }
-

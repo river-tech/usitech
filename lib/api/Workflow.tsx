@@ -175,7 +175,7 @@ const WorkflowApi = () => {
   // 20. Create Workflow Review
   const createReview = async (workflow_id: string, rating: number, comment = "", parent_comment_id?: string) => {
     try {
-      const body: any = { rating, comment };
+      const body: { rating: number; comment: string; parent_comment_id?: string } = { rating, comment };
       if (parent_comment_id) body.parent_comment_id = parent_comment_id;
 
       const response = await fetch(`${API_BASE_URL}/api/workflows/${workflow_id}/reviews`, {

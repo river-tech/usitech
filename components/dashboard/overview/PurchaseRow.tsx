@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Eye, Download } from "lucide-react";
 import { PurchaseStatus } from "../../../lib/types";
@@ -51,5 +50,4 @@ export default function PurchaseRow({ purchase }: { purchase: PurchaseItem }) {
     </tr>
   );
 }
-
 

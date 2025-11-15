@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "../ui/button";
-
 interface AccountSummaryProps {
   memberSince: string;
   plan: string;
@@ -23,5 +21,4 @@ export default function AccountSummary({ memberSince, plan, downloads }: Account
       </div>
   );
 }
-
 

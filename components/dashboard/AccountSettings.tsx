@@ -1,23 +1,21 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Alert, AlertDescription } from "../ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { User, Mail, CheckCircle, AlertCircle, Upload, X } from "lucide-react";
+import { User, Mail, CheckCircle, AlertCircle, Upload } from "lucide-react";
 import { useAuth } from "../../lib/contexts/AuthContext";
 import UserApi from "../../lib/api/User";
-import { UserProfile } from "../../lib/models/user";
 import { uploadAvatar } from "../../lib/api/UploadFile";
 import Image from "next/image";
 
 export default function AccountSettings() {
   const { userAvatar, userName, userEmail, refreshUserData, setUserAvatar } = useAuth();
-  const userApi = UserApi();
+  const userApi = useMemo(() => UserApi(), []);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -43,7 +41,7 @@ export default function AccountSettings() {
             avatar: result.data.avatar_url || ""
           });
         }
-      } catch (error) {
+      } catch {
         // Error loading profile
       } finally {
         setIsLoadingProfile(false);
@@ -51,12 +49,17 @@ export default function AccountSettings() {
     };
     
     loadProfile();
-  }, []);
+  }, [userApi]);
 
-  // Sync formData avatar with context avatar
+  // Sync formData fields with context values
   useEffect(() => {
-    setFormData(prev => ({ ...prev, avatar: userAvatar || "" }));
-  }, [userAvatar]);
+    setFormData(prev => ({
+      ...prev,
+      name: userName || prev.name,
+      email: userEmail || prev.email,
+      avatar: userAvatar || prev.avatar,
+    }));
+  }, [userAvatar, userEmail, userName]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +78,7 @@ export default function AccountSettings() {
       } else {
         setShowError(true);
       }
-    } catch (error) {
+    } catch {
       setShowError(true);
     } finally {
       setIsLoading(false);
@@ -127,7 +130,7 @@ export default function AccountSettings() {
         }
         
       } 
-    } catch (error) {
+    } catch {
       setShowError(true);
     } finally {
       setIsUploadingAvatar(false);

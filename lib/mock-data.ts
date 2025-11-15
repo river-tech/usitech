@@ -1,5 +1,4 @@
 import { PurchaseStatus, NotificationType } from "./models/enums";
-import { Notification } from "./models";
 
 export type MockUserPurchase = {
   id: string;
@@ -284,5 +283,4 @@ export const mockComments: MockComment[] = [
     ]
   }
 ];
-
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, RefreshCw, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { Bell, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { NotificationType } from "../../lib/models";
 
 interface NotificationItem {
@@ -49,5 +49,4 @@ export default function NotificationsCard({ items }: NotificationsCardProps) {
     </div>
   );
 }
-
 

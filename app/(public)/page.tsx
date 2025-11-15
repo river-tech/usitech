@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
-import {categories, testimonials } from "../../lib/data";
+import { testimonials } from "../../lib/data";
 import { ArrowRight, Search, Star, Check, Users, Clock, Shield, Play } from 'lucide-react';
 import FeaturedWorkflowsSlider from "../../components/shared/FeaturedWorkflowsSlider";  
 import Image from "next/image";
@@ -265,7 +265,7 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {testimonials.slice(0, 3).map((t, i) => (
+            {testimonials.slice(0, 3).map((t) => (
               <Card
                 key={t.name}
                 className="bg-white shadow-lg rounded-2xl p-4 md:p-6 lg:p-8 flex flex-col h-full hover:shadow-xl transition-shadow duration-300"

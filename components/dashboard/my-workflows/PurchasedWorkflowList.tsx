@@ -2,23 +2,23 @@ import * as React from "react";
 import WorkflowCard from "./WorkflowCard";
 import SectionHeader from "./SectionHeader";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PurchasedWorkflow } from "@/lib/models/purchased-workflow";
 import UserApi from "@/lib/api/User";
 
 export default function PurchasedWorkflowList() {
-   const workflow = UserApi();
+   const userApi = useMemo(() => UserApi(), []);
   const [purchasedWorkflows, setPurchasedWorkflows] = useState<PurchasedWorkflow[]>([]);
 
   useEffect(() => {
     const loadWorkflows = async () => {
-      const result = await workflow.getMyPurchasedWorkflows();
+      const result = await userApi.getMyPurchasedWorkflows();
       if (result.success) {
         setPurchasedWorkflows(result.data);
       }
     };
     loadWorkflows();
-  }, []);
+  }, [userApi]);
 
   return (
     <section>
@@ -44,5 +44,4 @@ export default function PurchasedWorkflowList() {
     </section>
   );
 }
-
 

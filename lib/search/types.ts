@@ -19,16 +19,3 @@ export interface Tag {
   name: string;
   count: number;
 }
-
-export interface SearchParams {
-  q?: string;
-  tags?: string[];
-  page?: number;
-}
-
-export interface SearchResults {
-  workflows: Workflow[];
-  total: number;
-  page: number;
-  totalPages: number;
-}

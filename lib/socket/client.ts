@@ -1,17 +1,22 @@
 "use client";
 
 import Cookies from "js-cookie";
+import { Notification } from "../models/notification";
+import { IWalletStats, WalletTransaction } from "../models/Wallet";
 
 export interface WalletStatusUpdate {
   type: "wallet_status_update";
-  transaction: any;
-  wallet: any;
+  transaction?: Partial<WalletTransaction>;
+  wallet?: Partial<IWalletStats>;
 }
 
 export interface NotificationUpdate {
   type: "notification";
-  notification: any;
+  notification: Notification;
 }
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
 
 class WebSocketClient {
   private ws: WebSocket | null = null;
@@ -19,7 +24,7 @@ class WebSocketClient {
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 5;
   private reconnectTimeout: NodeJS.Timeout | null = null;
-  private listeners: Map<string, Set<(data: any) => void>> = new Map();
+  private listeners: Map<string, Set<(data: unknown) => void>> = new Map();
 
   constructor() {
     // Lấy WebSocket URL từ env hoặc default
@@ -80,24 +85,27 @@ class WebSocketClient {
       // Message received
       this.ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          console.log("WebSocket message received:", data);
-          console.log("Message type:", data.type);
-          console.log("Message keys:", Object.keys(data));
+          const parsed = JSON.parse(event.data);
+          if (!isRecord(parsed)) {
+            return;
+          }
+          console.log("WebSocket message received:", parsed);
+          console.log("Message type:", parsed.type);
+          console.log("Message keys:", Object.keys(parsed));
 
           // Emit to specific type listeners
-          if (data.type) {
-            console.log(`Emitting event: "${data.type}"`);
-            this.emit(data.type, data);
+          if (typeof parsed.type === "string") {
+            console.log(`Emitting event: "${parsed.type}"`);
+            this.emit(parsed.type, parsed);
           }
 
           // Also emit generic message event
-          this.emit("message", data);
+          this.emit("message", parsed);
           
           // If no type, try to detect notification-like structure
-          if (!data.type && (data.id || data.notification)) {
+          if (!parsed.type && ("id" in parsed || "notification" in parsed)) {
             console.log("No type found, but looks like notification, emitting 'notification' event");
-            this.emit("notification", data);
+            this.emit("notification", parsed);
           }
         } catch (error) {
           console.error("Error parsing WebSocket message:", error);
@@ -152,7 +160,7 @@ class WebSocketClient {
   }
 
   // Send message to server
-  public send(data: any): boolean {
+  public send(data: string | Record<string, unknown>): boolean {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       try {
         const message = typeof data === "string" ? data : JSON.stringify(data);
@@ -169,7 +177,7 @@ class WebSocketClient {
   }
 
   // Listen to event
-  public on(event: string, callback: (data: any) => void): void {
+  public on(event: string, callback: (data: unknown) => void): void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
     }
@@ -177,7 +185,7 @@ class WebSocketClient {
   }
 
   // Remove event listener
-  public off(event: string, callback?: (data: any) => void): void {
+  public off(event: string, callback?: (data: unknown) => void): void {
     if (!this.listeners.has(event)) {
       return;
     }
@@ -190,7 +198,7 @@ class WebSocketClient {
   }
 
   // Emit event to listeners
-  private emit(event: string, data: any): void {
+  private emit(event: string, data: unknown): void {
     if (this.listeners.has(event)) {
       this.listeners.get(event)!.forEach((callback) => {
         try {

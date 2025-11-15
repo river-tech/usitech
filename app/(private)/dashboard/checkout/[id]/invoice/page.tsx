@@ -1,7 +1,7 @@
 "use client";
 import { InvoiceHeader, InvoiceCard } from "../../../../../../components/dashboard/checkout";
 import WorkflowApi from "@/lib/api/Workflow";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Invoice } from "@/lib/models/workflow";
 
 interface PageProps {
@@ -20,20 +20,20 @@ export default function InvoicePage({ params }: PageProps) {
     getParams();
   }, [params]);
 
-  const getInvoice = async () => {
+  const getInvoice = useCallback(async () => {
     if (!id) return;
     const workflowApi = WorkflowApi();
     const result = await workflowApi.getInvoice(id);
     if (result.success) {
       setInvoice(result.data);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     if (id) {
       getInvoice();
     }
-  }, [id]);
+  }, [id, getInvoice]);
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
@@ -42,5 +42,4 @@ export default function InvoicePage({ params }: PageProps) {
     </div>
   );
 }
-
 

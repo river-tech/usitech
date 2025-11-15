@@ -9,19 +9,12 @@ interface CommentListProps {
   comments: Review[];
   onReply?: (commentId: string, content: string) => void;
   onDelete?: (commentId: string) => void;
-  showLoadMore?: boolean;
-  onLoadMore?: () => void;
-  isLoading?: boolean;
-  currentUserId?: string;
 }
 
 export default function CommentList({ 
   comments, 
   onReply, 
   onDelete,
-  showLoadMore = false,
-  onLoadMore,
-  isLoading = false,
 }: CommentListProps) {
   // currentUserId will be used for future user identification
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "popular">("newest");

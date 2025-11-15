@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import WorkflowApi from '../api/Workflow';
 import UserApi from '../api/User';
+import { PurchasedWorkflow } from '../models/purchased-workflow';
 
 interface WishlistContextType {
   wishlistItems: string[]; // Array of workflow IDs in wishlist
@@ -19,29 +20,29 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlistItems, setWishlistItems] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const workflowApi = WorkflowApi();
-  const userApi = UserApi();
+  const workflowApi = useMemo(() => WorkflowApi(), []);
+  const userApi = useMemo(() => UserApi(), []);
 
   // Load wishlist on mount
-  useEffect(() => {
-    loadWishlist();
-  }, []);
-
-  const loadWishlist = async () => {
+  const loadWishlist = useCallback(async () => {
     try {
       setIsLoading(true);
       const result = await userApi.getMyWishlist();
       if (result.success) {
         // Extract workflow IDs from wishlist items
-        const workflowIds = result.data.map((item: any) => item.id);
+        const workflowIds = (result.data as PurchasedWorkflow[]).map((item) => item.id);
         setWishlistItems(workflowIds);
       }
-    } catch (error) {
+    } catch {
       // Error loading wishlist
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userApi]);
+
+  useEffect(() => {
+    loadWishlist();
+  }, [loadWishlist]);
 
   const addToWishlist = async (workflowId: string) => {
     try {
@@ -55,7 +56,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Failed to add to wishlist" };
     } finally {
       setIsLoading(false);
@@ -74,7 +75,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Failed to remove from wishlist" };
     } finally {
       setIsLoading(false);

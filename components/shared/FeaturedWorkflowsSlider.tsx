@@ -1,11 +1,11 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Download, Star } from "lucide-react";
 import { useWorkflow } from "../../lib/contexts/WorkflowContext";
-import WishlistButton from "./WishlistButton";
 
 // Fixed items per page for 1080px screen
 function getItemsPerPage() {
@@ -65,14 +65,10 @@ export default function FeaturedWorkflowsSlider() {
 			const elapsed = now - lastTime;
 			lastTime = now;
 			setOffset((prev) => {
-				let next = prev + speed * elapsed;
-				// Use default width if itemWidth is 0
+				const tentativeOffset = prev + speed * elapsed;
 				const effectiveWidth = itemWidth > 0 ? itemWidth : 300; // Default 300px per item
 				const totalWidth = effectiveWidth * total;
-				if (next >= totalWidth) {
-					return next - totalWidth;
-				}
-				return next;
+				return tentativeOffset >= totalWidth ? tentativeOffset - totalWidth : tentativeOffset;
 			});
 			animationRef.current = requestAnimationFrame(animate);
 		}
@@ -137,9 +133,9 @@ export default function FeaturedWorkflowsSlider() {
 									</span>
 								</div>
 								{/* Image/illustration placeholder */}
-								<div className="w-full h-28 bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden">
+								<div className="w-full h-28 bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
 									{w.image_urls && w.image_urls.length > 0 ? (
-										<img src={w.image_urls[0]} alt={w.title} className="object-cover w-full h-full rounded-lg" />
+										<Image src={w.image_urls[0]} alt={w.title} fill className="object-cover rounded-lg" />
 									) : (
 										<div className="icon-placeholder w-16 h-16 bg-gray-200 rounded-lg" />
 									)}

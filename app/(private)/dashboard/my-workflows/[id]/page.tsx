@@ -1,12 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   WorkflowHeader,
   WorkflowVideo,
-  WorkflowDocs,
   ThankYouCard,
 } from "@/components/dashboard/workflow-detail";
 import WorkflowApi from "@/lib/api/Workflow";
@@ -18,18 +17,18 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
   const [workflow, setWorkflow] = useState<DetailWorkflow | null>(null);
-  const getWorkflow = async () => {
+  const getWorkflow = useCallback(async () => {
     const result = await workflowApi.getWorkflowFullDetail(id);
     if (result.success) {
       console.log(result.data);
       setWorkflow(result.data);
       
     }
-  }
+  }, [id, workflowApi]);
 
   useEffect(() => {
     getWorkflow();
-  }, [id]);
+  }, [getWorkflow]);
 
 
   useEffect(() => {
@@ -57,7 +56,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch {
       // Error downloading JSON
     } finally {
       setIsDownloading(false);
@@ -149,7 +148,7 @@ export default function WorkflowDetailPage({ params }: { params: Promise<{ id: s
                 <span className="text-blue-600 text-xs font-bold">i</span>
               </div>
               <div className="text-sm text-gray-700">
-                <p className="font-medium mb-1">What's included in the JSON file:</p>
+                <p className="font-medium mb-1">What&apos;s included in the JSON file:</p>
                 <ul className="list-disc list-inside space-y-1 text-gray-600">
                   <li>Complete workflow configuration</li>
                   <li>Documentation links and resources</li>

@@ -23,7 +23,7 @@ export default function NotificationsPage() {
     setActionLoading(notificationId);
     try {
       await markAsRead(notificationId);
-    } catch (error) {
+    } catch {
       // Error marking notification as read
     } finally {
       setActionLoading(null);
@@ -34,7 +34,7 @@ export default function NotificationsPage() {
     setActionLoading(notificationId);
     try {
       await deleteNotification(notificationId);
-    } catch (error) {
+    } catch {
       // Error deleting notification
     } finally {
       setActionLoading(null);
@@ -45,7 +45,7 @@ export default function NotificationsPage() {
     setActionLoading('all');
     try {
       await deleteAllNotifications();
-    } catch (error) {
+    } catch {
       // Error deleting all notifications
     } finally {
       setActionLoading(null);
@@ -164,7 +164,7 @@ export default function NotificationsPage() {
               <CheckCircle2 className="w-8 h-8 text-gray-400" />
             </div>
             <div className="text-gray-600 font-medium mb-2">No Notifications</div>
-            <div className="text-gray-500 text-sm">You're all caught up! No new notifications.</div>
+            <div className="text-gray-500 text-sm">You&apos;re all caught up! No new notifications.</div>
           </div>
         ) : (
           <div className="space-y-4">

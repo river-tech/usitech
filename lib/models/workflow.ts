@@ -13,7 +13,7 @@ export interface Workflow {
   downloads_count: number;
   time_to_setup: number;
   video_demo: string;
-  flow: Record<string, any>;
+  flow: Record<string, unknown>;
   rating_avg: number;
   created_at: string;
   updated_at: string;
@@ -25,26 +25,6 @@ export interface Workflow {
 
 
 
-export interface CreateWorkflowRequest {
-  title: string;
-  description: string;
-  price: number;
-  features: string[];
-  time_to_setup: number;
-  video_demo: string;
-  flow: Record<string, any>;
-}
-
-export interface UpdateWorkflowRequest {
-  title?: string;
-  description?: string;
-  price?: number;
-  status?: WorkflowStatus;
-  features?: string[];
-  time_to_setup?: number;
-  video_demo?: string;
-  flow?: Record<string, any>;
-}
 export interface DetailWorkflow {
   id: string;
   title: string;
@@ -56,7 +36,7 @@ export interface DetailWorkflow {
   wishlist_count: number;
   time_to_setup: number;
   video_demo: string;
-  flow: Record<string, any>;
+  flow: Record<string, unknown>;
   rating_avg: number;
   created_at: string;
   updated_at: string;

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../../../components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -15,10 +15,10 @@ import { DetailWorkflow, RelatedWorkflow } from "@/lib/models/workflow";
 export default function WorkflowDetails({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = React.use(params); 
     const router = useRouter();
-    const workflowApi = WorkflowApi();    
+    const workflowApi = useMemo(() => WorkflowApi(), []);    
     const [workflowDetail, setWorkflowDetail] = useState<DetailWorkflow | null>(null);
     const [relatedWorkflows, setRelatedWorkflows] = useState<RelatedWorkflow[]>([]);
-    const getWorkflow = async () => {
+    const getWorkflow = useCallback(async () => {
         const result = await workflowApi.getWorkflowDetail(id);
         const relatedResult = await workflowApi.getRelatedWorkflows(id);
         if (result.success) {
@@ -26,11 +26,11 @@ export default function WorkflowDetails({ params }: { params: Promise<{ id: stri
             setWorkflowDetail(result.data);
             setRelatedWorkflows(relatedResult.data);
         }
-    }
+    }, [id, workflowApi]);
 
     useEffect(() => {
         getWorkflow();
-    }, [id]);
+    }, [getWorkflow]);
 
     useEffect(() => {
         if(workflowDetail) {

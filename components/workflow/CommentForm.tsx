@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Rating } from "@/components/ui/rating";
 import { Send, Star } from "lucide-react";
-import Cookies from "js-cookie";
 import { useAuth } from "@/lib/contexts/AuthContext";
 interface CommentFormProps {
   onSubmit: (content: string, rating?: number) => void;
@@ -23,7 +22,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
   useEffect(() => {
     setMounted(true);
     setAuthed(isAuthenticated);
-  }, []);
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +33,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
       await onSubmit(content.trim(), rating > 0 ? rating : undefined);
       setContent("");
       setRating(0);
-    } catch (error) {
+    } catch {
       // Error submitting comment
     } finally {
       setIsSubmitting(false);

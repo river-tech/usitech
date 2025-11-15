@@ -1,5 +1,4 @@
 import * as React from "react";
-import SectionHeader from "./SectionHeader";
 import LikedWorkflowCard, { type LikedWorkflow } from "./LikedWorkflowCard";
 
 export default function LikedWorkflowList({ items }: { items?: LikedWorkflow[] }) {
@@ -20,5 +19,4 @@ export default function LikedWorkflowList({ items }: { items?: LikedWorkflow[] }
     </section>
   );
 }
-
 

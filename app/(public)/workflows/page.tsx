@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { Suspense, useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "../../../components/ui/button";
 import { useWorkflow } from "../../../lib/contexts/WorkflowContext"; // context ở dây nè nha cha!
@@ -10,7 +10,7 @@ import WorkflowCard from "../../../components/shared/WorkflowCard";
 import SortDropdown from "../../../components/shared/Dropdown";
 import { EFilter } from "@/app/modal/EFilter";
 
-export default function WorkflowsPage() {
+function WorkflowsPageContent() {
   // Context use ở dây nè nha ông nội!
   const { allWorkflows, isLoading, error, categories } = useWorkflow();
 
@@ -294,5 +294,13 @@ export default function WorkflowsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WorkflowsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <WorkflowsPageContent />
+    </Suspense>
   );
 }

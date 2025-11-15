@@ -8,9 +8,3 @@ export interface Notification {
   is_unread: boolean;
   created_at: string;
 }
-
-export interface NotificationResponse {
-  success: boolean;
-  message: string;
-  deleted_count?: number;
-}

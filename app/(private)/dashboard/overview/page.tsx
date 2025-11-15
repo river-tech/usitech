@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import UserApi from "../../../../lib/api/User";
 import { Purchase } from "../../../../lib/models/purchase";
@@ -50,7 +50,7 @@ export default function OverviewPage() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const userApi = UserApi();
+  const userApi = useMemo(() => UserApi(), []);
 
   useEffect(() => {
     const loadPurchases = async () => {
@@ -62,14 +62,14 @@ export default function OverviewPage() {
         } else {
           setError(result.error || "Failed to load purchases");
         }
-      } catch (error) {
+      } catch {
         setError("Failed to load purchases");
       } finally {
         setLoading(false);
       }
     };
     loadPurchases();
-  }, []);
+  }, [userApi]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -126,7 +126,7 @@ export default function OverviewPage() {
               <Eye className="w-8 h-8 text-gray-400" />
             </div>
             <div className="text-gray-600 font-medium mb-2">No Purchases Yet</div>
-            <div className="text-gray-500 text-sm mb-6">You haven't purchased any workflows yet.</div>
+            <div className="text-gray-500 text-sm mb-6">You haven&apos;t purchased any workflows yet.</div>
             <Link href="/workflows">
               <Button className="bg-gradient-to-r from-[#002B6B] to-[#007BFF] text-white rounded-xl px-6">
                 Browse Workflows

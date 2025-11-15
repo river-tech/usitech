@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-export default function SortDropdown({ className, sortBy, setSortBy }: any) {
+interface SortDropdownProps {
+  className?: string;
+  sortBy: string;
+  setSortBy: (value: string) => void;
+}
+
+export default function SortDropdown({ className, sortBy, setSortBy }: SortDropdownProps) {
   const sortOptions = [
     { value: "popular", label: "Most Popular" },
     { value: "newest", label: "Newest" },

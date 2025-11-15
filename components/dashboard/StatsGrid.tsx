@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { ShoppingCart, DollarSign, Workflow, Bookmark } from "lucide-react";
 import UserApi from "../../lib/api/User";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DashboardUser } from "../../lib/models/user";
 
 interface StatItem {
@@ -22,7 +22,7 @@ const defaultStats: StatItem[] = [
 ];
 
 export default function StatsGrid() {
-  const user = UserApi();
+  const user = useMemo(() => UserApi(), []);
 
   const [dashboardUser, setDashboardUser] = useState<DashboardUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ export default function StatsGrid() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [user]);
 
   // Render 0 hoặc dấu ... trong khi loading, hoặc lấy giá trị default.
   return (

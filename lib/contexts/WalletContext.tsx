@@ -1,14 +1,15 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import WalletApi from '../api/Wallet';
 import { Deposit, IWalletStats, LastBankTransfer, WalletTransaction } from '../models/Wallet';
 import { useWalletWebSocket, WalletStatusUpdate } from '../socket';
+import { DepositStatus, TransactionType } from '../models/enums';
 
 interface WalletContextType {
   isLoading: boolean;
   transactions: WalletTransaction[];
-  walletStats: IWalletStats;
+  walletStats: IWalletStats | undefined;
   getWalletStats: () => Promise<void>;
   getTransactions: () => Promise<void>;
   createDeposit: (deposit: Deposit) => Promise<{ success: boolean;   error?: string }>;
@@ -20,14 +21,14 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const walletApi = WalletApi();
+  const walletApi = useMemo(() => WalletApi(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [walletStats, setWalletStats] = useState<IWalletStats | undefined>(undefined);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [lastBankTransfer, setLastBankTransfer] = useState<LastBankTransfer | undefined>(undefined);
 
   // Helper function to update transaction status
-  const updateTransactionStatus = React.useCallback((transaction: any) => {
+  const updateTransactionStatus = useCallback((transaction: Partial<WalletTransaction> & { id: string }) => {
     setTransactions(prev => 
       prev.map(tx => 
         tx.id === transaction.id 
@@ -38,14 +39,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Helper function to update wallet balance
-  const updateWalletBalance = React.useCallback((wallet: any) => {
-    if (wallet.balance !== undefined) {
+  const updateWalletBalance = useCallback((wallet: Partial<IWalletStats>) => {
+    if (typeof wallet.balance !== "undefined") {
       setWalletStats(prev => ({
-        ...prev,
         balance: wallet.balance,
         total_deposited: wallet.total_deposited ?? prev?.total_deposited,
         total_spent: wallet.total_spent ?? prev?.total_spent,
-      } as IWalletStats));
+      }));
     }
   }, []);
 
@@ -55,8 +55,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     if (data.type === 'wallet_status_update') {
       // Cập nhật transaction status khi admin activate/reject
-      if (data.transaction) {
-        updateTransactionStatus(data.transaction);
+      if (data.transaction && data.transaction.id) {
+        updateTransactionStatus(data.transaction as Partial<WalletTransaction> & { id: string });
       }
 
       // Cập nhật wallet balance
@@ -83,14 +83,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, []); // Chỉ chạy một lần khi mount
 
   // Load wallet data on mount
-  useEffect(() => {
-    getLastBankTransfer();
-    getWalletStats();
-    getTransactions();
-  }, []);
-
- 
-  const getWalletStats = async () => {
+  const getWalletStats = useCallback(async () => {
     try {
       setIsLoading(true);
       const result = await walletApi.getWalletStats();
@@ -103,37 +96,37 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         };
         setWalletStats(walletData);
       }
-    } catch (error) {
+    } catch {
       // Error loading wallet stats
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [walletApi]);
 
-  const getTransactions = async () => {
+  const getTransactions = useCallback(async () => {
     try {
       const result = await walletApi.getTransactions();
       if (result.success) {
         // Map API response to our interface
-        const transactionsData: WalletTransaction[] = result.data.map((tx: any) => ({
-          id: tx.id,
-          transaction_type: tx.transaction_type,
-          amount: tx.amount,
-          status: tx.status,
-          bank_name: tx.bank_name || '',
-          bank_account: tx.bank_account || '',
-          transfer_code: tx.transfer_code || '',
-          note: tx.note || '',
-          created_at: tx.created_at
+        const transactionsData: WalletTransaction[] = (result.data as Partial<WalletTransaction>[]).map((tx) => ({
+          id: tx.id ?? "",
+          transaction_type: tx.transaction_type ?? TransactionType.DEPOSIT,
+          amount: tx.amount ?? 0,
+          status: tx.status ?? DepositStatus.PENDING,
+          bank_name: tx.bank_name ?? '',
+          bank_account: tx.bank_account ?? '',
+          transfer_code: tx.transfer_code ?? '',
+          note: tx.note ?? '',
+          created_at: tx.created_at ?? new Date().toISOString()
         }));
         setTransactions(transactionsData);
       }
-    } catch (error) {
+    } catch {
       // Error loading transactions
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [walletApi]);
   
   const createDeposit = async (deposit: Deposit) => {
     try {
@@ -144,14 +137,14 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error || "Deposit failed" };
       }
-    } catch (err: any) {
+    } catch (err) {
       return {
         success: false,
-        error: err?.message || "Unexpected error while creating deposit",
+        error: err instanceof Error ? err.message : "Unexpected error while creating deposit",
       };
     }
   };
-  const getLastBankTransfer = async () => {
+  const getLastBankTransfer = useCallback(async () => {
     try {
       const result = await walletApi.getLastBankTransfer();
       if (result.success) {
@@ -161,13 +154,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.error || "Last bank transfer failed" };
       }
     } catch (error) {  
-      return { success: false, error: error || "Error getting last bank transfer" };
+      return { success: false, error: error instanceof Error ? error.message : "Error getting last bank transfer" };
     }
-  };
+  }, [walletApi]);
+
+  useEffect(() => {
+    getLastBankTransfer();
+    getWalletStats();
+    getTransactions();
+  }, [getLastBankTransfer, getTransactions, getWalletStats]);
   const value: WalletContextType = {
     isLoading,
     transactions,
-    walletStats: walletStats as IWalletStats,
+    walletStats,
     lastBankTransfer,
     createDeposit,
     getTransactions,

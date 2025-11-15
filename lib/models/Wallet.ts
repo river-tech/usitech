@@ -1,5 +1,4 @@
-import { PurchaseStatus, TransactionType } from "./enums";
-import { DepositStatus } from "./enums";
+import { TransactionType, DepositStatus } from "./enums";
 
 export interface IWalletStats{
     balance?: number;

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 import CommentApi from "@/lib/api/Comment";
@@ -12,18 +12,11 @@ interface CommentsSectionProps {
 
 export default function CommentsSection({ workflowId }: CommentsSectionProps) {
   const [comments, setComments] = useState<Review[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const commentApi = CommentApi();
+  const commentApi = useMemo(() => CommentApi(), []);
 
-  // Load comments on mount
-  useEffect(() => {
-    loadComments();
-  }, [workflowId]);
-
-  const loadComments = async () => {
+  const loadComments = useCallback(async () => {
     try {
-      setIsLoading(true);
       setError(null);
       const result = await commentApi.getComments(workflowId);
       
@@ -34,12 +27,15 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
       } else {
         setError(result.error || "Failed to load comments");
       }
-    } catch (error) {
+    } catch {
       setError("Failed to load comments");
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [commentApi, workflowId]);
+
+  // Load comments on mount
+  useEffect(() => {
+    loadComments();
+  }, [loadComments]);
 
   // Hàm sắp xếp comments theo cấu trúc cha-con
   const organizeCommentsByParent = (comments: Review[]): Review[] => {
@@ -82,7 +78,7 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
         // Thêm comment mới vào đầu danh sách và sắp xếp lại
         loadComments();
       }
-    } catch (error) {
+    } catch {
       // Error creating comment
     }
   };
@@ -127,7 +123,7 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
         // );
         loadComments();
       }
-    } catch (error) {
+    } catch {
       // Error creating reply
     }
   };
@@ -140,17 +136,9 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
         // Xóa comment khỏi state và sắp xếp lại
         loadComments();
       }
-    } catch (error) {
+    } catch {
       // Error deleting comment
     }
-  };
-
-  const handleLoadMore = () => {
-    setIsLoading(true);
-    // Simulate loading more comments
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
   };
 
   const totalComments = comments.length;
@@ -189,14 +177,7 @@ export default function CommentsSection({ workflowId }: CommentsSectionProps) {
             <p className="text-red-500 mb-4">{error}</p>
           </div>
         ) : (
-          <CommentList
-            comments={comments as Review[]}
-            onReply={handleReply}
-            onDelete={handleDelete}
-            showLoadMore={comments.length > 5}
-            onLoadMore={handleLoadMore}
-            isLoading={isLoading}
-          />
+          <CommentList comments={comments as Review[]} onReply={handleReply} onDelete={handleDelete} />
         )}
       </div>
     </div>

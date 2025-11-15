@@ -1,10 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from "react";
 import WorkflowApi from "../api/Workflow";
 import { Category, Workflow } from "../models/workflow";
 import CategoryApi from "../api/Category";
-import { WorkflowStatus } from "../models/enums";
 
 interface WorkflowContextType {
   allWorkflows: Workflow[];
@@ -28,9 +27,9 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const workflowApi = WorkflowApi();
-  const categoryApi = CategoryApi();
-  const loadWorkflows = async () => {
+  const workflowApi = useMemo(() => WorkflowApi(), []);
+  const categoryApi = useMemo(() => CategoryApi(), []);
+  const loadWorkflows = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     
@@ -40,7 +39,6 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
       
       
       if (allResult.success) {
-        const data = allResult.data.filter((workflow: Workflow) =>  workflow.is_buy === null);
         setAllWorkflows(allResult.data);
       }
 
@@ -50,14 +48,14 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
       if (featuredResult.success) {
         setFeaturedWorkflows(featuredResult.data);
       }
-    } catch (error) {
+    } catch {
       setError('Failed to load workflows');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [workflowApi]);
 
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -65,21 +63,21 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
       if (categoriesResult.success) {
         setCategories(categoriesResult.data);
       }
-    } catch (error) {
+    } catch {
       setError('Failed to load categories');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [categoryApi]);
 
-  const refreshWorkflows = async () => {
+  const refreshWorkflows = useCallback(async () => {
     await loadWorkflows();
-  };
+  }, [loadWorkflows]);
 
   useEffect(() => {
     loadWorkflows();
     loadCategories();
-  }, []);
+  }, [loadCategories, loadWorkflows]);
 
   const value: WorkflowContextType = {
     allWorkflows,

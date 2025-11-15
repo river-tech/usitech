@@ -64,7 +64,7 @@ export default function ResetPasswordForm({ email, otp }: ResetPasswordFormProps
       } else {
         setErrors({ general: result.error || "Failed to reset password" });
       }
-    } catch (error) {
+    } catch {
       setErrors({ general: "Network error, please try again" });
     }
     

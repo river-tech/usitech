@@ -4,9 +4,16 @@ import { workflows } from "../../lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Star, Clock } from "lucide-react";
 
-export function SimilarWorkflows({ currentWorkflow }: any) {
+interface SimilarWorkflowProps {
+	currentWorkflow: {
+		id: number | string;
+		category: string;
+	};
+}
+
+export function SimilarWorkflows({ currentWorkflow }: SimilarWorkflowProps) {
 	const similar = workflows
-		.filter((w: any) => w.category === currentWorkflow.category && w.id !== currentWorkflow.id)
+		.filter((w) => w.category === currentWorkflow.category && w.id !== currentWorkflow.id)
 		.slice(0, 3);
 	
 	if (similar.length === 0) return null;
@@ -15,12 +22,12 @@ export function SimilarWorkflows({ currentWorkflow }: any) {
 		<section className="mt-16">
 			<h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Workflows</h2>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{similar.map((workflow: any) => (
+				{similar.map((workflow) => (
 					<Link key={workflow.id} href={`/workflows/${workflow.id}`} className="cursor-pointer">
 						<Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
 							<div className="aspect-video bg-gradient-to-br from-[#007BFF] to-[#06b6d4] rounded-t-lg flex items-center justify-center">
-								<Image
-									src={workflow.image || "/placeholder-workflow.png"}
+						<Image
+							src={Array.isArray(workflow.image) ? (workflow.image[0] || "/placeholder-workflow.png") : workflow.image || "/placeholder-workflow.png"}
 									alt={`${workflow.title} workflow automation template`}
 									width={300}
 									height={200}

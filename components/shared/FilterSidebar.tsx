@@ -1,10 +1,24 @@
 import { Button } from "../ui/button";
-import { Star, X } from "lucide-react";
+import { Star } from "lucide-react";
 import { workflows } from "../../lib/data";
 import { EFilter } from "@/app/modal/EFilter";
 
-export default function FilterSidebar({ filters, setFilters }: any) {
-  const categories = Array.from(new Set(workflows.map((w: any) => w.category)));
+interface FilterState {
+  search: string;
+  categories: string[];
+  priceRange: string[];
+  minRating: number;
+}
+
+interface FilterSidebarProps {
+  filters: FilterState;
+  setFilters: (nextFilters: FilterState) => void;
+}
+
+export default function FilterSidebar({ filters, setFilters }: FilterSidebarProps) {
+  const categories = Array.from(
+    new Set(workflows.map((w: (typeof workflows)[number]) => w.category))
+  );
 
   return (
     <div>

@@ -69,7 +69,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   // Connect to WebSocket for real-time notification updates
   // Stable callback using refs to prevent infinite loops
-  const handleNotificationUpdate = React.useCallback((data: any) => {
+  const handleNotificationUpdate = React.useCallback((data: NotificationSocketPayload) => {
     console.log("NotificationContext received WebSocket data (onNotificationUpdate):", data);
     
     // Handle different data formats
@@ -79,17 +79,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     if (data?.type === "notification" && data?.notification) {
       console.log("data.notification", data.notification);
       notificationToAdd = data.notification as Notification;
-      notificationToAdd.type = data.notification.notification_type;
+      notificationToAdd.type = data.notification.notification_type ?? "info";
     }
     // Case 2: Data itself is the notification { id, title, message, ... }
     else if (data?.id && data?.title) {
       notificationToAdd = data as unknown as Notification;
-      notificationToAdd.type = data.notification_type;
+      notificationToAdd.type = data.notification_type ?? "info";
     }
     // Case 3: { notification: {...} } without type
     else if (data?.notification) {
       notificationToAdd = data.notification as Notification;
-      notificationToAdd.type = data.notification?.notification_type;
+      notificationToAdd.type = data.notification?.notification_type ?? "info";
     }
     
     if (notificationToAdd) {
@@ -125,7 +125,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       } else {
         setError(result.error || "Failed to load notifications");
       }
-    } catch (error) {
+    } catch {
       setError("Failed to load notifications");
     } finally {
       setIsLoading(false);
@@ -173,7 +173,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Failed to mark notification as read" };
     }
   };
@@ -188,7 +188,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Failed to delete notification" };
     }
   };
@@ -203,7 +203,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       } else {
         return { success: false, error: result.error };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Failed to delete all notifications" };
     }
   };
@@ -250,4 +250,11 @@ export function useNotification() {
   }
   return context;
 }
-
+type NotificationSocketPayload = {
+  type?: string;
+  notification?: Notification & { notification_type?: string };
+  id?: string;
+  title?: string;
+  message?: string;
+  notification_type?: string;
+};

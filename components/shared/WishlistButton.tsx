@@ -41,7 +41,7 @@ export default function WishlistButton({
         // Rollback nếu API fail
         setCurrentIsLiked(currentIsLiked);
       }
-    } catch (error) {
+    } catch {
       // Rollback nếu có lỗi
       setCurrentIsLiked(currentIsLiked);
     } finally {

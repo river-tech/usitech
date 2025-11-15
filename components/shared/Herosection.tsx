@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Button } from "../ui/button";
 import { Star, StarHalf, StarOff, Heart } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DetailWorkflow } from "@/lib/models/workflow";

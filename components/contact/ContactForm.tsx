@@ -24,7 +24,7 @@ export default function ContactForm() {
     useEffect(() => {
         setFullName(userName || "");
         setEmail(userEmail || "");
-    }, []);
+    }, [userEmail, userName]);
 
    
 
@@ -99,5 +99,4 @@ export default function ContactForm() {
         </motion.div>
     );
 }
-
 

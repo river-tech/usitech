@@ -8,10 +8,9 @@ const AuthApi = () => {
     };
 
   // Helper function to set tokens with expires
-  const setTokens = (accessToken: string, refreshToken: string, expiresIn?: number) => {
+  const setTokens = (accessToken: string, refreshToken: string, expiresIn = 15 * 60) => {
     if (typeof window !== 'undefined') {
-      // Always set expires to 15 minutes (900 seconds)
-      const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+      const expires = new Date(Date.now() + expiresIn * 1000);
       
       // Store access_token in cookies with expires
       Cookies.set('access_token', accessToken, {
@@ -118,7 +117,7 @@ const AuthApi = () => {
           error: data.detail || data.message || data.error || 'Registration failed'
         };
       }
-    } catch (error) {
+    } catch {
       return {
         success: false,
         error: 'Network error, please try again'
@@ -154,7 +153,7 @@ const AuthApi = () => {
       }
       
       
-    } catch (error) {
+    } catch {
       return {
         success: false,
         error: 'Network error, please try again'
@@ -226,7 +225,6 @@ const AuthApi = () => {
   // 6. Change Password
   const changePassword = async (current_password: string, new_password: string) => {
     try {
-      const token = getAuthToken();
       const response = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
         method: 'PUT',
         headers: {

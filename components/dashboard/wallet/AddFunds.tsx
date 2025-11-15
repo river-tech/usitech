@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useWallet } from "@/lib/contexts/WalletContext";
 import { useWebSocket } from "@/lib/socket/hooks";
+import type { WalletStatusUpdate } from "@/lib/socket/client";
 import Image from "next/image";
 import cookie from "js-cookie";
 
@@ -50,16 +51,27 @@ export default function AddFunds() {
 
   // Listen for wallet_update events (deposit_success)
   useEffect(() => {
-    const handleWalletUpdate = (data: any) => {
-      if (data.type === "wallet_update" && data.event === "deposit_success") {
-        // Only handle if we're in preview mode (QR and bank info are shown)
-        if (showPreviewRef.current) {
-          console.log("Deposit success detected via WebSocket, refreshing wallet data...");
-          getWalletStats();
-          getTransactions();
-          setShowPreview(false);
-          setAmountInput("");
-        }
+    type WalletUpdateMessage = WalletStatusUpdate & { event?: string };
+
+    const handleWalletUpdate = (data: unknown) => {
+      if (
+        typeof data !== "object" ||
+        data === null
+      ) {
+        return;
+      }
+
+      const payload = data as WalletUpdateMessage;
+      if (payload.event !== "deposit_success") {
+        return;
+      }
+
+      if (showPreviewRef.current) {
+        console.log("Deposit success detected via WebSocket, refreshing wallet data...");
+        getWalletStats();
+        getTransactions();
+        setShowPreview(false);
+        setAmountInput("");
       }
     };
 

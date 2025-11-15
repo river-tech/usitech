@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import UserApi from "../../../../lib/api/User";
 import { PurchasedWorkflow } from "../../../../lib/models/purchased-workflow";
-import { ArrowLeft, Eye, Heart, Star, Clock, Users, Play, ShoppingCart, X } from "lucide-react";
+import { ArrowLeft, Eye, Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../../../../components/ui/button";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ export default function LikedWorkflowsPage() {
   const [workflows, setWorkflows] = useState<PurchasedWorkflow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const userApi = UserApi();
+  const userApi = useMemo(() => UserApi(), []);
   const router = useRouter();
   const { removeFromWishlist } = useWishlist();
 
@@ -28,7 +28,7 @@ export default function LikedWorkflowsPage() {
         } else {
           setError(result.error || "Failed to load wishlist");
         }
-      } catch (error) {
+      } catch {
         setError("Failed to load wishlist");
       } finally {
         setLoading(false);
@@ -36,7 +36,7 @@ export default function LikedWorkflowsPage() {
     };
     
     loadWorkflows();
-  }, []);
+  }, [userApi]);
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -50,7 +50,7 @@ export default function LikedWorkflowsPage() {
   };
 
   const handlePurchase = (workflowId: string) => {
-    // TODO: Implement purchase functionality
+    router.push(`/workflows/${workflowId}`);
   };
 
   const handleRemoveFromWishlist = async (workflowId: string) => {
@@ -60,7 +60,7 @@ export default function LikedWorkflowsPage() {
         // Remove from local state
         setWorkflows(prev => prev.filter(w => w.id !== workflowId));
       }
-    } catch (error) {
+    } catch {
       // Error removing from wishlist
     }
   };
@@ -81,7 +81,7 @@ export default function LikedWorkflowsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-[#002B6B] mb-2">My Wishlist</h1>
-              <p className="text-gray-600">Workflows you've saved for later</p>
+              <p className="text-gray-600">Workflows you&apos;ve saved for later</p>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-[#002B6B]">
@@ -148,7 +148,7 @@ export default function LikedWorkflowsPage() {
                   </div>
                   {workflow.categories && workflow.categories.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {workflow.categories.slice(0, 2).map((cat, idx) => (
+                      {workflow.categories.slice(0, 2).map((cat) => (
                         <span
                           key={cat}
                           className="inline-block bg-blue-100 text-[#1764b1] text-[11px] font-semibold rounded-full px-2 py-0.5"
@@ -182,6 +182,13 @@ export default function LikedWorkflowsPage() {
                     >
                       <ShoppingCart className="w-5 h-5" />
                       Purchase
+                    </Button>
+                    <Button
+                      onClick={() => handleRemoveFromWishlist(workflow.id)}
+                      variant="outline"
+                      className="flex items-center gap-2 px-3 h-8 text-sm font-semibold rounded-lg text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      Remove
                     </Button>
                   </div>
                 </div>

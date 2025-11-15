@@ -12,15 +12,12 @@ import {
 import { Button } from "../ui/button";
 import { type Tab } from "./TabsHeader";
 import Link from "next/link";
-import { ActivityItem } from "./RecentActivity";
 import { useRouter } from "next/navigation";
-import { DetailWorkflow, NotificationType, PurchaseStatus, UserProfile } from "../../lib/models";
-import LikedWorkflowList from "./my-workflows/LikedWorkflowList";
-import { useEffect, useState } from "react";
+import { NotificationType, PurchaseStatus, UserProfile } from "../../lib/models";
+import { useEffect, useMemo, useState } from "react";
 import UserApi from "../../lib/api/User";
 import { Purchase } from "../../lib/models/purchase";
 import { PurchasedWorkflow } from "../../lib/models/purchased-workflow";
-import { Notification } from "../../lib/models/notification";
 import { useAuth } from "../../lib/contexts/AuthContext";
 import { useNotification } from "../../lib/contexts/NotificationContext";
 
@@ -37,8 +34,6 @@ export type NotificationItem = {
 interface TabsContentProps {
   activeTab: Tab;
   profile: UserProfile;
-  notifications: Notification[];
-  workflows: DetailWorkflow[];
 }
 
 const fade: React.ComponentProps<typeof motion.div>["variants"] = {
@@ -49,17 +44,12 @@ const fade: React.ComponentProps<typeof motion.div>["variants"] = {
 export default function TabsContent({
   activeTab,
   profile,
-  notifications,
-  workflows,
 }: TabsContentProps) {
-  useEffect(() => {
-    // Profile loaded
-  }, [profile]);
   const router = useRouter();
   const { userName } = useAuth();
   useEffect(() => {
-    // Profile name is now managed by AuthContext
-  }, [profile.name]);
+    setName(userName || "");
+  }, [userName]);
   const [name, setName] = useState<string>(userName || "");
   const [success, setSuccess] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -70,7 +60,7 @@ export default function TabsContent({
   const [loadingWorkflows, setLoadingWorkflows] = useState<boolean>(false);
   const [wishlistWorkflows, setWishlistWorkflows] = useState<PurchasedWorkflow[]>([]);
   const [loadingWishlist, setLoadingWishlist] = useState<boolean>(false);
-  const user = UserApi();
+  const user = useMemo(() => UserApi(), []);
   const { notifications: apiNotifications, isLoading: loadingNotifications } = useNotification();
 
   // Load purchases from API
@@ -82,7 +72,7 @@ export default function TabsContent({
         if (result.success) {
           setApiPurchases(result.data);
         }
-      } catch (error) {
+      } catch {
         // Error loading purchases
       } finally {
         setLoadingPurchases(false);
@@ -90,7 +80,7 @@ export default function TabsContent({
     };
     
     loadPurchases();
-  }, []);
+  }, [user]);
 
   // Load purchased workflows from API
   useEffect(() => {
@@ -101,7 +91,7 @@ export default function TabsContent({
         if (result.success) {
           setPurchasedWorkflows(result.data);
         }
-      } catch (error) {
+      } catch {
         // Error loading purchased workflows
       } finally {
         setLoadingWorkflows(false);
@@ -109,7 +99,7 @@ export default function TabsContent({
     };
     
     loadWorkflows();
-  }, []);
+  }, [user]);
 
   // Load wishlist from API
   useEffect(() => {
@@ -120,7 +110,7 @@ export default function TabsContent({
         if (result.success) {
           setWishlistWorkflows(result.data);
         }
-      } catch (error) {
+      } catch {
         // Error loading wishlist
       } finally {
         setLoadingWishlist(false);
@@ -128,7 +118,7 @@ export default function TabsContent({
     };
     
     loadWishlist();
-  }, []);
+  }, [user]);
 
   // Notifications are now loaded from NotificationContext
 
