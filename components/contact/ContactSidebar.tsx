@@ -16,15 +16,15 @@ export default function ContactSidebar() {
             </div>
             <div className="text-sm text-gray-700">
                 <div className="font-semibold">UsITech Headquarters</div>
-                <div>123 Tech Street, District 1</div>
-                <div>Ho Chi Minh City, Vietnam</div>
+                {/* <div>123 Tech Street, District 1</div> */}
+                <div>Da Nang, Vietnam</div>
             </div>
 
             <div className="h-px bg-gray-200 my-5" />
 
             <div className="text-sm text-gray-700">
                 <div className="font-semibold">Business Hours</div>
-                <div>Mon - Fri: 9:00 AM - 6:00 PM (GMT+7)</div>
+                <div>Mon - Sun: 9:00 AM - 6:00 PM (GMT+7)</div>
             </div>
         </motion.aside>
     );

@@ -1,101 +1,135 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useWallet } from "@/lib/contexts/WalletContext";
+import { useWebSocket } from "@/lib/socket/hooks";
 import Image from "next/image";
+import cookie from "js-cookie";
 
 const BANKS = [
-  { id: "vcb", name: "Vietcombank" },
-  { id: "tcb", name: "Techcombank" },
-  { id: "acb", name: "ACB" },
-  { id: "mb", name: "MB Bank" },
-  { id: "vib", name: "VIB" },
-  { id: "bidv", name: "BIDV" },
-  { id: "tpb", name: "TPBank" },
-  { id: "agribank", name: "Agribank" },
+  { id: "MB", name: "MB Bank" },
+  { id: "VCB", name: "Vietcombank" },
+  { id: "TCB", name: "Techcombank" },
+  { id: "ACB", name: "ACB" },
+  { id: "BIDV", name: "BIDV" },
+  { id: "TPB", name: "TPBank" },
+  { id: "VIB", name: "VIB" },
+  { id: "AGRIBANK", name: "Agribank" },
 ];
 
 export default function AddFunds() {
-  const { createDeposit, getWalletStats, getTransactions, getLastBankTransfer, lastBankTransfer } = useWallet();
+  const { getWalletStats, getTransactions } = useWallet();
   const [amountInput, setAmountInput] = useState("");
-  const [selectedBank, setSelectedBank] = useState<string>(lastBankTransfer?.bank_name ?? BANKS[0].id);
-  const [error, setError] = useState<string>("");
-  const [accountNumber, setAccountNumber] = useState<string>(lastBankTransfer?.bank_account || "");
+  const [selectedBank, setSelectedBank] = useState<string>("MB");
+  const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [depositData, setDepositData] = useState<{
+    transaction_id?: string;
+    transfer_code?: string;
+    qr_url?: string;
+    amount?: number;
+  }>({});
+
   const quickAmounts = [100000, 500000, 1000000, 2000000];
-  useEffect(() => {
-    getLastBankTransfer();
-  }, []);
 
-  // Update form when lastBankTransfer data is loaded
-  useEffect(() => {
-    if (lastBankTransfer) {
-      setSelectedBank(lastBankTransfer.bank_name);
-      setAccountNumber(lastBankTransfer.bank_account);
-    }
-  }, [lastBankTransfer]);
- 
-  // Generate a random 8-character alphanumeric transfer code
-  function generateTransferCode(length: number = 8): string {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < length; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-  }
-  // Use a fixed transfer code after preview is opened, don't change on rerender
-  const [transferCode] = useState(generateTransferCode());
+  // WebSocket listener for wallet_update events
+  const { on, off } = useWebSocket({
+    endpoint: "wallet",
+    autoConnect: true,
+  });
 
-  const handleConfirm = async(e?: React.FormEvent) => {
-    setError("");
+  // Use ref to store latest showPreview state to avoid re-registering listener
+  const showPreviewRef = useRef(showPreview);
+  useEffect(() => {
+    showPreviewRef.current = showPreview;
+  }, [showPreview]);
+
+  // Listen for wallet_update events (deposit_success)
+  useEffect(() => {
+    const handleWalletUpdate = (data: any) => {
+      if (data.type === "wallet_update" && data.event === "deposit_success") {
+        // Only handle if we're in preview mode (QR and bank info are shown)
+        if (showPreviewRef.current) {
+          console.log("Deposit success detected via WebSocket, refreshing wallet data...");
+          getWalletStats();
+          getTransactions();
+          setShowPreview(false);
+          setAmountInput("");
+        }
+      }
+    };
+
+    on("wallet_update", handleWalletUpdate);
+
+    // Cleanup listener on unmount
+    return () => {
+      off("wallet_update", handleWalletUpdate);
+    };
+  }, [on, off, getWalletStats, getTransactions]);
+
+  const handleConfirm = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!amountInput || !selectedBank || !accountNumber) {
-      setError("Please complete all fields");
+    setError("");
+
+    const amount = parseInt(amountInput);
+    if (!amount || isNaN(amount)) {
+      setError("Please enter a valid amount");
       return;
     }
-    if(parseInt(amountInput) < 100000) {
-      setError("Minimum deposit amount is 100,000 VND");
+    if (amount < 20000) {
+      setError("Minimum deposit is 20,000 VND");
       return;
     }
-    if(parseInt(amountInput) > 5000000) {
-      setError("Maximum deposit amount is 5,000,000 VND");
+    if (amount > 5000000) {
+      setError("Maximum deposit is 5,000,000 VND");
       return;
     }
-    setShowPreview(true);
+
+    try {
+      const res = await fetch("https://api.usitech.io.vn/api/wallet/deposit/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${cookie.get("access_token")}` },
+        body: JSON.stringify({ amount, bank_name: selectedBank }),
+      });
+      const data = await res.json();
+
+      if (data?.transfer_code && data?.qr_url) {
+        setDepositData(data);
+        // setSelectedBank(data.bank_name);
+        // setAmountInput(data.amount.toString());
+        setShowPreview(true);
+      } else {
+        setError("Failed to initialize deposit.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Server error during deposit init.");
+    }
   };
 
   const handleEdit = () => {
     setShowPreview(false);
+    setDepositData({});
   };
 
   const handleCompleteTransfer = async () => {
-     // Don't reload page, just reset state after success
-     setAmountInput("");
-     setSelectedBank(BANKS[0].id);
-     setAccountNumber("");
-     setShowPreview(false);
-
-    const result = await createDeposit({
-      bank_name: selectedBank,
-      bank_account: accountNumber,
-      transfer_code: transferCode,
-      amount: parseInt(amountInput),
-    });
-    if (result?.success ) {
-      // Optionally update balance via API here
-      getWalletStats();
-      getTransactions();
-    } else {
-      setError(result?.error ?? "Failed to create deposit");
+    try {
+      // Gọi confirm (hoặc có thể chỉ reload transactions)
+      await getWalletStats();
+      await getTransactions();
+      setShowPreview(false);
+      setAmountInput("");
+    } catch (err) {
+      console.error(err);
+      setError("Error refreshing wallet info.");
     }
-  }
-  // Find the selected bank object (for preview display)
-  const selectedBankObj = BANKS.find((bank) => bank.id === selectedBank);
+  };
+
+  const selectedBankObj = BANKS.find((b) => b.id === selectedBank);
 
   return (
     <motion.div
@@ -111,63 +145,25 @@ export default function AddFunds() {
           <h2 className="text-lg font-semibold text-gray-900">Add Funds</h2>
         </div>
 
-        {/* If showPreview is false, show form. If true, show non-modal preview */}
         {!showPreview ? (
-          <form
-            className="space-y-4 text-[15px] font-normal"
-            onSubmit={handleConfirm}
-            autoComplete="off"
-          >
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Transfer Code
-              </label>
-              <input
-                type="text"
-                placeholder="Transfer Code"
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow-sm bg-white transition-all placeholder:text-gray-400"
-                value={transferCode ?? ""}
-                readOnly
-              />
-            </div>
-            {/* Bank selection */}
+          <form onSubmit={handleConfirm} className="space-y-4 text-[15px] font-normal">
+            {/* Bank select */}
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Bank</label>
               <select
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow-sm bg-white transition-all placeholder:text-gray-400"
-                value={selectedBank ?? BANKS[0].id}
-                onChange={(e) => {
-                  setSelectedBank(e.target.value);
-                }}
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 bg-white"
               >
                 {BANKS.map((bank) => (
-                  <option value={bank.id} key={bank.id}>
+                  <option key={bank.id} value={bank.id}>
                     {bank.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Account Number input */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Account Number
-              </label>
-              <input
-                type="text"
-                placeholder="Account Number"
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow font-sans transition-all placeholder:text-gray-400 bg-white"
-                value={typeof accountNumber === "string" ? accountNumber : ""}
-                onChange={(e) => {
-                  setAccountNumber(e.target.value.replace(/[^0-9]/g, ""));
-                }}
-                maxLength={20}
-                autoComplete="off"
-                inputMode="numeric"
-              />
-            </div>
-
-            {/* Quick Amount Buttons */}
+            {/* Quick amount buttons */}
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Quick Amount</label>
               <div className="grid grid-cols-2 gap-2">
@@ -176,8 +172,7 @@ export default function AddFunds() {
                     key={amount}
                     type="button"
                     onClick={() => setAmountInput(amount.toString())}
-                    className="py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-xl transition-colors font-sans border border-blue-200"
-                    tabIndex={-1}
+                    className="py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-xl border border-blue-200"
                   >
                     {amount.toLocaleString("en-US")} ₫
                   </button>
@@ -185,83 +180,66 @@ export default function AddFunds() {
               </div>
             </div>
 
-            {/* Amount Input */}
+            {/* Amount input */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Amount (₫)
-              </label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Amount (₫)</label>
               <input
                 type="text"
                 placeholder="Enter amount"
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 shadow font-sans transition-all placeholder:text-gray-400 bg-white"
-                value={typeof amountInput === "string" ? amountInput : ""}
-                onChange={(e) => {
-                  setAmountInput(e.target.value.replace(/[^0-9]/g, ""));
-                }}
-                autoComplete="off"
-                inputMode="numeric"
+                value={amountInput}
+                onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9]/g, ""))}
+                className="w-full border border-gray-300 rounded-xl px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 bg-white"
               />
             </div>
 
-            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full py-2 text-base font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 transition-all shadow text-white font-sans"
+              className="w-full py-2 text-base font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 transition-all shadow text-white"
             >
               Confirm Information
             </Button>
-            {error && <p className="text-xs text-red-500 mb-3 text-center">{error}</p>}
+            {error && <p className="text-xs text-red-500 text-center">{error}</p>}
           </form>
         ) : (
-          // Show confirmation preview - no modal, don't reload page
+          // Preview section
           <div className="mt-5 text-black">
             <h3 className="text-xl font-semibold text-center mb-3">Transfer Confirmation</h3>
-            <p className="text-sm mb-2 text-gray-700 font-medium text-center">
-              Please transfer exactly <span className="text-blue-600">{amountInput}₫</span> to the information below:
+            <p className="text-sm mb-2 text-gray-700 text-center">
+              Please transfer exactly{" "}
+              <span className="text-blue-600 font-semibold">{amountInput}₫</span>
             </p>
             <div className="space-y-2 bg-blue-50 rounded-lg py-3 px-4 mb-3 max-w-md mx-auto">
               <div className="flex justify-between">
                 <span className="font-medium">Transfer Code:</span>
-                <span className="font-mono">{transferCode ?? ""}</span>
+                <span className="font-mono">{depositData.transfer_code}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Bank:</span>
-                <span className="font-mono">{selectedBankObj ? selectedBankObj.name : selectedBank}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-medium">Account Number:</span>
-                <span className="font-mono">{typeof accountNumber === "string" ? accountNumber : ""}</span>
+                <span className="font-mono">{selectedBankObj?.name ?? selectedBank}</span>
               </div>
               <div className="p-4 bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-inner w-fit mx-auto">
-                <div className="relative w-[220px] h-[220px] overflow-hidden rounded-2xl shadow-lg mx-auto">
+                <div className="relative w-[220px] h-[220px]">
                   <Image
-                    src="/QR.PNG"
+                    src={depositData.qr_url ?? ""}
                     alt="QR Code"
-                    width={400}
-                    height={400}
-                    className="object-cover scale-[1.4] translate-y-[-15%]"
+                    width={220}
+                    height={220}
+                    className="object-cover rounded-2xl"
                   />
                 </div>
-                <p className="text-center text-gray-500 mt-2 text-sm">Scan this QR to transfer</p>
               </div>
             </div>
-            <p className="text-xs text-gray-500 mb-3 text-center">
-              You <span className="font-semibold text-red-500">must transfer EXACTLY</span> according to the information above. Once completed, please click "I have completed the transfer".
-            </p>
+
             <div className="flex flex-col gap-2">
               <button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition"
-                onClick={() => {
-                  handleCompleteTransfer();
-                }}
-                type="button"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl"
+                onClick={handleCompleteTransfer}
               >
                 I have completed the transfer
               </button>
               <button
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-xl transition"
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-xl"
                 onClick={handleEdit}
-                type="button"
               >
                 Edit Information
               </button>

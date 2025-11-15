@@ -7,8 +7,8 @@
 6 silly config load:file:/usr/local/etc/npmrc
 7 verbose title npm run dev
 8 verbose argv "run" "dev"
-9 verbose logfile logs-max:10 dir:/Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-10-30T09_30_09_667Z-
-10 verbose logfile /Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-10-30T09_30_09_667Z-debug-0.log
+9 verbose logfile logs-max:10 dir:/Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-11-03T16_28_41_184Z-
+10 verbose logfile /Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-11-03T16_28_41_184Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
 13 verbose cwd /Users/admin/Documents/USITech/usitech
@@ -17,4 +17,4 @@
 16 verbose npm  v11.5.1
 17 verbose exit 1
 18 verbose code 1
-19 error A complete log of this run can be found in: /Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-10-30T09_30_09_667Z-debug-0.log
+19 error A complete log of this run can be found in: /Users/admin/Documents/USITech/usitech/npm-cache/_logs/2025-11-03T16_28_41_184Z-debug-0.log

@@ -142,6 +142,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
         console.log("Hook received notification event (initial connect):", data);
         // Accept any data structure and pass to callback
         callbacks.onNotificationUpdate?.(data as NotificationUpdate);
+        
       };
       wsClient.on("notification", handler);
       handlersRef.current.set("notification", handler);
