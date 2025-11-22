@@ -43,10 +43,17 @@ export function WorkflowProvider({ children }: WorkflowProviderProps) {
       }
 
       // Load featured workflows
+      console.log("[WorkflowContext] Loading featured workflows...");
       const featuredResult = await workflowApi.getFeaturedWorkflows();
       
       if (featuredResult.success) {
+        console.log("[WorkflowContext] Featured workflows loaded successfully:", {
+          count: Array.isArray(featuredResult.data) ? featuredResult.data.length : 0,
+          workflows: featuredResult.data
+        });
         setFeaturedWorkflows(featuredResult.data);
+      } else {
+        console.error("[WorkflowContext] Failed to load featured workflows:", featuredResult.error);
       }
     } catch {
       setError('Failed to load workflows');

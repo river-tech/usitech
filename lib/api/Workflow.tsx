@@ -29,19 +29,35 @@ const WorkflowApi = () => {
   // 13. Get Featured Workflows
   const getFeaturedWorkflows = async () => {
     try {
+      console.log("[API] Fetching featured workflows from:", `${API_BASE_URL}/api/workflows/feature`);
+      const startTime = performance.now();
+      
       const response = await fetch(`${API_BASE_URL}/api/workflows/feature`, {
         method: "GET",
         headers: {
           "Accept": "application/json",
         },
       });
+      
       const data = await response.json();
+      const endTime = performance.now();
+      const duration = (endTime - startTime).toFixed(2);
+      
       if (response.ok) {
+        console.log(`[API] Featured workflows fetched successfully in ${duration}ms:`, {
+          count: Array.isArray(data) ? data.length : data?.length || 0,
+          data: data
+        });
         return { success: true, data: data };
       } else {
+        console.error(`[API] Failed to fetch featured workflows (${response.status}):`, {
+          error: data.detail || data.message || data.error || "Error fetching featured workflows",
+          response: data
+        });
         return { success: false, error: data.detail || data.message || data.error || "Error fetching featured workflows" };
       }
     } catch (error) {
+      console.error("[API] Error fetching featured workflows:", error);
       throw error;
     }
   };

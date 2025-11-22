@@ -40,3 +40,37 @@ body {
 .animate-gradient-move {
   animation: gradientMove 2s ease infinite;
 }
+
+/* Infinite slider animation */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.workflow-slider-track {
+  display: flex;
+  animation: slideInfinite 60s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.workflow-slider-track:hover {
+  animation-play-state: paused;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .workflow-slider-track {
+    animation-duration: 50s;
+  }
+}
+
+@media (min-width: 1024px) {
+  .workflow-slider-track {
+    animation-duration: 70s;
+  }
+}
